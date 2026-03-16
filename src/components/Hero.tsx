@@ -99,17 +99,7 @@ export default function Hero() {
               <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.22" />
               <stop offset="100%" stopColor="var(--primary)" stopOpacity="0.08" />
             </linearGradient>
-            {/* Moon glow */}
-            <radialGradient id="moon-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.3" />
-              <stop offset="50%" stopColor="var(--primary)" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
-            </radialGradient>
           </defs>
-
-          {/* Moon / celestial body */}
-          <circle cx="1100" cy="80" r="60" fill="url(#moon-glow)" />
-          <circle cx="1100" cy="80" r="20" fill="var(--primary)" opacity="0.15" />
 
           {/* Far mountain range (most distant, lightest) */}
           <path
@@ -197,6 +187,27 @@ export default function Hero() {
         />
       </div>
 
+      {/* ── Celestial body (sun/moon) — separate layer above mountains ── */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5, delay: 0.8, ease: "easeOut" }}
+        className="absolute top-[12%] right-[18%] -z-15 pointer-events-none"
+        style={{ zIndex: -15 }}
+      >
+        <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="celestial-glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.3" />
+              <stop offset="50%" stopColor="var(--primary)" stopOpacity="0.1" />
+              <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="60" cy="60" r="60" fill="url(#celestial-glow)" />
+          <circle cx="60" cy="60" r="20" fill="var(--primary)" opacity="0.2" />
+        </svg>
+      </motion.div>
+
       {/* Gradient blobs */}
       <div className="absolute inset-0 -z-10">
         <motion.div
@@ -206,7 +217,7 @@ export default function Hero() {
             scale: [1, 1.1, 0.9, 1],
           }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/20 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/8 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -220,7 +231,7 @@ export default function Hero() {
             ease: "easeInOut",
             delay: 2,
           }}
-          className="absolute top-1/3 right-1/4 w-72 h-72 bg-chart-2/15 rounded-full blur-3xl"
+          className="absolute top-1/3 right-1/4 w-72 h-72 bg-chart-2/6 rounded-full blur-3xl"
         />
         <motion.div
           animate={{
@@ -234,7 +245,7 @@ export default function Hero() {
             ease: "easeInOut",
             delay: 4,
           }}
-          className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-chart-3/15 rounded-full blur-3xl"
+          className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-chart-3/6 rounded-full blur-3xl"
         />
       </div>
 
@@ -256,7 +267,7 @@ export default function Hero() {
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4"
         >
           Hi, I&apos;m{" "}
-          <span className="text-primary drop-shadow-[0_0_25px_var(--primary)]">
+          <span className="text-primary">
             {personalInfo.name}
           </span>
         </motion.h1>
@@ -288,7 +299,7 @@ export default function Hero() {
           <Button
             size="lg"
             onClick={scrollToProjects}
-            className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow"
+            className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer transition-colors"
           >
             <ArrowDown className="h-4 w-4" />
             View My Work

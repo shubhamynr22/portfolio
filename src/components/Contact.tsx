@@ -42,7 +42,7 @@ export default function Contact() {
               href={`mailto:${personalInfo.email}`}
               className={cn(
                 buttonVariants({ size: "lg" }),
-                "gap-2 bg-primary hover:bg-primary/90 text-primary-foreground mb-8 cursor-pointer shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow"
+                "gap-2 bg-primary hover:bg-primary/90 text-primary-foreground mb-8 cursor-pointer transition-colors"
               )}
             >
               <Mail className="h-5 w-5" />

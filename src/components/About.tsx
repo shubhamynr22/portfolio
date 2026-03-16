@@ -52,7 +52,7 @@ export default function About() {
           >
             <div className="relative">
               {/* Gradient ring */}
-              <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-gradient-to-br from-primary via-chart-2 to-chart-3 p-1 shadow-lg shadow-primary/20">
+              <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-gradient-to-br from-primary via-chart-2 to-chart-3 p-1">
                 <div className="w-full h-full rounded-full overflow-hidden bg-background">
                   <Image
                     src="/avatar.png"
@@ -64,14 +64,6 @@ export default function About() {
                   />
                 </div>
               </div>
-              {/* Decorative rings */}
-              <div className="absolute -inset-4 rounded-full border-2 border-primary/20 animate-pulse" />
-              <div
-                className="absolute -inset-8 rounded-full border border-primary/10 animate-pulse"
-                style={{ animationDelay: "1s" }}
-              />
-              {/* Glow behind avatar */}
-              <div className="absolute inset-0 rounded-full bg-primary/10 blur-2xl -z-10" />
             </div>
           </motion.div>
         </div>
@@ -93,7 +85,7 @@ export default function About() {
               }}
               className="text-center p-6 rounded-xl glass-card cursor-default"
             >
-              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2 drop-shadow-[0_0_10px_var(--primary)]">
+              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
                 {stat.value}
               </div>
               <div className="text-sm text-muted-foreground">{stat.label}</div>

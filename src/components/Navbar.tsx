@@ -146,7 +146,7 @@ export default function Navbar() {
             }}
             className="text-xl font-bold tracking-tight group"
           >
-            <span className="text-primary transition-all group-hover:drop-shadow-[0_0_8px_var(--primary)]">
+            <span className="text-primary transition-colors group-hover:text-primary/80">
               {personalInfo.name.split(" ").map((n) => n[0]).join("")}
             </span>
           </a>
