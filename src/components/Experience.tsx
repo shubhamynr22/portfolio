@@ -65,7 +65,7 @@ function TimelineCard({
       transition={{
         duration: 0.6,
         delay: index * 0.08,
-        ease: [0.25, 0.1, 0.25, 1],
+        ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
       }}
       className={`relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 ${
         isLeft ? "md:flex-row" : "md:flex-row-reverse"
