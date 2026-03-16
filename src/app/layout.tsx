@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ColorThemeProvider } from "@/components/ColorThemeContext";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -40,15 +41,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${spaceGrotesk.variable} font-sans antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <SmoothScroll />
-          {children}
+          <ColorThemeProvider>
+            <SmoothScroll />
+            {children}
+          </ColorThemeProvider>
         </ThemeProvider>
       </body>
     </html>

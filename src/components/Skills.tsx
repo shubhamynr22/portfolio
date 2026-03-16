@@ -1,20 +1,51 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { skillCategories } from "@/lib/data";
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.92, rotateX: 8 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    transition: {
+      delay: i * 0.1,
+      duration: 0.7,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  }),
+};
+
+const badgeVariants = {
+  hidden: { opacity: 0, scale: 0.7, y: 10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.04 + 0.3,
+      duration: 0.4,
+      type: "spring" as const,
+      stiffness: 300,
+      damping: 15,
+    },
+  }),
+};
+
 export default function Skills() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <section id="skills" className="py-20 sm:py-28 bg-secondary/30">
       <div ref={ref} className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -24,18 +55,21 @@ export default function Skills() {
           <div className="mx-auto w-24 h-1 bg-primary rounded-full" />
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8" style={{ perspective: "1000px" }}>
           {skillCategories.map((category, catIdx) => (
             <motion.div
               key={category.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.5,
-                delay: catIdx * 0.1,
-                ease: [0.25, 0.1, 0.25, 1],
+              custom={catIdx}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{
+                scale: 1.04,
+                y: -8,
+                transition: { type: "spring", stiffness: 400, damping: 15 },
               }}
-              className="p-6 rounded-xl bg-card border border-border shadow-sm"
+              className="p-6 rounded-xl glass-card cursor-default"
             >
               <h3 className="text-lg font-semibold mb-4 text-foreground">
                 {category.title}
@@ -46,16 +80,15 @@ export default function Skills() {
                   return (
                     <motion.div
                       key={skill.name}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                      transition={{
-                        duration: 0.3,
-                        delay: catIdx * 0.1 + skillIdx * 0.05 + 0.3,
-                      }}
+                      custom={catIdx * 4 + skillIdx}
+                      variants={badgeVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
                     >
                       <Badge
                         variant="secondary"
-                        className="gap-1.5 px-3 py-1.5 text-sm cursor-default hover:bg-primary/10 transition-colors"
+                        className="gap-1.5 px-3 py-1.5 text-sm cursor-default hover:bg-primary/10 hover:scale-110 transition-all duration-200"
                       >
                         <Icon className="h-4 w-4" />
                         {skill.name}

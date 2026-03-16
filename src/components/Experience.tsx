@@ -13,7 +13,8 @@ export default function Experience() {
       <div ref={ref} className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
@@ -37,7 +38,6 @@ export default function Experience() {
                   exp={exp}
                   index={idx}
                   isLeft={isLeft}
-                  parentInView={isInView}
                 />
               );
             })}
@@ -52,20 +52,19 @@ function TimelineCard({
   exp,
   index,
   isLeft,
-  parentInView,
 }: {
   exp: (typeof experiences)[number];
   index: number;
   isLeft: boolean;
-  parentInView: boolean;
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: isLeft ? -60 : 60 }}
-      animate={parentInView ? { opacity: 1, x: 0 } : {}}
+      initial={{ opacity: 0, x: isLeft ? -80 : 80, scale: 0.92 }}
+      whileInView={{ opacity: 1, x: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-60px" }}
       transition={{
-        duration: 0.5,
-        delay: index * 0.15,
+        duration: 0.6,
+        delay: index * 0.08,
         ease: [0.25, 0.1, 0.25, 1],
       }}
       className={`relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 ${
@@ -78,7 +77,14 @@ function TimelineCard({
           isLeft ? "md:text-right" : "md:text-left"
         }`}
       >
-        <div className="p-6 rounded-xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
+        <motion.div
+          whileHover={{
+            scale: 1.03,
+            y: -6,
+            transition: { type: "spring", stiffness: 400, damping: 15 },
+          }}
+          className="p-6 rounded-xl glass-card"
+        >
           <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="text-sm font-medium text-primary">
               {exp.period}
@@ -103,11 +109,23 @@ function TimelineCard({
               </li>
             ))}
           </ul>
-        </div>
+        </motion.div>
       </div>
 
       {/* Center dot */}
-      <div className="absolute left-3 md:left-1/2 md:-translate-x-1/2 top-6 md:top-1/2 md:-translate-y-1/2 w-4 h-4 rounded-full bg-primary border-4 border-background z-10 shadow-sm shadow-primary/30" />
+      <motion.div
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{
+          duration: 0.4,
+          delay: index * 0.08 + 0.2,
+          type: "spring",
+          stiffness: 400,
+          damping: 12,
+        }}
+        className="absolute left-3 md:left-1/2 md:-translate-x-1/2 top-6 md:top-1/2 md:-translate-y-1/2 w-4 h-4 rounded-full bg-primary border-4 border-background z-10 shadow-md shadow-primary/30"
+      />
 
       {/* Empty space for opposite side */}
       <div className="hidden md:block md:w-[calc(50%-2rem)]" />

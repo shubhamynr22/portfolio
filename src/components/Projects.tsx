@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef } from "react";
 import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -8,16 +8,31 @@ import { buttonVariants } from "@/components/ui/button";
 import { projects } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.9, rotateX: 6 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    transition: {
+      delay: i * 0.12,
+      duration: 0.7,
+      ease: [0.25, 0.1, 0.25, 1],
+    },
+  }),
+};
+
 export default function Projects() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
     <section id="projects" className="py-20 sm:py-28 bg-secondary/30">
       <div ref={ref} className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
@@ -27,20 +42,23 @@ export default function Projects() {
           <div className="mx-auto w-24 h-1 bg-primary rounded-full" />
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" style={{ perspective: "1000px" }}>
           {projects.map((project, idx) => (
             <motion.article
               key={project.title}
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{
-                duration: 0.5,
-                delay: idx * 0.1 + 0.2,
-                ease: [0.25, 0.1, 0.25, 1],
+              custom={idx}
+              variants={cardVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-50px" }}
+              whileHover={{
+                scale: 1.05,
+                y: -10,
+                transition: { type: "spring", stiffness: 400, damping: 15 },
               }}
-              className="group"
+              className="group cursor-default"
             >
-              <div className="h-full p-6 rounded-xl bg-card border border-border shadow-sm hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] transition-all duration-300">
+              <div className="h-full p-6 rounded-xl glass-card">
                 <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
                   {project.title}
                 </h3>
