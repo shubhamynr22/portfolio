@@ -1,98 +1,140 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { useRef } from "react";
-import { ExternalLink } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { ArrowUpRight, MoveRight } from "lucide-react";
 import { projects } from "@/lib/data";
-import { cn } from "@/lib/utils";
+import { Section, SectionHeading, Label, Pill } from "@/components/ui/primitives";
+import { Reveal } from "@/components/motion/Reveal";
+import { ButtonLink } from "@/components/ui/button";
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 60, scale: 0.9, rotateX: 6 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    rotateX: 0,
-    transition: {
-      delay: i * 0.12,
-      duration: 0.7,
-      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
-    },
-  }),
-};
+/* ──────────────────────────────────────────────────────────────────
+ *  PROJECTS
+ *
+ *  A horizontal scroll-snap rail on desktop, stacked panels on mobile.
+ *  Chose native CSS scroll-snap over a JS scroll-pinning library: it is
+ *  keyboard-accessible for free (focus scrolls panels into view), needs
+ *  zero JavaScript, and cannot leave the section stranded mid-animation.
+ * ────────────────────────────────────────────────────────────────── */
 
 export default function Projects() {
-  const ref = useRef(null);
-
   return (
-    <section id="projects" className="py-20 sm:py-28 bg-secondary/30">
-      <div ref={ref} className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Featured <span className="text-primary">Projects</span>
-          </h2>
-          <div className="mx-auto w-24 h-1 bg-primary rounded-full" />
-        </motion.div>
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" style={{ perspective: "1000px" }}>
-          {projects.map((project, idx) => (
-            <motion.article
-              key={project.title}
-              custom={idx}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{
-                scale: 1.05,
-                y: -10,
-                transition: { type: "spring", stiffness: 400, damping: 15 },
-              }}
-              className="group cursor-default"
-            >
-              <div className="h-full p-6 rounded-xl glass-card">
-                <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {project.techStack.map((tech) => (
-                    <Badge
-                      key={tech}
-                      variant="secondary"
-                      className="text-xs px-2 py-0.5"
-                    >
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    buttonVariants({ variant: "outline", size: "sm" }),
-                    "gap-1.5"
-                  )}
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  GitHub
-                </a>
-              </div>
-            </motion.article>
-          ))}
+    <Section
+      id="projects"
+      size="lg"
+      className="border-y-2 border-border-strong bg-muted"
+    >
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <SectionHeading
+          index={4}
+          eyebrow="Projects"
+          title="Selected work"
+          description="Things I built to understand a problem properly — mostly infrastructure that has to keep working when something downstream fails."
+        />
+        <div className="flex items-center gap-2 pb-1">
+          <Label>Scroll</Label>
+          <MoveRight className="h-4 w-4 text-primary-ink" aria-hidden="true" />
         </div>
       </div>
-    </section>
+
+      {/* ── Rail ── */}
+      <div className="mt-12 -mx-5 sm:-mx-8 lg:-mx-12">
+        <div
+          className="no-scrollbar flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 sm:px-8 lg:px-12"
+          tabIndex={0}
+          role="region"
+          aria-label="Project panels"
+        >
+          {projects.map((project, index) => (
+            <Reveal
+              key={project.title}
+              delay={index * 60}
+              className="w-[84vw] shrink-0 snap-start sm:w-[420px] lg:w-[540px]"
+            >
+              <article className="frame frame-hard flex h-full flex-col bg-card">
+                {/* Plate header */}
+                <div className="flex items-center justify-between gap-3 border-b-2 border-border-strong px-5 py-3">
+                  <Label tone="foreground">
+                    {String(index + 1).padStart(2, "0")} /{" "}
+                    {String(projects.length).padStart(2, "0")}
+                  </Label>
+                  <Label>{project.repo ? "Repository" : "On request"}</Label>
+                </div>
+
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
+                  <h3 className="display display-md text-balance text-foreground">
+                    {project.title}
+                  </h3>
+
+                  <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
+                    {project.summary}
+                  </p>
+
+                  <div className="mt-6 border-l-2 border-loud-2 pl-4">
+                    <Label>Why it exists</Label>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                      {project.problem}
+                    </p>
+                  </div>
+
+                  <ul className="mt-6 flex flex-wrap gap-2">
+                    {project.techStack.map((tech) => (
+                      <li key={tech}>
+                        <Pill className="bg-background">{tech}</Pill>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-auto flex flex-wrap items-center gap-3 pt-7">
+                    {project.repo ? (
+                      <ButtonLink
+                        href={project.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        size="sm"
+                      >
+                        View code
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </ButtonLink>
+                    ) : (
+                      /* No public repo exists — say so rather than linking a 404. */
+                      <span className="inline-flex items-center border-2 border-dashed border-border-strong px-3 py-2.5">
+                        <Label>Repository available on request</Label>
+                      </span>
+                    )}
+                    {project.live ? (
+                      <ButtonLink
+                        href={project.live}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="outline"
+                        size="sm"
+                      >
+                        Live site
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </ButtonLink>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+
+          {/* End cap — keeps the rail from feeling truncated */}
+          <div className="w-[60vw] shrink-0 snap-start sm:w-[240px]">
+            <div className="frame flex h-full items-center justify-center border-dashed p-6">
+              <div className="text-center">
+                <Label>More on GitHub</Label>
+                <a
+                  href="https://github.com/shubhamynr22"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary-ink underline decoration-2 underline-offset-4"
+                >
+                  All repositories
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
   );
 }

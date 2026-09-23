@@ -1,98 +1,123 @@
-"use client";
-
 import Image from "next/image";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { aboutBio, stats } from "@/lib/data";
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 50, scale: 0.9 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      delay: i * 0.12,
-      duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
-    },
-  }),
-};
+import { aboutBio, stats, education, personalInfo } from "@/lib/data";
+import { Section, SectionHeading, Label, HardCard, Rule } from "@/components/ui/primitives";
+import { MetricCounter } from "@/components/motion/MetricCounter";
+import { Reveal } from "@/components/motion/Reveal";
 
 export default function About() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section id="about" className="py-20 sm:py-28">
-      <div ref={ref} className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, x: -60 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
-          >
-            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-              About <span className="text-primary">Me</span>
-            </h2>
-            <p className="text-muted-foreground leading-[1.8] text-base sm:text-lg">
-              {aboutBio}
-            </p>
-          </motion.div>
+    <Section id="about" size="lg">
+      <SectionHeading
+        index={1}
+        eyebrow="About"
+        title={<>About me</>}
+        description="AI-focused backend engineer. Most at home where correctness and throughput matter more than pixels — and where a model's answer has to be grounded in something real."
+      />
 
-          {/* Avatar */}
-          <motion.div
-            initial={{ opacity: 0, x: 60, scale: 0.9 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
-            className="flex justify-center"
-          >
-            <div className="relative">
-              {/* Gradient ring */}
-              <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-full bg-gradient-to-br from-primary via-chart-2 to-chart-3 p-1">
-                <div className="w-full h-full rounded-full overflow-hidden bg-background">
+      <div className="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-12">
+        {/* ── Portrait ── */}
+        <div className="lg:col-span-4">
+          <div className="lg:sticky lg:top-28">
+            <Reveal>
+              <figure className="frame frame-hard-lg relative overflow-hidden bg-muted">
+                <div className="relative aspect-square w-full">
                   <Image
                     src="/avatar.png"
-                    alt="Shubham Gupta - Avatar"
-                    width={288}
-                    height={288}
-                    className="w-full h-full object-cover"
-                    priority
+                    alt={`Portrait of ${personalInfo.name}`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 33vw"
+                    className="object-cover grayscale contrast-125"
                   />
+                  <div className="halftone pointer-events-none absolute inset-0" aria-hidden="true" />
                 </div>
+                <figcaption className="flex items-center justify-between gap-3 border-t-2 border-border-strong bg-card px-4 py-3">
+                  <Label tone="foreground">{personalInfo.name}</Label>
+                  <Label>{personalInfo.location}</Label>
+                </figcaption>
+              </figure>
+            </Reveal>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="border-2 border-border-strong p-3">
+                <Label>Focus</Label>
+                <p className="mt-1.5 text-sm font-medium">Distributed systems</p>
+              </div>
+              <div className="border-2 border-border-strong p-3">
+                <Label>Domains</Label>
+                <p className="mt-1.5 text-sm font-medium">SaaS · Fintech · Web3</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-16">
-          {stats.map((stat, idx) => (
-            <motion.div
-              key={stat.label}
-              custom={idx}
-              variants={cardVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              whileHover={{
-                scale: 1.06,
-                y: -6,
-                transition: { type: "spring", stiffness: 400, damping: 15 },
-              }}
-              className="text-center p-6 rounded-xl glass-card cursor-default"
-            >
-              <div className="text-3xl sm:text-4xl font-bold text-primary mb-2">
-                {stat.value}
+        {/* ── Bio + numbers + education ── */}
+        <div className="space-y-10 lg:col-span-8">
+          <Reveal className="space-y-5">
+            {aboutBio.map((paragraph) => (
+              <p
+                key={paragraph.slice(0, 24)}
+                className="text-base leading-relaxed text-muted-foreground sm:text-lg"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </Reveal>
+
+          {/* Stats at scale */}
+          <Reveal>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              {stats.map((stat) => (
+                <HardCard key={stat.label} className="p-4">
+                  <div className="display display-md text-primary-ink">
+                    <MetricCounter value={stat.value} suffix={stat.suffix} />
+                  </div>
+                  <div className="mono-sm mt-2 text-muted-foreground">
+                    {stat.label}
+                  </div>
+                </HardCard>
+              ))}
+            </div>
+          </Reveal>
+
+          {/* Education — previously defined in data.ts but never rendered */}
+          <Reveal>
+            <div className="frame">
+              <div className="flex items-center justify-between gap-3 border-b-2 border-border-strong px-5 py-3">
+                <Label tone="foreground">Education</Label>
+                <Label>{education.year}</Label>
               </div>
-              <div className="text-sm text-muted-foreground">{stat.label}</div>
-            </motion.div>
-          ))}
+
+              <div className="grid gap-6 p-5 sm:grid-cols-2">
+                <div>
+                  <h3 className="font-display text-xl font-extrabold tracking-tight">
+                    {education.degree}
+                  </h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    {education.institution}
+                  </p>
+                  <p className="mono-sm mt-2 text-muted-foreground">
+                    {education.location} · CGPA {education.cgpa}
+                  </p>
+                </div>
+                <div>
+                  <Label>Coursework</Label>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {education.coursework}
+                  </p>
+                </div>
+              </div>
+
+              <Rule />
+              <div className="px-5 py-3">
+                <Label>
+                  {personalInfo.title} · {personalInfo.location} ·{" "}
+                  {personalInfo.timezone}
+                </Label>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

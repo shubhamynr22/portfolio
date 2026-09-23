@@ -1,30 +1,134 @@
 "use client";
 
 import { ArrowUp } from "lucide-react";
-import { personalInfo } from "@/lib/data";
+import { navLinks, personalInfo } from "@/lib/data";
+import { Label } from "@/components/ui/primitives";
+import { scrollToSection } from "@/components/SmoothScroll";
+
+const buildStack = [
+  "Next.js 16",
+  "React 19",
+  "TypeScript",
+  "Tailwind CSS v4",
+  "Motion",
+  "Lenis",
+];
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   return (
-    <footer className="relative py-8 border-t border-border">
-      {/* Subtle gradient top separator */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p className="text-sm text-muted-foreground text-center sm:text-left">
-          &copy; {year} Built by {personalInfo.name} with Next.js &amp; ❤️
-        </p>
-        <button
-          onClick={scrollToTop}
-          aria-label="Back to top"
-          className="p-2 rounded-lg bg-primary/10 hover:bg-primary/20 text-primary transition-all duration-300 cursor-pointer hover:scale-110 hover:-translate-y-0.5"
+    <footer className="inverted relative border-t-2 border-border-strong bg-foreground text-background">
+      {/* ── Edge-to-edge wordmark ──
+          SVG `textLength` stretches the text to exactly the container
+          width, so it always fills the row without ever overflowing. */}
+      <div className="mx-auto w-full max-w-[1400px] px-5 pt-14 sm:px-8 lg:px-12">
+        <svg
+          className="w-full"
+          viewBox="0 0 1000 118"
+          role="img"
+          aria-label={personalInfo.name}
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <ArrowUp className="h-5 w-5" />
+          <text
+            x="0"
+            y="98"
+            textLength="1000"
+            lengthAdjust="spacingAndGlyphs"
+            style={{
+              fill: "var(--background)",
+              fontFamily: "var(--font-display)",
+              fontSize: "112px",
+              fontWeight: 800,
+              letterSpacing: "-0.04em",
+            }}
+          >
+            {personalInfo.name.toUpperCase()}
+          </text>
+        </svg>
+      </div>
+
+      {/* ── Columns ── */}
+      <div className="mx-auto grid w-full max-w-[1400px] gap-10 px-5 py-12 sm:px-8 lg:grid-cols-3 lg:px-12">
+        <div>
+          <Label className="text-background/60">Navigate</Label>
+          <ul className="mt-4 space-y-2">
+            {navLinks.map((link, index) => (
+              <li key={link.href}>
+                <button
+                  onClick={() => scrollToSection(link.href)}
+                  className="group flex items-baseline gap-3 text-left"
+                >
+                  <span className="font-mono text-[0.625rem] tracking-[0.16em] text-background/50">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-sm font-medium transition-colors group-hover:text-loud-2">
+                    {link.label}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <Label className="text-background/60">Elsewhere</Label>
+          <ul className="mt-4 space-y-2">
+            <li>
+              <a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium transition-colors hover:text-loud-2"
+              >
+                GitHub
+              </a>
+            </li>
+            <li>
+              <a
+                href={personalInfo.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium transition-colors hover:text-loud-2"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="text-sm font-medium break-all transition-colors hover:text-loud-2"
+              >
+                {personalInfo.email}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <Label className="text-background/60">Colophon</Label>
+          <p className="mt-4 text-sm leading-relaxed text-background/70">
+            Built from scratch with {buildStack.join(", ")}. Content lives in a
+            single typed data file; the palette is three CSS variables.
+          </p>
+        </div>
+      </div>
+
+      {/* ── Baseline ── */}
+      <div className="mx-auto flex w-full max-w-[1400px] flex-wrap items-center justify-between gap-4 border-t border-background/20 px-5 py-6 sm:px-8 lg:px-12">
+        <Label className="text-background/60">
+          © {year} {personalInfo.name}
+        </Label>
+        <Label className="text-background/60">
+          {personalInfo.timezone}
+        </Label>
+        <button
+          onClick={() => scrollToSection(0, 0)}
+          className="inline-flex items-center gap-2 border-2 border-background/40 px-3 py-2 transition-colors hover:border-loud-2 hover:text-loud-2"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="h-3.5 w-3.5" />
+          <span className="mono-sm">Top</span>
         </button>
       </div>
     </footer>

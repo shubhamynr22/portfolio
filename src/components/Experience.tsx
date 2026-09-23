@@ -1,134 +1,89 @@
-"use client";
-
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import { experiences } from "@/lib/data";
+import {
+  Section,
+  SectionHeading,
+  Index,
+  Label,
+  StatusPill,
+} from "@/components/ui/primitives";
+import { Reveal } from "@/components/motion/Reveal";
+
+/* ──────────────────────────────────────────────────────────────────
+ *  EXPERIENCE
+ *
+ *  A sticky-scroll narrative rather than an alternating timeline:
+ *  the role/company rail pins next to its highlights as you scroll,
+ *  so the eye never has to jump across the page.
+ *
+ *  `position: sticky` does the work natively — no scroll library, no
+ *  pinning to break, and it degrades to a normal stacked layout on
+ *  mobile and under reduced motion.
+ * ────────────────────────────────────────────────────────────────── */
 
 export default function Experience() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section id="experience" className="py-20 sm:py-28">
-      <div ref={ref} className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-            Work <span className="text-primary">Experience</span>
-          </h2>
-          <div className="mx-auto w-24 h-1 bg-primary rounded-full" />
-        </motion.div>
-
-        <div className="relative">
-          {/* Timeline line */}
-          <div className="timeline-line hidden md:block" />
-          <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary to-transparent md:hidden" />
-
-          <div className="space-y-12">
-            {experiences.map((exp, idx) => {
-              const isLeft = idx % 2 === 0;
-              return (
-                <TimelineCard
-                  key={`${exp.company}-${exp.role}`}
-                  exp={exp}
-                  index={idx}
-                  isLeft={isLeft}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function TimelineCard({
-  exp,
-  index,
-  isLeft,
-}: {
-  exp: (typeof experiences)[number];
-  index: number;
-  isLeft: boolean;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: isLeft ? -80 : 80, scale: 0.92 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{
-        duration: 0.6,
-        delay: index * 0.08,
-        ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
-      }}
-      className={`relative flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 ${
-        isLeft ? "md:flex-row" : "md:flex-row-reverse"
-      }`}
-    >
-      {/* Content card */}
-      <div
-        className={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${
-          isLeft ? "md:text-right" : "md:text-left"
-        }`}
-      >
-        <motion.div
-          whileHover={{
-            scale: 1.03,
-            y: -6,
-            transition: { type: "spring", stiffness: 400, damping: 15 },
-          }}
-          className="p-6 rounded-xl glass-card"
-        >
-          <div className="flex items-center gap-2 mb-2 flex-wrap">
-            <span className="text-sm font-medium text-primary">
-              {exp.period}
-            </span>
-            <span className="text-sm text-muted-foreground">
-              {exp.location}
-            </span>
-          </div>
-          <h3 className="text-xl font-bold mb-1">{exp.company}</h3>
-          <p className="text-muted-foreground font-medium mb-3">{exp.role}</p>
-          <ul
-            className={`space-y-2 ${
-              isLeft ? "md:text-right" : "md:text-left"
-            }`}
-          >
-            {exp.highlights.map((h) => (
-              <li
-                key={h}
-                className="text-sm text-muted-foreground leading-relaxed"
-              >
-                {h}
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-      </div>
-
-      {/* Center dot */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        whileInView={{ scale: 1, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 0.4,
-          delay: index * 0.08 + 0.2,
-          type: "spring",
-          stiffness: 400,
-          damping: 12,
-        }}
-        className="absolute left-3 md:left-1/2 md:-translate-x-1/2 top-6 md:top-1/2 md:-translate-y-1/2 w-4 h-4 rounded-full bg-primary border-4 border-background z-10 shadow-md shadow-primary/30"
+    <Section id="experience" size="lg">
+      <SectionHeading
+        index={3}
+        eyebrow="Experience"
+        title="Where I've shipped"
+        description="Five roles, in reverse order. Each one leads with the number it moved."
       />
 
-      {/* Empty space for opposite side */}
-      <div className="hidden md:block md:w-[calc(50%-2rem)]" />
-    </motion.div>
+      <div className="mt-14">
+        {experiences.map((exp, index) => (
+          <Reveal key={`${exp.company}-${exp.period}`}>
+            <article className="grid gap-6 border-t-2 border-border-strong pt-8 pb-14 md:grid-cols-12 md:gap-10">
+              {/* ── Sticky rail ── */}
+              <div className="md:col-span-4 md:sticky md:top-28 md:self-start">
+                <div className="flex items-center gap-3">
+                  <Index value={index + 1} />
+                  <Label>{exp.location}</Label>
+                </div>
+
+                <h3 className="display display-md mt-3 text-balance text-foreground">
+                  {exp.company}
+                </h3>
+
+                <p className="mt-2 text-sm font-medium">{exp.role}</p>
+                <p className="mono-sm mt-1 text-muted-foreground">{exp.period}</p>
+
+                {exp.current ? (
+                  <div className="mt-3">
+                    <StatusPill>Current</StatusPill>
+                  </div>
+                ) : null}
+
+                <div className="frame mt-5 p-4">
+                  <div className="display display-md text-primary-ink">
+                    {exp.headline.value}
+                  </div>
+                  <div className="mono-sm mt-1 text-muted-foreground">
+                    {exp.headline.label}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Highlights ── */}
+              <ol className="space-y-5 md:col-span-8">
+                {exp.highlights.map((highlight, i) => (
+                  <li
+                    key={highlight.slice(0, 32)}
+                    className="flex gap-4 border-l-2 border-border-strong pl-5"
+                  >
+                    <span className="mono-sm mt-1 shrink-0 text-muted-foreground tabular-nums">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
+                      {highlight}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          </Reveal>
+        ))}
+      </div>
+    </Section>
   );
 }

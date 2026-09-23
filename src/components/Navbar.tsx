@@ -1,242 +1,309 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Menu, X, Palette } from "lucide-react";
-import { navLinks, personalInfo } from "@/lib/data";
-import { useColorTheme } from "@/components/ColorThemeContext";
+import { motion, useScroll, useSpring, AnimatePresence } from "motion/react";
+import { ArrowUpRight, Check, Menu, Moon, Sun, X } from "lucide-react";
+import { navLinks, personalInfo, availability } from "@/lib/data";
+import { useColorTheme, type PaletteName } from "@/components/ColorThemeContext";
+import { ButtonLink } from "@/components/ui/button";
+import { Label, StatusPill } from "@/components/ui/primitives";
+import { scrollToSection } from "@/components/SmoothScroll";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
   const { theme, setTheme } = useTheme();
   const { colorTheme, setColorTheme, themes } = useColorTheme();
-  const [mounted, setMounted] = useState(false);
-  const paletteRef = useRef<HTMLDivElement>(null);
+  const paletteRef = useRef<HTMLDivElement | null>(null);
+
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     setMounted(true);
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close palette popover on outside click
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (paletteRef.current && !paletteRef.current.contains(e.target as Node)) {
+    if (!paletteOpen) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (
+        paletteRef.current &&
+        !paletteRef.current.contains(event.target as Node)
+      ) {
         setPaletteOpen(false);
       }
     };
-    if (paletteOpen) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPaletteOpen(false);
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKey);
+    };
   }, [paletteOpen]);
 
-  const handleNavClick = (href: string) => {
+  const goTo = (href: string) => {
     setMobileOpen(false);
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    scrollToSection(href);
   };
 
-  /* ── Color palette picker (shared between desktop & mobile) ── */
-  const PalettePicker = ({ isMobile = false }: { isMobile?: boolean }) => (
-    <div ref={!isMobile ? paletteRef : undefined} className="relative">
-      <button
-        onClick={() => setPaletteOpen(!paletteOpen)}
-        aria-label="Change color theme"
-        className="p-2 rounded-lg hover:bg-white/20 dark:hover:bg-white/10 transition-colors cursor-pointer"
-      >
-        <Palette className="h-5 w-5" />
-      </button>
-      <AnimatePresence>
-        {paletteOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: -4 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: -4 }}
-            transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-2 p-3 rounded-xl glass-card z-50 min-w-[180px]"
-          >
-            <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">
-              Accent Color
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {themes.map((t) => (
-                <button
-                  key={t.name}
-                  onClick={() => {
-                    setColorTheme(t.name);
-                    setPaletteOpen(false);
-                  }}
-                  className={`group flex flex-col items-center gap-1 p-2 rounded-lg transition-all cursor-pointer ${
-                    colorTheme === t.name
-                      ? "bg-primary/10 ring-2 ring-primary/40"
-                      : "hover:bg-secondary"
-                  }`}
-                >
-                  <span
-                    className="w-6 h-6 rounded-full border-2 border-white/40 shadow-md transition-transform group-hover:scale-110"
-                    style={{ background: t.swatch }}
-                  />
-                  <span className="text-[10px] font-medium text-muted-foreground">
-                    {t.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "navbar-glass shadow-lg" : "bg-transparent"
-      }`}
-    >
-      {/* SVG vector pattern background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <svg
-          className="absolute inset-0 w-full h-full text-primary/[0.04]"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <pattern
-              id="nav-grid"
-              x="0"
-              y="0"
-              width="40"
-              height="40"
-              patternUnits="userSpaceOnUse"
-            >
-              <circle cx="20" cy="20" r="1" fill="currentColor" />
-              <path
-                d="M 40 0 L 0 0 0 40"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="0.5"
-              />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#nav-grid)" />
-        </svg>
-        {/* Animated accent line at bottom */}
-        <motion.div
-          className="absolute bottom-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent"
-          animate={{ width: scrolled ? "100%" : "0%" }}
-          transition={{ duration: 0.4, ease: "easeInOut" }}
-        />
-      </div>
+    <>
+      <a
+        href="#about"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:border-2 focus:border-border-strong focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to content
+      </a>
 
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo */}
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="text-xl font-bold tracking-tight group"
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 border-b-2 transition-colors duration-300",
+          scrolled
+            ? "border-border-strong bg-background"
+            : "border-transparent bg-transparent",
+        )}
+      >
+        {/* ── Metadata strip: collapses away once you scroll ── */}
+        <div
+          className={cn(
+            "overflow-hidden border-b border-border transition-[max-height,opacity] duration-300",
+            scrolled ? "max-h-0 opacity-0" : "max-h-12 opacity-100",
+          )}
+        >
+          <div className="mx-auto flex h-9 w-full max-w-[1400px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+            <Label className="truncate">
+              {personalInfo.location} · {personalInfo.timezone}
+            </Label>
+            <Label className="hidden sm:block">
+              {personalInfo.title} · Backend / Platform
+            </Label>
+          </div>
+        </div>
+
+        {/* ── Main bar ── */}
+        <div className="mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+          <button
+            onClick={() => scrollToSection(0, 0)}
+            className="group flex items-center gap-3"
+            aria-label="Back to top"
           >
-            <span className="text-primary transition-colors group-hover:text-primary/80">
-              {personalInfo.name.split(" ").map((n) => n[0]).join("")}
+            <span className="flex h-10 w-10 items-center justify-center border-2 border-border-strong bg-primary font-display text-lg font-extrabold text-primary-foreground transition-transform duration-150 group-hover:translate-x-[2px] group-hover:translate-y-[2px]">
+              {personalInfo.initials}
             </span>
-          </a>
+            <span className="hidden flex-col leading-none sm:flex">
+              <span className="text-sm font-semibold tracking-tight">
+                {personalInfo.name}
+              </span>
+              <span className="mono-sm text-muted-foreground">
+                {personalInfo.title}
+              </span>
+            </span>
+          </button>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
+          <nav className="hidden items-center gap-1 lg:flex" aria-label="Sections">
+            {navLinks.map((link, index) => (
               <button
                 key={link.href}
-                onClick={() => handleNavClick(link.href)}
-                className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer group"
+                onClick={() => goTo(link.href)}
+                className="group flex items-baseline gap-1.5 border-2 border-transparent px-3 py-2 transition-colors hover:border-border-strong hover:bg-muted"
               >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary rounded-full transition-all group-hover:w-full" />
+                <span className="mono-sm text-muted-foreground transition-colors group-hover:text-primary-ink">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="text-sm font-medium">{link.label}</span>
               </button>
             ))}
+          </nav>
 
-            {mounted && <PalettePicker />}
-
-            {mounted && (
+          <div className="flex items-center gap-2">
+            {/* Palette switcher */}
+            <div className="relative" ref={paletteRef}>
               <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                aria-label="Toggle theme"
-                className="p-2 rounded-lg hover:bg-white/20 dark:hover:bg-white/10 transition-colors cursor-pointer"
+                onClick={() => setPaletteOpen((open) => !open)}
+                aria-label="Change accent palette"
+                aria-expanded={paletteOpen}
+                className="flex h-10 items-center gap-2 border-2 border-border-strong bg-card px-2.5 transition-colors hover:bg-muted"
               >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
-                )}
+                <span className="flex gap-1" aria-hidden="true">
+                  <span
+                    className="h-3.5 w-3.5 border border-border-strong"
+                    style={{ background: "var(--primary)" }}
+                  />
+                  <span
+                    className="h-3.5 w-3.5 border border-border-strong"
+                    style={{ background: "var(--loud-2)" }}
+                  />
+                </span>
               </button>
-            )}
-          </div>
 
-          {/* Mobile buttons */}
-          <div className="flex md:hidden items-center gap-1">
-            {mounted && <PalettePicker isMobile />}
-
-            {mounted && (
-              <button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                aria-label="Toggle theme"
-                className="p-2 rounded-lg hover:bg-white/20 dark:hover:bg-white/10 transition-colors cursor-pointer"
-              >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5" />
-                ) : (
-                  <Moon className="h-5 w-5" />
+              <AnimatePresence>
+                {paletteOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.14, ease: "easeOut" }}
+                    className="frame frame-hard absolute right-0 top-[calc(100%+8px)] z-50 w-56 p-2"
+                  >
+                    <div className="px-2 py-1.5">
+                      <Label>Accent</Label>
+                    </div>
+                    {themes.map((palette) => {
+                      const active = colorTheme === palette.name;
+                      return (
+                        <button
+                          key={palette.name}
+                          onClick={() => {
+                            setColorTheme(palette.name as PaletteName);
+                            setPaletteOpen(false);
+                          }}
+                          className={cn(
+                            "flex w-full items-center gap-3 px-2 py-2 text-left transition-colors",
+                            active ? "bg-muted" : "hover:bg-muted",
+                          )}
+                        >
+                          <span
+                            className="h-5 w-5 shrink-0 border-2 border-border-strong"
+                            style={{ background: palette.swatch }}
+                          />
+                          <span className="flex flex-col leading-tight">
+                            <span className="text-sm font-medium">
+                              {palette.label}
+                            </span>
+                            <span className="mono-sm text-muted-foreground">
+                              {palette.note}
+                            </span>
+                          </span>
+                          {active && (
+                            <Check
+                              className="ml-auto h-4 w-4 text-primary-ink"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </motion.div>
                 )}
-              </button>
-            )}
+              </AnimatePresence>
+            </div>
+
+            {/* Theme toggle */}
             <button
-              onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Toggle menu"
-              className="p-2 rounded-lg hover:bg-white/20 dark:hover:bg-white/10 transition-colors cursor-pointer"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="Toggle colour theme"
+              className="flex h-10 w-10 items-center justify-center border-2 border-border-strong bg-card transition-colors hover:bg-muted"
             >
-              {mobileOpen ? (
-                <X className="h-5 w-5" />
+              {mounted && theme === "dark" ? (
+                <Sun className="h-4 w-4" />
               ) : (
-                <Menu className="h-5 w-5" />
+                <Moon className="h-4 w-4" />
               )}
+            </button>
+
+            <ButtonLink
+              href={personalInfo.resume}
+              download
+              size="sm"
+              className="hidden h-10 sm:inline-flex"
+            >
+              Résumé
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </ButtonLink>
+
+            <button
+              onClick={() => setMobileOpen(true)}
+              aria-label="Open menu"
+              className="flex h-10 w-10 items-center justify-center border-2 border-border-strong bg-card transition-colors hover:bg-muted lg:hidden"
+            >
+              <Menu className="h-4 w-4" />
             </button>
           </div>
         </div>
-      </div>
 
-      {/* Mobile drawer */}
+        {/* Scroll progress rail */}
+        <motion.div
+          style={{ scaleX: progress }}
+          className="h-[2px] origin-left bg-primary"
+          aria-hidden="true"
+        />
+      </header>
+
+      {/* ── Mobile overlay ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden overflow-hidden navbar-glass"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[60] flex flex-col bg-background lg:hidden"
           >
-            <div className="px-4 py-4 space-y-3">
-              {navLinks.map((link) => (
+            <div className="flex h-16 shrink-0 items-center justify-between border-b-2 border-border-strong px-5">
+              <Label>{personalInfo.initials} / Index</Label>
+              <button
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close menu"
+                className="flex h-10 w-10 items-center justify-center border-2 border-border-strong bg-card"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <nav className="flex-1 overflow-y-auto px-5 py-6">
+              {navLinks.map((link, index) => (
                 <button
                   key={link.href}
-                  onClick={() => handleNavClick(link.href)}
-                  className="block w-full text-left text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2 cursor-pointer"
+                  onClick={() => goTo(link.href)}
+                  className="group flex w-full items-baseline gap-4 border-b border-border py-5 text-left"
                 >
-                  {link.label}
+                  <span className="mono-sm text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="display display-md text-foreground transition-colors group-hover:text-primary-ink">
+                    {link.label}
+                  </span>
                 </button>
               ))}
+            </nav>
+
+            <div className="shrink-0 space-y-4 border-t-2 border-border-strong px-5 py-6">
+              <StatusPill>{availability.status}</StatusPill>
+              <div className="grid grid-cols-2 gap-2">
+                <ButtonLink href={`mailto:${personalInfo.email}`} size="md">
+                  Email
+                </ButtonLink>
+                <ButtonLink
+                  href={personalInfo.resume}
+                  download
+                  variant="outline"
+                  size="md"
+                >
+                  Résumé
+                </ButtonLink>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </>
   );
 }

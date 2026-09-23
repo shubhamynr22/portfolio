@@ -1,37 +1,91 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Space_Grotesk, JetBrains_Mono, Archivo } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { ColorThemeProvider } from "@/components/ColorThemeContext";
+import {
+  ColorThemeProvider,
+  paletteInitScript,
+} from "@/components/ColorThemeContext";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+/* ── Three type voices ──
+ * Archivo      → display (huge statements)
+ * Space Grotesk→ body & UI
+ * JetBrains Mono → labels, indices, metadata
+ */
+const archivo = Archivo({
   subsets: ["latin"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-grotesk",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
+  display: "swap",
+});
+
+import { SITE_URL } from "@/lib/site";
+
 export const metadata: Metadata = {
-  title: "Shubham Gupta — Backend / Full Stack Engineer",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Shubham Gupta — AI-focused Backend Engineer",
+    template: "%s · Shubham Gupta",
+  },
   description:
-    "Portfolio of Shubham Gupta — 3+ years building scalable backend systems and full-stack products with Node.js, NestJS, Kafka, and AWS.",
+    "AI-focused backend engineer building multi-agent systems, LLM-powered product features and the event-driven infrastructure behind them. Node.js, NestJS, AWS, Kafka.",
   keywords: [
     "Shubham Gupta",
-    "Backend Engineer",
-    "Full Stack Developer",
+    "Backend AI Engineer",
+    "Multi-Agent Systems",
+    "LLM Engineer",
+    "Agent Orchestration",
+    "RAG",
     "Node.js",
     "NestJS",
     "Kafka",
+    "AWS",
     "TypeScript",
+    "PostgreSQL",
     "Portfolio",
   ],
-  authors: [{ name: "Shubham Gupta" }],
+  authors: [{ name: "Shubham Gupta", url: SITE_URL }],
+  creator: "Shubham Gupta",
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Shubham Gupta — Backend / Full Stack Engineer",
-    description:
-      "3+ years building scalable backend systems and full-stack products.",
     type: "website",
+    url: SITE_URL,
+    siteName: "Shubham Gupta",
+    title: "Shubham Gupta — AI-focused Backend Engineer",
+    description:
+      "Multi-agent systems and LLM product features on Node.js, NestJS and AWS. 100K+ concurrent users supported, 50% delivery latency cut.",
+    locale: "en_IN",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shubham Gupta — AI-focused Backend Engineer",
+    description:
+      "Multi-agent systems and LLM product features on Node.js, NestJS and AWS. 100K+ concurrent users supported, 50% delivery latency cut.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
+};
+
+export const viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F4F1ED" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0B0C" },
+  ],
 };
 
 export default function RootLayout({
@@ -40,11 +94,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${spaceGrotesk.variable} font-sans antialiased`}>
+    <html
+      lang="en"
+      data-palette="volt"
+      suppressHydrationWarning
+      className={`${archivo.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+    >
+      <body className="font-sans antialiased">
+        {/* Pre-paint palette application — no flash, no client gate */}
+        <script
+          dangerouslySetInnerHTML={{ __html: paletteInitScript }}
+          suppressHydrationWarning
+        />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
