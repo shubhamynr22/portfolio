@@ -63,9 +63,16 @@ export default function Hero() {
       <RidgeBand />
 
       <div className="relative z-2 mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12">
-        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-10">
-          {/* ── Left: the statement ── */}
-          <div className="lg:col-span-7">
+        <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-14">
+          {/* ── Row 1 — the statement, on its own full-width row.
+                 Archivo ExtraBold sets "SHUBHAM" at 5.459em, so at the
+                 fluid display size the word is wider than any fractional
+                 grid column: parked in `lg:col-span-7` it spilled out of
+                 its cell and the figure — which paints later and has an
+                 opaque background — covered the last letters.
+                 Giving the name the whole container removes the collision
+                 by geometry rather than by tuning a font size. ── */}
+          <div className="lg:col-span-12">
             <div className="flex flex-wrap items-center gap-3">
               <StatusPill>{availability.status}</StatusPill>
               <Label tone="muted">{availability.note}</Label>
@@ -78,9 +85,12 @@ export default function Hero() {
                 {personalInfo.name.split(" ")[1]}
               </span>
             </h1>
+          </div>
 
+          {/* ── Row 2 — the pitch ── */}
+          <div className="lg:col-span-7">
             {/* Roles — dense, static, no clipping typewriter */}
-            <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               {heroRoles.map((role, index) => (
                 <span key={role} className="flex items-center gap-3">
                   {index > 0 && (
@@ -124,38 +134,38 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Right: the figure ── */}
+          {/* ── Row 2 — the figure ── */}
           <div className="lg:col-span-5">
             <StackSchematic />
           </div>
-        </div>
 
-        {/* ── Metrics strip ── */}
-        <div className="frame frame-hard mt-14 mb-14 grid grid-cols-2 lg:grid-cols-4">
-          {heroMetrics.map((metric, index) => (
-            <div
-              key={metric.label}
-              className={cn(
-                "border-border-strong p-5",
-                index >= 2 && "border-t-2",
-                index % 2 === 1 && "border-l-2",
-                "lg:border-t-0",
-                index > 0 && "lg:border-l-2",
-              )}
-            >
-              <div className="display display-md text-primary-ink">
-                <MetricCounter
-                  value={metric.value}
-                  prefix={metric.prefix}
-                  suffix={metric.suffix}
-                />
+          {/* ── Metrics strip ── */}
+          <div className="frame frame-hard mb-14 grid grid-cols-2 lg:col-span-12 lg:grid-cols-4">
+            {heroMetrics.map((metric, index) => (
+              <div
+                key={metric.label}
+                className={cn(
+                  "border-border-strong p-5",
+                  index >= 2 && "border-t-2",
+                  index % 2 === 1 && "border-l-2",
+                  "lg:border-t-0",
+                  index > 0 && "lg:border-l-2",
+                )}
+              >
+                <div className="display display-md text-primary-ink">
+                  <MetricCounter
+                    value={metric.value}
+                    prefix={metric.prefix}
+                    suffix={metric.suffix}
+                  />
+                </div>
+                <div className="mt-2 text-sm font-medium">{metric.label}</div>
+                <div className="mono-sm mt-1 text-muted-foreground">
+                  {metric.detail}
+                </div>
               </div>
-              <div className="mt-2 text-sm font-medium">{metric.label}</div>
-              <div className="mono-sm mt-1 text-muted-foreground">
-                {metric.detail}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 

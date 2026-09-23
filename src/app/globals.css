@@ -44,18 +44,22 @@
   --radius-4xl: 4px;
 }
 
-/* ── Light: warm paper ── */
+/* ── Light: warm paper ──
+   Tuned to sit at ~13.5:1 for body text and ~9.7:1 for the 2px frame,
+   down from 17.5:1 for both. Pure #000-on-#FFF is the single biggest
+   source of "harsh" — pulling the ink off black and the paper off white
+   keeps the same paper-and-ink character without the glare. */
 :root {
-  --background: #F4F1ED;
-  --foreground: #0B0B0C;
-  --card: #FBF9F6;
-  --card-foreground: #0B0B0C;
-  --muted: #E8E3DA;
-  --muted-foreground: #5C574E;
-  --border: rgba(11, 11, 12, 0.18);
-  --border-strong: #0B0B0C;
-  --shadow-color: #0B0B0C;
-  --grid-line: rgba(11, 11, 12, 0.07);
+  --background: #EFEBE4;
+  --foreground: #232120;
+  --card: #F7F4EF;
+  --card-foreground: #232120;
+  --muted: #E4DED4;
+  --muted-foreground: #5A554C;
+  --border: rgba(35, 33, 32, 0.16);
+  --border-strong: #3C3934;
+  --shadow-color: #3C3934;
+  --grid-line: rgba(35, 33, 32, 0.07);
   --grain-opacity: 0.35;
   --destructive: #C1121F;
   --live: #1F7A3D;
@@ -75,18 +79,21 @@
   --dur-slow: 700ms;
 }
 
-/* ── Dark: ink ── */
+/* ── Dark: ink ──
+   Same treatment inverted: the page is lifted off absolute black and the
+   type is pulled off absolute white, so the frame sits at ~9.2:1 and body
+   copy at ~13.4:1 instead of 17.5:1. */
 .dark {
-  --background: #0B0B0C;
-  --foreground: #F4F1ED;
-  --card: #141416;
-  --card-foreground: #F4F1ED;
-  --muted: #1C1C20;
-  --muted-foreground: #A39D94;
-  --border: rgba(244, 241, 237, 0.20);
-  --border-strong: #F4F1ED;
-  --shadow-color: #2A2A30;
-  --grid-line: rgba(244, 241, 237, 0.06);
+  --background: #131316;
+  --foreground: #E0DAD2;
+  --card: #1B1B20;
+  --card-foreground: #E0DAD2;
+  --muted: #242429;
+  --muted-foreground: #A8A29A;
+  --border: rgba(224, 218, 210, 0.17);
+  --border-strong: #BCB6AD;
+  --shadow-color: #2C2C33;
+  --grid-line: rgba(224, 218, 210, 0.055);
   --grain-opacity: 0.22;
   --destructive: #FF6B6B;
   --live: #4ADE80;
@@ -114,14 +121,14 @@
 
 [data-palette="hazard"] {
   --primary: #FF4D00;
-  --primary-foreground: #0B0B0C;
-  --primary-ink: #C43A00;
+  --primary-foreground: #232120;
+  --primary-ink: #B83600;
   --loud-2: #2B4EFF;
   --loud-3: #C8F135;
 }
 .dark[data-palette="hazard"] {
   --primary: #FF5E1A;
-  --primary-foreground: #0B0B0C;
+  --primary-foreground: #131316;
   --primary-ink: #FF8A4D;
   --loud-2: #7B93FF;
   --loud-3: #D4FF5C;
@@ -129,14 +136,14 @@
 
 [data-palette="signal"] {
   --primary: #C8F135;
-  --primary-foreground: #0B0B0C;
+  --primary-foreground: #232120;
   --primary-ink: #4A6B00;
   --loud-2: #2B4EFF;
   --loud-3: #FF4D00;
 }
 .dark[data-palette="signal"] {
   --primary: #C8F135;
-  --primary-foreground: #0B0B0C;
+  --primary-foreground: #131316;
   --primary-ink: #D4FF5C;
   --loud-2: #7B93FF;
   --loud-3: #FF6A2B;
@@ -164,7 +171,7 @@
      Deliberately ink, not the accent colour: an accent ring fails contrast
      against the primary-coloured buttons it most often sits on, and against
      the page. Ink clears 3:1 against every background in every palette and
-     theme (17.5:1 at the extremes — measured, not assumed).
+     theme (13.4:1 at the extremes — measured, not assumed).
      The 2px offset matters: it keeps the ring on the page surface rather
      than on top of the element's own fill. */
   :focus-visible {
@@ -192,7 +199,12 @@
   text-transform: uppercase;
 }
 .display-xl {
-  font-size: clamp(3.25rem, 13vw, 11rem);
+  /* Archivo ExtraBold sets "SHUBHAM" at 5.459em (measured from the font's
+     hmtx table, not estimated), so at 13vw it needs its own full-width row
+     and can never be parked in a fractional grid column. The 2.75rem floor
+     keeps that word inside the 320px-wide content box on the smallest
+     phones; 13vw takes over above ~308px. */
+  font-size: clamp(2.75rem, 13vw, 11rem);
 }
 .display-lg {
   font-size: clamp(2.5rem, 7vw, 5.5rem);

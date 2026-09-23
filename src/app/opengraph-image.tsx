@@ -4,8 +4,10 @@ export const alt = "Shubham Gupta — AI-focused Backend Engineer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const INK = "#0B0B0C";
-const PAPER = "#F4F1ED";
+/* Kept in step with the dark theme tokens in globals.css so the card
+   preview matches the page it links to. */
+const INK = "#131316";
+const PAPER = "#E0DAD2";
 const VOLT = "#7B93FF";
 const SIGNAL = "#C8F135";
 
@@ -39,7 +41,7 @@ export default function Image() {
             justifyContent: "space-between",
             fontSize: 20,
             letterSpacing: 3,
-            color: "#A39D94",
+            color: "#A8A29A",
           }}
         >
           <div style={{ display: "flex" }}>PORTFOLIO / 2026</div>
@@ -93,7 +95,7 @@ export default function Image() {
             style={{
               marginTop: 18,
               fontSize: 24,
-              color: "#A39D94",
+              color: "#A8A29A",
               display: "flex",
             }}
           >
@@ -129,7 +131,7 @@ export default function Image() {
                 <div
                   style={{
                     fontSize: 18,
-                    color: "#A39D94",
+                    color: "#A8A29A",
                     letterSpacing: 2,
                     display: "flex",
                   }}

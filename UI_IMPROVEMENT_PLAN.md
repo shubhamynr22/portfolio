@@ -584,3 +584,53 @@ Also removed: an unverified claim I had added during the redesign ("open to remo
 1. **Repo URLs for QueryLens and IdleWatch** — add a `repo` field in `data.ts` and the "View code" button appears automatically. If those repos are private, the current "on request" chip is the honest state.
 2. **"3+ years"** — kept because it is what the resume says and the two should not disagree, but February 2023 → today is ~3.6 years of full-time work before the 2022 internships are counted. Worth deciding deliberately, then updating both documents together.
 3. **Availability** — the site still says "Open to new roles" while the résumé shows a current role. Correct if you are passively looking; change `availability.status` if not.
+
+---
+
+# POST-LAUNCH FIXES — 23 Sep 2026
+
+Three defects reported against the deployed build. All three are fixed; the measurements below are from the repository, not from the live site.
+
+## 1. The name was hidden behind the stack schematic
+
+**Cause: a font metric, not a styling preference.** The hero placed the `display-xl` heading in `lg:col-span-7` and the figure in `lg:col-span-5`. At 1440px that column is 744px wide, while "SHUBHAM" in Archivo ExtraBold measures **5.459 em** (read straight out of the shipped font's `hmtx` table — `unitsPerEm` 1000) — at the fluid `13vw` size that is **905px**, so the word overflowed its cell by ~22%. `StackSchematic` has an opaque `bg-card` and comes later in DOM order, so it painted over the last letters. The earlier structural check (`scrollWidth == innerWidth`) never caught it because overflowing a grid cell into a sibling column does not widen the document.
+
+**Fix: give the statement its own full-width row.** No font size was reduced — the name is exactly as large as before, and the collision is now impossible by geometry rather than by tuning a magic number. "SHUBHAM" has **19–31% spare width at every breakpoint** (320 → 2560px).
+
+The `display-xl` floor also moved from `3.25rem` to `2.75rem`: at 320px the old floor measured 284px against a 280px content box, i.e. it was already clipping by 4px before this change.
+
+## 2. Contrast dialled back
+
+The complaint was legitimate: the dominant pairing was `#0B0B0C` on `#F4F1ED` at **17.47:1** — near-black on near-white, at 2px border weight, on every card and rule on the page.
+
+| | before | after |
+|---|---|---|
+| Body text (light) | 17.47:1 | **13.49:1** |
+| Body text (dark) | 17.47:1 | **13.36:1** |
+| 2px frame (light) | 17.47:1 | **9.67:1** |
+| 2px frame (dark) | 17.47:1 | **9.21:1** |
+
+The dark page was also lifted off absolute black (`#0B0B0C` → `#131316`). Hard offset shadows, 2px borders and the three loud accents are untouched — this is the same theme at a lower amplitude, which is what was asked for.
+
+Re-verified: **`node .archive/contrast-check.mjs` → 66/66 pairings pass WCAG AA** (3 palettes × 2 themes × 11 real pairings). One value needed retuning to stay compliant: hazard's light `--primary-ink` moved `#C43A00` → `#B83600`, because the lighter paper dropped it to 4.47:1 against the 4.5 threshold.
+
+Propagated to `layout.tsx` (`themeColor`), `opengraph-image.tsx` and `icon.svg` so the card preview, the browser chrome and the favicon match the page.
+
+## 3. Responsiveness
+
+Every `display-*` tier was checked against the real glyph advances at 320 / 360 / 375 / 414 / 768 / 1024 / 1280 / 1440 / 1512 / 1920 / 2560px — **zero overflows**:
+
+- `display-xl` (name) — 19–31% spare, full-width row.
+- `display-lg` (section headings) — worst word `TECHNICAL` at 505.6px in a 1304px box.
+- `display-md` (project cards) — worst `QUERYLENS` at 296px in a 500px panel at every size.
+
+The mobile stack order is unchanged (name → pitch → figure → metrics); only the `lg` breakpoint and above reflows into columns.
+
+## Verification, and its limits
+
+- `npm run build` — clean, 9 routes, all static.
+- Contrast audit — 66/66.
+- Built-CSS audit — the shipped bundle contains the new tokens and **no** trace of `#f4f1ed` or `#0b0b0c`.
+- Served-HTML check on a fresh production server — confirms the new hero grid is what is actually served.
+
+**Still no visual sign-off.** Headless Chrome hangs indefinitely under this sandbox (it had to be moved to a background process and killed), and Playwright's browsers are not installed. Everything above is measurement, not looking. The name fix in particular is arithmetic rather than eyeballed — worth one glance at 1440px in dark mode to confirm the composition still reads the way you want, since the pitch column now sits below the name rather than beside it.
