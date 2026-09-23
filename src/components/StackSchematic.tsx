@@ -1,5 +1,4 @@
 import { Label } from "@/components/ui/primitives";
-import { Provenance, SealMark } from "@/components/ui/patterns";
 import { cn } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -103,7 +102,7 @@ export function StackSchematic({ className }: { className?: string }) {
           yantra would be pastiche rather than heritage. */}
       <figcaption className="flex items-center justify-between gap-3 border-b-2 border-border-strong px-4 py-3">
         <span className="flex items-center gap-2.5">
-          <SealMark className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+
           <Label tone="foreground">Fig. 01 — System I build</Label>
         </span>
         <Label>8 layers</Label>
@@ -161,7 +160,6 @@ export function StackSchematic({ className }: { className?: string }) {
       {/* Every frame on this site carries this channel, so the reference is
           labelled once, here, rather than repeated on each plate. */}
       <div className="border-t-2 border-border-strong px-4 py-2.5">
-        <Provenance>Inlay channel · Bidriware, Bidar · 14C</Provenance>
       </div>
     </figure>
   );

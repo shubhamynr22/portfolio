@@ -1,4 +1,20 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+/* The site's display voice, loaded explicitly. Satori has no access to
+   next/font, so without this the card renders in a fallback grotesque and
+   is the one public surface that does not match the site. Bundled rather
+   than fetched so the route stays fully static and offline-buildable. */
+let displayFont: Buffer | null = null;
+async function getDisplayFont() {
+  if (!displayFont) {
+    displayFont = await readFile(
+      path.join(process.cwd(), "src/app/_fonts/mukta-800.ttf"),
+    );
+  }
+  return displayFont;
+}
 
 export const alt = "Shubham Gupta — AI-focused Backend Engineer";
 export const size = { width: 1200, height: 630 };
@@ -6,11 +22,10 @@ export const contentType = "image/png";
 
 /* Kept in step with the dark theme tokens in globals.css so the card
    preview matches the page it links to. */
-const INK = "#131316";
-const PAPER = "#E0DAD2";
-const INDIGO = "#7B93FF";
-const MEHENDI = "#C8F135";
-const MUTED = "#A8A29A";
+const INK = "#1B1F14";
+const PAPER = "#EDE9DC";
+const ACCENT = "#A8BE6B";
+const MUTED = "#A9AD96";
 
 const metrics = [
   { value: "3+", label: "Years shipping" },
@@ -18,7 +33,9 @@ const metrics = [
   { value: "50%", label: "Delivery latency cut" },
 ];
 
-export default function Image() {
+export default async function Image() {
+  const mukta = await getDisplayFont();
+
   return new ImageResponse(
     (
       <div
@@ -85,7 +102,7 @@ export default function Image() {
               style={{
                 width: 10,
                 height: 10,
-                background: MEHENDI,
+                background: ACCENT,
                 display: "flex",
               }}
             />
@@ -97,9 +114,10 @@ export default function Image() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div
             style={{
+              fontFamily: "Mukta",
               fontSize: 104,
               fontWeight: 800,
-              letterSpacing: -4,
+              letterSpacing: -2,
               lineHeight: 1,
               display: "flex",
             }}
@@ -110,7 +128,7 @@ export default function Image() {
             style={{
               marginTop: 20,
               fontSize: 36,
-              color: INDIGO,
+              color: ACCENT,
               display: "flex",
             }}
           >
@@ -145,9 +163,10 @@ export default function Image() {
               >
                 <div
                   style={{
+                    fontFamily: "Mukta",
                     fontSize: 44,
                     fontWeight: 800,
-                    color: MEHENDI,
+                    color: ACCENT,
                     display: "flex",
                   }}
                 >
@@ -189,7 +208,7 @@ export default function Image() {
                   display: "flex",
                   width: 2,
                   height: i % 4 === 0 ? 16 : 8,
-                  background: i % 4 === 0 ? MEHENDI : MUTED,
+                  background: i % 4 === 0 ? ACCENT : MUTED,
                 }}
               />
             ))}
@@ -204,11 +223,16 @@ export default function Image() {
               display: "flex",
             }}
           >
-            PADA GRID · VASTU PURUSHA MANDALA · 8×8
+            POTHI · PALM-LEAF FOLIO · VASTU PADA GRID
           </div>
         </div>
       </div>
     ),
-    { ...size },
+    {
+      ...size,
+      fonts: [
+        { name: "Mukta", data: mukta, style: "normal", weight: 400 },
+      ],
+    },
   );
 }

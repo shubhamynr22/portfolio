@@ -30,17 +30,22 @@
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
 
-  /* ── Three type voices ──
-     The label voice is Rajdhani — an Indian Type Foundry Devanagari + Latin
-     family whose uppercase letterforms are deliberately modularised: round
-     bowls are straightened and terminals end flat on the horizontal or the
-     vertical. The foundry calls the result "technical or even futuristic",
-     so it holds the register JetBrains Mono used to while carrying Indian
-     typographic DNA through its Latin cut. JetBrains Mono stays in the
-     fallback chain for glyphs the latin subset lacks (the ✦ separators). */
-  --font-sans: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-rajdhani), var(--font-jetbrains), ui-monospace, monospace;
-  --font-display: var(--font-archivo), var(--font-grotesk), ui-sans-serif, sans-serif;
+  /* ── Three type voices, all with Indian design lineage ──
+     Display — Yatra One. Drawn from the hand-painted signage of the Mumbai
+     local railway: heavy, high-contrast, one weight, and about as far from a
+     neutral grotesque as a Latin display face gets. Sets "SHUBHAM" at
+     5.153 em, which is narrower than the Archivo it replaces (5.459), so the
+     hero clamp survives it with more headroom than before.
+     Text — Mukta (Ek Type, Mumbai). A humanist sans built as one family
+     across nine Indic scripts; the Latin is drawn to sit beside them rather
+     than borrowed from a Western model.
+     Labels — Rajdhani (Indian Type Foundry). Modularised uppercase —
+     straightened bowls, flat terminals — for indices and provenance.
+     JetBrains Mono stays in the fallback chain for glyphs the latin subsets
+     lack (the ✦ separators). */
+  --font-sans: var(--font-mukta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mukta), ui-monospace, monospace;
+  --font-display: var(--font-mukta), ui-sans-serif, system-ui, sans-serif;
 
   /* ── Radius: near-zero. 16px rounded cards are what made it look
         like every other shadcn template. ── */
@@ -53,42 +58,42 @@
   --radius-4xl: 4px;
 }
 
-/* ── Light: warm paper ──
-   Tuned to sit at ~13.5:1 for body text and ~9.7:1 for the 2px frame,
-   down from 17.5:1 for both. Pure #000-on-#FFF is the single biggest
-   source of "harsh" — pulling the ink off black and the paper off white
-   keeps the same paper-and-ink character without the glare. */
+/* ── Light: palm leaf ──
+   The ground is an aged palm-leaf folio and the ink is lamp black — the
+   actual material pairing of an Indian manuscript, not a warm-grey
+   approximation of one. Body text 13.2:1, 2px frame 10.3:1, secondary
+   6.1:1, every accent >= 4.5:1. Measured, not eyeballed. */
+/* ── Light: cream ground, olive ink ──
+   One hue family used at both ends of its range rather than a neutral page
+   with colour applied on top. Body 13.3:1, hairline frame 9.3:1, secondary
+   5.8:1, olive accent 8.1:1, label on an olive fill 6.4:1. */
 :root {
-  --background: #EFEBE4;
-  --foreground: #232120;
-  --card: #F7F4EF;
-  --card-foreground: #232120;
-  --muted: #E4DED4;
-  --muted-foreground: #5A554C;
-  --border: rgba(35, 33, 32, 0.16);
-  --border-strong: #3C3934;
-  --shadow-color: #3C3934;
-  --grid-line: rgba(35, 33, 32, 0.07);
-  --grid-line-strong: rgba(35, 33, 32, 0.145);
-  /* Bidriware inlay: the bright wire set into the dark body of the metal.
-     Used as a 1px inner channel inside every 2px frame. */
-  --inlay: rgba(35, 33, 32, 0.34);
-  --grain-opacity: 0.35;
-  --destructive: #C1121F;
-  --live: #1F7A3D;
+  --background: #F3F0E7;
+  --foreground: #23281A;
+  --card: #FAF8F2;
+  --card-foreground: #23281A;
+  --muted: #E8E4D6;
+  --muted-foreground: #5B5F4A;
+  --border: rgba(35, 40, 26, 0.16);
+  --border-strong: #3A4227;
+  --shadow-color: rgba(35, 40, 26, 0.1);
+  --grid-line: rgba(35, 40, 26, 0.06);
+  --grid-line-strong: rgba(35, 40, 26, 0.12);
+  --inlay: rgba(35, 40, 26, 0.2);
+  --grain-opacity: 0;
+  --destructive: #9B2C2C;
+  --live: #4A5D23;
   --ring: var(--primary);
-
-  /* Proportion unit — the Vastu pada. Grid texture, section rhythm and
-     motif spacing are all multiples of this. */
   --pada: 8px;
 
-  /* Accent palette defaults (overridden by [data-palette]) */
-  --primary: #2B4EFF;
-  --primary-foreground: #FFFFFF;
-  --primary-ink: #1E3AD1;
-  --loud-2: #FF4D00;
-  --loud-2-ink: #A83400;
-  --loud-3: #C8F135;
+  /* ONE accent for the whole site. */
+  --primary: #4A5D23;
+  --primary-foreground: #F3F0E7;
+  --primary-ink: #3D4D1C;
+  /* Kept so existing utilities keep resolving; all olive now. */
+  --loud-2: #6B7A3A;
+  --loud-2-ink: #4A5D23;
+  --loud-3: #3A4227;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -97,107 +102,32 @@
   --dur-slow: 700ms;
 }
 
-/* ── Dark: ink ──
-   Same treatment inverted: the page is lifted off absolute black and the
-   type is pulled off absolute white, so the frame sits at ~9.2:1 and body
-   copy at ~13.4:1 instead of 17.5:1. */
+/* ── Dark: olive ground, cream type ──
+   The same two colours with the roles swapped. Body 13.8:1, hairline frame
+   9.6:1, secondary 7.3:1, olive accent 8.2:1. */
 .dark {
-  --background: #131316;
-  --foreground: #E0DAD2;
-  --card: #1B1B20;
-  --card-foreground: #E0DAD2;
-  --muted: #242429;
-  --muted-foreground: #A8A29A;
-  --border: rgba(224, 218, 210, 0.17);
-  --border-strong: #BCB6AD;
-  --shadow-color: #2C2C33;
-  --grid-line: rgba(224, 218, 210, 0.055);
-  --grid-line-strong: rgba(224, 218, 210, 0.13);
-  --inlay: rgba(224, 218, 210, 0.42);
-  --grain-opacity: 0.22;
-  --destructive: #FF6B6B;
-  --live: #4ADE80;
-}
+  --background: #1B1F14;
+  --foreground: #EDE9DC;
+  --card: #232919;
+  --card-foreground: #EDE9DC;
+  --muted: #2C331F;
+  --muted-foreground: #A9AD96;
+  --border: rgba(237, 233, 220, 0.15);
+  --border-strong: #C4C6AF;
+  --shadow-color: rgba(0, 0, 0, 0.45);
+  --grid-line: rgba(237, 233, 220, 0.05);
+  --grid-line-strong: rgba(237, 233, 220, 0.1);
+  --inlay: rgba(237, 233, 220, 0.22);
+  --grain-opacity: 0;
+  --destructive: #E08585;
+  --live: #A8BE6B;
 
-/* ═══ Three loud palettes ═══
-   --primary      = saturated fill (buttons, blocks)
-   --primary-foreground = text ON that fill
-   --primary-ink  = accent TEXT readable on the page background   */
-
-/* ── INDIGO — indigo dye. Ajrakh block-print, Kalamkari, pan-Indian. ── */
-[data-palette="indigo"] {
-  --primary: #2B4EFF;
-  --primary-foreground: #FFFFFF;
-  --primary-ink: #1E3AD1;
-  --loud-2: #FF4D00;
-  /* Text-safe variant: the bright loud-2 only clears 2.80:1 as body text on
-     the light paper, which is a WCAG AA failure. Borders and fills keep the
-     bright value; anything that renders *as type* uses this one. */
-  --loud-2-ink: #A83400;
-  --loud-3: #C8F135;
-}
-.dark[data-palette="indigo"] {
-  --primary: #3D5FFF;
-  --primary-foreground: #FFFFFF;
-  --primary-ink: #93A6FF;
-  --loud-2: #FF6A2B;
-  --loud-2-ink: #FF6A2B;
-  --loud-3: #D4FF5C;
-}
-
-/* ── MADDER — madder root. The red of Kalamkari and block-print. ── */
-[data-palette="madder"] {
-  --primary: #FF4D00;
-  --primary-foreground: #232120;
-  --primary-ink: #B83600;
-  --loud-2: #2B4EFF;
-  --loud-2-ink: #2B4EFF;
-  --loud-3: #C8F135;
-}
-.dark[data-palette="madder"] {
-  --primary: #FF5E1A;
-  --primary-foreground: #131316;
-  --primary-ink: #FF8A4D;
-  --loud-2: #7B93FF;
-  --loud-2-ink: #7B93FF;
-  --loud-3: #D4FF5C;
-}
-
-/* ── MEHENDI — henna leaf green. ── */
-[data-palette="mehendi"] {
-  --primary: #C8F135;
-  --primary-foreground: #232120;
-  --primary-ink: #4A6B00;
-  --loud-2: #2B4EFF;
-  --loud-2-ink: #2B4EFF;
-  --loud-3: #FF4D00;
-}
-.dark[data-palette="mehendi"] {
-  --primary: #C8F135;
-  --primary-foreground: #131316;
-  --primary-ink: #D4FF5C;
-  --loud-2: #7B93FF;
-  --loud-2-ink: #7B93FF;
-  --loud-3: #FF6A2B;
-}
-
-/* ── BIDRI — silver inlaid into blackened alloy. Bidar, Karnataka, 14C.
-      A deliberately monochrome material palette: no hue, only metal. ── */
-[data-palette="bidri"] {
-  --primary: #4A5058;
-  --primary-foreground: #FFFFFF;
-  --primary-ink: #363C44;
-  --loud-2: #6E7681;
-  --loud-2-ink: #4A5058;
-  --loud-3: #8A7F6D;
-}
-.dark[data-palette="bidri"] {
-  --primary: #C9CCD1;
-  --primary-foreground: #131316;
-  --primary-ink: #C9CCD1;
-  --loud-2: #9AA3AE;
-  --loud-2-ink: #9AA3AE;
-  --loud-3: #C4AE84;
+  --primary: #A8BE6B;
+  --primary-foreground: #1B1F14;
+  --primary-ink: #A8BE6B;
+  --loud-2: #A8BE6B;
+  --loud-2-ink: #A8BE6B;
+  --loud-3: #8FA357;
 }
 
 @layer base {
@@ -242,26 +172,113 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 /* Huge statements. Fluid, tight, near-solid leading. */
+
+/* ═══════════════════════════════════════════════════════════════════
+   THE NAME, IN TWO SCRIPTS
+   The heading holds both scripts at once and cycles between them. Two
+   things make this work rather than merely function:
+
+   1. Both spans sit in ONE grid cell, so the block is always as wide as
+      the wider script and the layout never shifts as it alternates.
+   2. The two scripts are NOT the same size. Devanagari vowel signs take
+      no advance width in Mukta, so "शुभम" measures 1.965 em against
+      "Shubham" at 4.231 em — the same nominal size would read as about
+      half the weight. --deva-scale closes that optical gap.
+
+   Reads as a crossfade in place, no layout movement, and only between
+   opacity and a 0.1em shift so it stays quiet. Fails safe: the Latin
+   state is what renders with JS off, and it is the only state under
+   reduced motion.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.name-swap {
+  display: grid;
+  align-items: center;
+}
+.name-swap > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.name-swap .name-deva {
+  /* 1.1, not 1.45. Devanagari is compact for its size, so it needs a lift to
+     sit at the same optical weight as the Latin — but the glyphs are
+     physically taller, so a large multiplier eats the line height and the
+     two lines collide. 1.1 lifts it without outgrowing the row. */
+  font-size: calc(1em * var(--deva-scale, 1.1));
+  /* The box, not the glyphs. At 1.4x with line-height 1 the Devanagari's
+     line box measured 1.4em against the Latin's 1.04em, so every row grew
+     and the two lines of the name drifted apart. 0.76 x 1.4 = 1.064em,
+     which matches the Latin — the glyphs still paint at full size because
+     nothing here clips. */
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .name-swap[data-animate="true"] .name-latin,
+  .name-swap[data-animate="true"] .name-deva {
+    animation: name-swap var(--name-cycle, 9s) var(--ease-in-out) infinite;
+  }
+  .name-swap[data-animate="true"] .name-deva {
+    animation-delay: calc(var(--name-cycle, 9s) / -2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-swap .name-deva {
+    display: none;
+  }
+}
+
+/* Half the cycle Latin, half Devanagari, with the transition held short so
+   most of the time is spent legible rather than mid-fade. */
+@keyframes name-swap {
+  0%,
+  42% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50%,
+  92% {
+    opacity: 0;
+    transform: translateY(-0.1em);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .display {
   font-family: var(--font-display);
+  /* Yatra One ships exactly one weight. Asking for 800 makes the browser
+     synthesise a bold, which smears a face that is already heavy and would
+     be the single most visible way to make this look cheap. */
   font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.85;
-  text-transform: uppercase;
+  /* Natural case, gentle tracking. This is a person's name, not a headline
+     plate — and Devanagari has no case at all, so an uppercase transform
+     would make the two states of the animated name inconsistent. */
+  letter-spacing: -0.02em;
+  /* 1.2, not 1.04. The Devanagari half of the name carries descending matras
+     that need more vertical room than Latin, and at 1.04 the two lines of
+     the name collided. 1.2 is ordinary leading for a face this size. */
+  line-height: 1.2;
 }
 .display-xl {
-  /* Archivo ExtraBold sets "SHUBHAM" at 5.459em (measured from the font's
-     hmtx table, not estimated), so at 13vw it needs its own full-width row
-     and can never be parked in a fractional grid column. The 2.75rem floor
-     keeps that word inside the 320px-wide content box on the smallest
-     phones; 13vw takes over above ~308px. */
-  font-size: clamp(2.75rem, 13vw, 11rem);
+  /* Re-measured from Yatra One's own hmtx table after the face changed:
+     "SHUBHAM" is 5.153 em, which is NARROWER than the Archivo it replaced
+     (5.459 em), so this clamp survives the swap with more headroom than it
+     had before rather than less. The name still needs its own full-width
+     row — at 13vw the word outgrows any fractional grid column — and the
+     2.75rem floor keeps it inside the 320px content box on the smallest
+     phones, with 13vw taking over above ~308px. */
+  font-size: clamp(2.5rem, 8.6vw, 7.5rem);
 }
 .display-lg {
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-size: clamp(1.7rem, 4.2vw, 3.1rem);
 }
 .display-md {
-  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  font-size: clamp(1.3rem, 2.4vw, 2rem);
 }
 
 /* Label notation — indices, metadata, status, provenance.
@@ -274,14 +291,14 @@
 .mono {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   font-weight: 600;
 }
 .mono-sm {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -290,55 +307,37 @@
    STRUCTURE — hard edges, offset shadows, zero blur
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Bidriware inlay — Bidar, Karnataka, 14C.
-   Silver is cut into a blackened zinc-copper alloy and sits flush, so the
-   ornament reads as an *inset channel* rather than an outline drawn on top.
-   Two inset shadows reproduce it: 2px of the metal body, a 2px gap, then a
-   1px wire. First shadow wins where they overlap, so the order is load
-   bearing. Costs no DOM and no layout shift. */
+/* ═══════════════════════════════════════════════════════════════════
+   SURFACES
+   A hairline border, a 4px radius, one soft shadow. Nothing offset,
+   nothing doubled, nothing inset — the ornament used to be here and is
+   now deliberately absent.
+   ═══════════════════════════════════════════════════════════════════ */
+
 .frame,
 .frame-hard,
 .frame-hard-lg {
-  border: 2px solid var(--border-strong);
+  border: 1px solid var(--border);
+  border-radius: 4px;
   background: var(--card);
-  box-shadow: inset 0 0 0 2px var(--card), inset 0 0 0 3px var(--inlay);
 }
-.frame-hard {
-  box-shadow: inset 0 0 0 2px var(--card), inset 0 0 0 3px var(--inlay),
-    6px 6px 0 var(--shadow-color);
-}
+
+.frame-hard,
 .frame-hard-lg {
-  box-shadow: inset 0 0 0 2px var(--card), inset 0 0 0 3px var(--inlay),
-    10px 10px 0 var(--shadow-color);
+  border-color: var(--border-strong);
+  box-shadow: 0 1px 3px var(--shadow-color);
 }
 
-/* The par — Madhubani, Mithila.
-   Mithila painters draw the border first, before anything that goes inside
-   it, and they draw it as a doubled line. Promoted here from a border
-   property to a real component: 2px rule, 3px gap, 1px rule at full
-   strength. Distinct from .frame's muted inlay channel — same structure,
-   deliberately louder. */
-.par {
-  border: 2px solid var(--border-strong);
-  background: var(--card);
-  box-shadow: inset 0 0 0 3px var(--card), inset 0 0 0 4px var(--border-strong);
-}
-
-/* Press-into-the-shadow interaction. The inset channel has to be repeated
-   in the hover state or it is silently dropped. */
+/* Lift, rather than press into an offset shadow. */
 .frame-press {
-  transition: transform var(--dur-fast) var(--ease-out),
+  transition:
+    transform var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
 }
-.frame-hard.frame-press:hover {
-  transform: translate(3px, 3px);
-  box-shadow: inset 0 0 0 2px var(--card), inset 0 0 0 3px var(--inlay),
-    2px 2px 0 var(--shadow-color);
-}
+.frame-hard.frame-press:hover,
 .frame-hard-lg.frame-press:hover {
-  transform: translate(3px, 3px);
-  box-shadow: inset 0 0 0 2px var(--card), inset 0 0 0 3px var(--inlay),
-    2px 2px 0 var(--shadow-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--shadow-color);
 }
 
 .rule {
@@ -352,14 +351,6 @@
 /* Kantha — Bengal. The running stitch, worked in even rows across layered
    cloth. Replaces the generic CSS dashed hairline: an actual stitched line
    rather than a hairline with gaps in it. */
-.rule-stitch {
-  height: 2px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--border-strong) 0 5px,
-    transparent 5px 11px
-  );
-}
 .rule-dashed {
   height: 0;
   border-top: 1px dashed var(--border);
@@ -368,188 +359,6 @@
 /* The same stitch, wrapped around all four edges — a stitched box instead of
    a dashed one. Four 2px gradients, one per edge, painted in the border box
    so they land exactly where the border would be. */
-.stitch-box {
-  border: 2px solid transparent;
-  background-origin: border-box;
-  background-clip: border-box;
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      var(--border-strong) 0 5px,
-      transparent 5px 11px
-    ),
-    repeating-linear-gradient(
-      to right,
-      var(--border-strong) 0 5px,
-      transparent 5px 11px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      var(--border-strong) 0 5px,
-      transparent 5px 11px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      var(--border-strong) 0 5px,
-      transparent 5px 11px
-    );
-  background-size: 100% 2px, 100% 2px, 2px 100%, 2px 100%;
-  background-position: 0 0, 0 100%, 0 0, 100% 0;
-  background-repeat: no-repeat;
-}
-
-/* Graduated rule — Jantar Mantar, Jaipur.
-   The Samrat Yantra is a gnomon with its quadrant divided into degrees; the
-   instrument reads solar time to within about two seconds. Here it turns a
-   plain underline into a measuring scale: fine ticks every 8px with a
-   longer tick every fourth. Used where a number is presented, so the numbers
-   read as readings off an instrument rather than as decoration. */
-.rule-graduated {
-  height: 7px;
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      var(--border-strong) 0 1px,
-      transparent 1px 8px
-    ),
-    repeating-linear-gradient(
-      to right,
-      var(--border-strong) 0 1px,
-      transparent 1px 32px
-    );
-  background-size: 8px 3px, 32px 7px;
-  background-position: 0 100%, 0 100%;
-  background-repeat: repeat-x;
-  opacity: 0.55;
-}
-
-/* Stepped rule — Chand Baori, Abhaneri, Rajasthan.
-   ~3,500 steps across 13 storeys, folded into a square as interlocking
-   double flights. A rule that steps instead of running straight: two 5px
-   bands offset by half a tile. */
-.rule-step {
-  height: 10px;
-  background-image:
-    linear-gradient(
-      to right,
-      var(--border-strong) 0 12px,
-      transparent 12px 24px
-    ),
-    linear-gradient(
-      to right,
-      transparent 0 12px,
-      var(--border-strong) 12px 24px
-    );
-  background-size: 24px 5px;
-  background-position: 0 0, 0 5px;
-  background-repeat: repeat-x;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   TEXTURE — grain, graph paper, halftone
-   ═══════════════════════════════════════════════════════════════════ */
-
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  opacity: var(--grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-  mix-blend-mode: multiply;
-}
-.dark .grain::after {
-  mix-blend-mode: screen;
-}
-
-/* ── GRID — the Vastu Purusha Mandala ──
-   The ritual planning diagram behind Indian temple and city layout: a
-   square subdivided into padas, most commonly 8×8 (64 — "Manduka") or
-   9×9 (81 — "Paramasaayika"), with the cell as the unit of proportion.
-   Two line weights plus marked nodes is the whole trick: a fine pada
-   lattice, a heavier mandala line every 8 padas, and a dot at each node.
-   That is what stops it reading as generic graph paper. */
-.grid-yantra {
-  --pada-cell: 34px;
-  --mandala: calc(var(--pada-cell) * 8);
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to right, var(--grid-line-strong) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line-strong) 1px, transparent 1px),
-    radial-gradient(var(--grid-line-strong) 1.2px, transparent 1.4px);
-  background-size:
-    var(--pada-cell) var(--pada-cell), var(--pada-cell) var(--pada-cell),
-    var(--mandala) var(--mandala), var(--mandala) var(--mandala),
-    var(--pada-cell) var(--pada-cell);
-  /* The dot layer is offset half a cell so its centre lands on a node. */
-  background-position: 0 0, 0 0, 0 0, 0 0,
-    calc(var(--pada-cell) / 2) calc(var(--pada-cell) / 2);
-}
-html[data-grid="9x9"] .grid-yantra {
-  --mandala: calc(var(--pada-cell) * 9);
-}
-
-/* ── PULLI LATTICE — the dot grid kolam is drawn on ──
-   Kolam (Tamil Nadu) are drawn as one continuous stroke around a lattice of
-   pulli; the lattice itself is the substrate. Replaces the generic halftone
-   screen: same idea, specific geometry, and its spacing is a multiple of
-   the pada. */
-.pulli {
-  background-image: radial-gradient(var(--border-strong) 1.4px, transparent 1.6px);
-  background-size: calc(var(--pada) * 2.5) calc(var(--pada) * 2.5);
-  opacity: 0.24;
-}
-
-/* ── MADHUBANI FILLS — Mithila, Bihar ──
-   Mithila painting fills every surface with a named texture rather than
-   leaving ground bare ("no empty space"). Four fills for panel bodies,
-   inner par bands and badges. */
-.fill-line {
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--border-strong) 0 1px,
-    transparent 1px 6px
-  );
-  opacity: 0.16;
-}
-.fill-cross {
-  background-image:
-    repeating-linear-gradient(
-      45deg,
-      var(--border-strong) 0 1px,
-      transparent 1px 7px
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      var(--border-strong) 0 1px,
-      transparent 1px 7px
-    );
-  opacity: 0.13;
-}
-.fill-dot {
-  background-image: radial-gradient(var(--border-strong) 1px, transparent 1.2px);
-  background-size: 6px 6px;
-  opacity: 0.2;
-}
-
-/* Diagonal hatch — used as a "no data / decorative" fill */
-.hatch {
-  background-image: repeating-linear-gradient(
-    45deg,
-    var(--border-strong) 0 1px,
-    transparent 1px 7px
-  );
-  opacity: 0.18;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   REVEAL — content is VISIBLE BY DEFAULT.
-   The data-reveal attribute is only ever set by JS, so if JS fails,
-   is throttled, or motion is reduced, the content simply shows.
-   ═══════════════════════════════════════════════════════════════════ */
-
 .reveal[data-reveal="pending"] {
   opacity: 0;
   transform: translateY(22px);
@@ -580,29 +389,6 @@ html[data-grid="9x9"] .grid-yantra {
    allowed) hides it. Without JS, or with motion reduced, the kolam is simply
    complete. A scroll-gated version that defaulted to hidden would make the
    contact section's only figure invisible to crawlers and no-JS readers. */
-.kolam-draw {
-  stroke-dasharray: var(--kolam-length, 1200);
-  stroke-dashoffset: 0;
-}
-.reveal[data-reveal="pending"] .kolam-draw {
-  stroke-dashoffset: var(--kolam-length, 1200);
-}
-.reveal[data-reveal="in"] .kolam-draw {
-  animation: kolam-draw var(--dur-slow) var(--ease-out) forwards;
-}
-@keyframes kolam-draw {
-  from {
-    stroke-dashoffset: var(--kolam-length, 1200);
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   MARQUEE
-   ═══════════════════════════════════════════════════════════════════ */
-
 .marquee-track {
   display: flex;
   width: max-content;

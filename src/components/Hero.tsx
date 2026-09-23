@@ -11,7 +11,7 @@ import {
 } from "@/lib/data";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Label, Marquee, StatusPill } from "@/components/ui/primitives";
-import { GraduatedArc, Provenance } from "@/components/ui/patterns";
+import { NameLine } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { StackSchematic } from "@/components/StackSchematic";
 import { scrollToSection } from "@/components/SmoothScroll";
@@ -121,8 +121,6 @@ export default function Hero() {
       id="hero"
       className="grain relative isolate overflow-hidden pt-32 pb-0 sm:pt-40"
     >
-      <div className="grid-yantra absolute inset-0 -z-20" aria-hidden="true" />
-      <StepwellBand />
 
       <div className="relative z-2 mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12">
         <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-14">
@@ -140,22 +138,23 @@ export default function Hero() {
               <Label tone="muted">{availability.note}</Label>
             </div>
 
-            <h1 className="display display-xl mt-7 text-foreground">
-              {personalInfo.name.split(" ")[0]}
-              <br />
-              <span className="text-primary-ink">
-                {personalInfo.name.split(" ")[1]}
-              </span>
+            {/* aria-label carries the plain name so a screen reader announces
+                it once; the Devanagari half is aria-hidden and purely visual. */}
+            <h1
+              className="display display-xl mt-7 text-foreground"
+              aria-label={personalInfo.name}
+            >
+              <NameLine
+                latin={personalInfo.name.split(" ")[0]}
+                deva="शुभम"
+                className="text-balance"
+              />
+              <NameLine
+                latin={personalInfo.name.split(" ")[1]}
+                deva="गुप्ता"
+                className="text-primary-ink"
+              />
             </h1>
-
-            {/* Names what the geometry above actually is. Without this the
-                grid reads as "nice graph paper" and the reference is lost. */}
-            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
-              <Provenance>Pada grid · Vastu Purusha Mandala · 8×8</Provenance>
-              <Provenance>
-                Stepwell flights · Chand Baori · Rajasthan
-              </Provenance>
-            </div>
           </div>
 
           {/* ── Row 2 — the pitch ── */}
@@ -216,10 +215,7 @@ export default function Hero() {
                 graduated scale — Jantar Mantar's quadrant, abstracted. */}
           <div className="frame frame-hard mb-14 lg:col-span-12">
             <div className="flex items-center justify-between gap-4 border-b-2 border-border-strong px-5 py-3">
-              <Provenance>
-                Graduated quadrant · Samrat Yantra · Jantar Mantar, Jaipur
-              </Provenance>
-              <GraduatedArc className="h-8 w-8 shrink-0" />
+
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4">
@@ -247,7 +243,7 @@ export default function Hero() {
                   </div>
                   {/* mt-auto pins the scale to the cell floor so the four
                       read as one instrument across the row. */}
-                  <div className="rule-graduated mt-auto pt-4" />
+                  <div className="rule mt-auto" />
                 </div>
               ))}
             </div>

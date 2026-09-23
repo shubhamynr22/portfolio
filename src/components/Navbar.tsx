@@ -6,7 +6,6 @@ import { useTheme } from "next-themes";
 import { motion, useScroll, useSpring, AnimatePresence } from "motion/react";
 import { ArrowUpRight, Check, Menu, Moon, Sun, X } from "lucide-react";
 import { navLinks, personalInfo, availability } from "@/lib/data";
-import { useColorTheme, type PaletteName } from "@/components/ColorThemeContext";
 import { ButtonLink } from "@/components/ui/button";
 import { Label, StatusPill } from "@/components/ui/primitives";
 import { scrollToSection } from "@/components/SmoothScroll";
@@ -15,12 +14,9 @@ import { cn } from "@/lib/utils";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [paletteOpen, setPaletteOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   const { theme, setTheme } = useTheme();
-  const { colorTheme, setColorTheme, themes } = useColorTheme();
-  const paletteRef = useRef<HTMLDivElement | null>(null);
 
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, {
@@ -37,26 +33,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!paletteOpen) return;
-    const onPointerDown = (event: MouseEvent) => {
-      if (
-        paletteRef.current &&
-        !paletteRef.current.contains(event.target as Node)
-      ) {
-        setPaletteOpen(false);
-      }
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPaletteOpen(false);
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [paletteOpen]);
 
   const goTo = (href: string) => {
     setMobileOpen(false);
@@ -134,78 +110,6 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {/* Palette switcher */}
-            <div className="relative" ref={paletteRef}>
-              <button
-                onClick={() => setPaletteOpen((open) => !open)}
-                aria-label="Change accent palette"
-                aria-expanded={paletteOpen}
-                className="flex h-10 items-center gap-2 border-2 border-border-strong bg-card px-2.5 transition-colors hover:bg-muted"
-              >
-                <span className="flex gap-1" aria-hidden="true">
-                  <span
-                    className="h-3.5 w-3.5 border border-border-strong"
-                    style={{ background: "var(--primary)" }}
-                  />
-                  <span
-                    className="h-3.5 w-3.5 border border-border-strong"
-                    style={{ background: "var(--loud-2)" }}
-                  />
-                </span>
-              </button>
-
-              <AnimatePresence>
-                {paletteOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.14, ease: "easeOut" }}
-                    className="frame frame-hard absolute right-0 top-[calc(100%+8px)] z-50 w-56 p-2"
-                  >
-                    <div className="px-2 py-1.5">
-                      <Label>Accent</Label>
-                    </div>
-                    {themes.map((palette) => {
-                      const active = colorTheme === palette.name;
-                      return (
-                        <button
-                          key={palette.name}
-                          onClick={() => {
-                            setColorTheme(palette.name as PaletteName);
-                            setPaletteOpen(false);
-                          }}
-                          className={cn(
-                            "flex w-full items-center gap-3 px-2 py-2 text-left transition-colors",
-                            active ? "bg-muted" : "hover:bg-muted",
-                          )}
-                        >
-                          <span
-                            className="h-5 w-5 shrink-0 border-2 border-border-strong"
-                            style={{ background: palette.swatch }}
-                          />
-                          <span className="flex flex-col leading-tight">
-                            <span className="text-sm font-medium">
-                              {palette.label}
-                            </span>
-                            <span className="mono-sm text-muted-foreground">
-                              {palette.note}
-                            </span>
-                          </span>
-                          {active && (
-                            <Check
-                              className="ml-auto h-4 w-4 text-primary-ink"
-                              aria-hidden="true"
-                            />
-                          )}
-                        </button>
-                      );
-                    })}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
             {/* Theme toggle */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}

@@ -1,55 +1,26 @@
 import type { Metadata } from "next";
-import {
-  Space_Grotesk,
-  JetBrains_Mono,
-  Archivo,
-  Rajdhani,
-} from "next/font/google";
+import { Mukta } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import {
-  ColorThemeProvider,
-  paletteInitScript,
-} from "@/components/ColorThemeContext";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
-/* ── Three type voices ──
- * Archivo        → display (huge statements)
- * Space Grotesk  → body & UI
- * Rajdhani       → labels, indices, metadata, provenance
+/* ── ONE typeface for the entire interface ──
+ * Mukta (Ek Type, Mumbai) — a single family that draws Devanagari and Latin
+ * together as one system rather than pairing a Latin face with an Indic one.
+ * That is the requirement here rather than a preference: the name animates
+ * between the two scripts, so both halves have to look like they belong to
+ * each other, and they do because they were designed together.
  *
- * Rajdhani is an Indian Type Foundry Devanagari + Latin family. Its Latin
- * letterforms are deliberately modularised — round bowls straightened,
- * terminals ending flat on the horizontal or vertical — which is why it can
- * carry the technical register that JetBrains Mono used to, while giving the
- * label voice Indian typographic DNA through a Latin-only cut. Only the two
- * weights the design actually uses are requested; a stray 400 request will
- * resolve to 500 under the CSS font-matching rules rather than synthesising.
- * JetBrains Mono stays loaded as the fallback for glyphs Rajdhani's latin
- * subset does not carry.
+ * Weights are the only variation — 400 for body, 600 for labels and UI,
+ * 800 for display. One family, three weights, no second voice.
+ *
+ * Both subsets are loaded. Devanagari is not optional: the name needs it,
+ * and next/font self-hosts it with no runtime dependency on a foreign CDN.
  */
-const archivo = Archivo({
-  subsets: ["latin"],
-  variable: "--font-archivo",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-grotesk",
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
-});
-
-const rajdhani = Rajdhani({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-rajdhani",
+const mukta = Mukta({
+  subsets: ["latin", "devanagari"],
+  weight: ["400", "600", "800"],
+  variable: "--font-mukta",
   display: "swap",
 });
 
@@ -118,29 +89,16 @@ export default function RootLayout({
   return (
     // data-grid: 8x8 pada (Manduka) by default; 9x9 (Paramasaayika) also
     // supported — it only changes the heavier mandala line's interval.
-    <html
-      lang="en"
-      data-palette="indigo"
-      data-grid="8x8"
-      suppressHydrationWarning
-      className={`${archivo.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${rajdhani.variable}`}
-    >
+    <html lang="en" suppressHydrationWarning className={mukta.variable}>
       <body className="font-sans antialiased">
-        {/* Pre-paint palette application — no flash, no client gate */}
-        <script
-          dangerouslySetInnerHTML={{ __html: paletteInitScript }}
-          suppressHydrationWarning
-        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <ColorThemeProvider>
-            <SmoothScroll />
-            {children}
-          </ColorThemeProvider>
+          <SmoothScroll />
+          {children}
         </ThemeProvider>
       </body>
     </html>

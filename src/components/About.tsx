@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { aboutBio, stats, education, personalInfo } from "@/lib/data";
 import { Section, SectionHeading, Label, HardCard, Rule } from "@/components/ui/primitives";
-import { Provenance } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -50,7 +49,6 @@ export default function About() {
             </div>
 
             <div className="mt-4">
-              <Provenance>Pulli lattice · Kolam, Tamil Nadu</Provenance>
             </div>
           </div>
         </div>
@@ -79,7 +77,7 @@ export default function About() {
                   <div className="mono-sm mt-2 text-muted-foreground">
                     {stat.label}
                   </div>
-                  <div className="rule-graduated mt-auto pt-4" />
+                  <div className="rule mt-auto" />
                 </HardCard>
               ))}
             </div>

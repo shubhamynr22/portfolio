@@ -42,3 +42,6 @@ next-env.d.ts
 
 # locally archived files (kept for reference, not shipped)
 /.archive/
+
+# image tool scratch (canvas ledger, cache)
+/image_generate/

@@ -6,12 +6,11 @@ import {
   Marquee,
   Pill,
 } from "@/components/ui/primitives";
-import { Provenance } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 
 export default function Skills() {
   return (
-    <Section id="skills" size="lg" grid className="border-y-2 border-border-strong">
+    <Section id="skills" size="lg">
       <SectionHeading
         index={2}
         eyebrow="Capabilities"
@@ -19,14 +18,10 @@ export default function Skills() {
         description="Eight areas I work in, with the outcome each one produced. Every evidence line is traceable to a role below."
       />
 
-      <div className="mt-5">
-        <Provenance>Par · double border · Madhubani, Mithila</Provenance>
-      </div>
-
       {/* ── Capability matrix ──
              Enclosed in a par: the Madhubani doubled border, drawn first and
              drawn as two lines rather than one. */}
-      <div className="par mt-8">
+      <div className="frame mt-8">
         {skillCategories.map((category, index) => (
           <Reveal
             key={category.title}

@@ -6,7 +6,7 @@ import {
   Rule,
   StatusPill,
 } from "@/components/ui/primitives";
-import { Provenance } from "@/components/ui/patterns";
+
 import { Reveal } from "@/components/motion/Reveal";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -55,7 +55,7 @@ function StepFlight({ months }: { months: number | null }) {
   const steps = months ? Math.max(3, Math.round((months / LONGEST_TENURE) * 12)) : 6;
   return (
     <span
-      className="rule-step inline-block align-middle"
+      className="rule inline-block align-middle"
       style={{ width: `${(steps / 12) * 100}%`, minWidth: "44px" }}
       aria-hidden="true"
     />
@@ -72,17 +72,11 @@ export default function Experience() {
         description="Six roles, in reverse order. Each one leads with the number it moved."
       />
 
-      <div className="mt-8">
-        <Provenance>
-          Stepwell · Chand Baori, Abhaneri · 13 storeys, ~3,500 steps
-        </Provenance>
-      </div>
-
       <div className="mt-10">
         {experiences.map((exp, index) => (
           <Reveal key={`${exp.company}-${exp.period}`}>
             {/* Interlocking flights instead of a straight divider. */}
-            <Rule variant="step" />
+            <Rule />
             <article className="grid gap-6 pt-8 pb-14 md:grid-cols-12 md:gap-10">
               {/* ── Sticky rail ── */}
               <div className="md:col-span-4 md:sticky md:top-28 md:self-start">

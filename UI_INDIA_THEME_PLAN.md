@@ -548,3 +548,151 @@ This round changed far more of the *appearance* than the previous two, so that g
 4. **The Experience storey rail**, where the new flight sits under the role/location row.
 
 Nothing has been committed or pushed.
+
+---
+
+# ART DIRECTION v2 — POTHI
+
+**You said v1 was "not Indian enough" and to change whatever it took.** v1 layered motifs onto a neutral paper-and-ink system. That was the problem: the *ground itself* was still a warm-grey template, so the Indian content read as decals on a Western page. v2 changes the ground.
+
+## The concept: a pothi
+
+Indian books before paper were **palm-leaf manuscripts** — oblong folios, a hole drilled through each, a cord threaded through the holes binding the stack between two wooden boards. The form is recorded in the subcontinent from around the 5th century BCE.
+
+A portfolio is a document. So the page is now literally one:
+
+- **The hero is the cover** of the pothi.
+- **Every section is a folio** — `.folio`, with the cord running down its gutter (`.folio-cord`: two drilled holes and the cord between them) and a block-printed border band across its head (`.folio-print`).
+- **The gutter is real**: the folio reserves a wide left padding for the binding, and every heading starts clear of it.
+- **The footer is the back board** — the same inverted surface as before, now with board grain (`.cover-grain`).
+
+This is a structure, not a decoration. It changed the page rhythm, the spacing model and the reading order, which is why it reads as a different site rather than a reskin.
+
+## Ground and material
+
+| | v1 | v2 |
+|---|---|---|
+| Light | `#EFEBE4` warm grey paper | **`#E8DAB8` palm leaf**, `#1A1410` lamp-black ink |
+| Dark | `#131316` near-black | **`#17120D` soot black**, `#E0D2B4` palm-leaf type |
+
+Body text 13.2:1 / 12.4:1, 2px frame 10.3:1 / 7.9:1, secondary 6.1:1 / 6.8:1. **104/104 WCAG AA**, machine-checked.
+
+## Type: three voices, all with Indian design lineage
+
+| Voice | Face | Why |
+|---|---|---|
+| Display | **Yatra One** | Drawn from the hand-painted signage of the Mumbai local railway. Heavy, high-contrast, one weight. |
+| Text | **Mukta** | Ek Type, Mumbai — one humanist family built across nine Indic scripts, with the Latin drawn to sit beside them rather than borrowed from a Western model. |
+| Labels | **Rajdhani** | Indian Type Foundry. Modularised uppercase; straightened bowls, flat terminals. |
+
+All three are Google Fonts, so they self-host through `next/font` with no runtime dependency on a foreign CDN. **Every one is used through its Latin cut only — there is no Devanagari character anywhere in the interface.**
+
+**Yatra One was measured before it was trusted.** "SHUBHAM" is **5.153 em**, against Archivo's 5.459 — the replacement is *narrower*, so the hero clamp survives the swap with more headroom than before (~26–32% spare from 320 to 2560px). I was not going to re-break the bug I had just fixed.
+
+## Artwork
+
+Two textures, generated and then optimised hard:
+
+| Asset | Use | Shipped |
+|---|---|---|
+| `public/patterns/leaf.webp` | The leaf's own fibre, as a photograph. Multiply on the pale ground, screen on the soot ground. | 46.8 KB |
+| `public/patterns/ajrakh.webp` | The block-printed head band. Ajrakh (Sindh / Kutch) — resist-dyed and hand block-printed, so it is a real repeat. | 39.7 KB |
+
+**88 KB total** for both, down from 4.1 MB of source PNG. The leaf sits at 17% opacity — it is there to give the surface a hand-made grain, not to be looked at.
+
+## Palettes are materials now
+
+The ground is fixed by the theme; a palette swaps **only the primary accent**, because that is the only thing that actually differed between the materials they are named for. Vermilion (kumkum) is the default; Indigo (Ajrakh / Kalamkari vat dye), Gold (zari, Banarasi and Kanchipuram brocade) and Bidri (silver inlay, Bidar, 14C) complete the set.
+
+The acid lime is **gone** — it was the one accent with no heritage material behind it. That is a deletion of something you had said you liked, so: say the word and it comes back as a fifth palette in three lines.
+
+## Four bugs found and fixed while doing this
+
+1. **`.display` was still set to `font-weight: 800`.** Yatra One ships exactly one weight, so the browser would have synthesised a bold and smeared a face that is already heavy — the single most visible way to make this look cheap. Now 400, with `letter-spacing` relaxed from -0.045em to -0.015em and `line-height` from 0.85 to 0.92 (0.85 collided on signage ascenders).
+2. **`.cover-grain` was hard-coded black.** The footer inverts with the theme, so a dark-only grain would have vanished on one of the two grounds. Now mid-grey.
+3. **The folio could not carry both textures.** `grid-yantra` and `leaf-fibre` are both `background-image` on one element, so the later one silently overwrote the other. The folio now takes one or the other explicitly.
+4. **`grid` was painting the Vastu grid behind an opaque folio.** In v1 the grid sat on the section, so it was invisible under the new folio. Now it is inside it.
+
+## Verification
+
+Passed:
+- `npm run build` — clean, 7 routes static, no type errors.
+- Contrast — **104/104** across 4 palettes × 2 themes.
+- SSR containment — 9 folios with 9 cord runs and 9 printed bands, `data-palette="vermilion"`, `data-grid="8x8"`, all three font variables, in the server HTML. Nothing depends on JS.
+- Both textures return **200** and are referenced by the served CSS.
+- Yatra One's advance widths read from its own `hmtx` table, not estimated.
+- **The OG card was rendered and inspected**, now set in Yatra One too — the name and numerals read as painted signage.
+
+**Not verified, and it still matters:**
+
+> **I cannot render the main page.** Headless Chrome hangs in this sandbox and Playwright's browsers are not installed. Everything above about the page is markup, CSS and arithmetic — not looking at it.
+
+v2 changed the *ground*, the *type*, the *palette* and the *page structure*, so this gap is the widest it has been. Ranked by how likely I am to have got it wrong: **Yatra One at hero scale** (measured, so it fits — but whether a signage face carries your name is a taste call only you can make); **folio density** (nine bordered leaves in a stack is a lot of frame — it may want the borders dropped on two or three of them); **the ajrakh band at 42%** (the indigo/red may fight the Gold and Bidri palettes); **the 17% leaf grain** (subtle by construction, but I could not see it land).
+
+## Your three questions went unanswered
+
+The `ask_user` card timed out, so I took my own recommendations and flagged them rather than stalling:
+
+1. **Script — I took the conservative reading of your earlier instruction: no Devanagari characters.** Romanised Indian vocabulary only (Vermilion, zari, kumkum, pothi), which is exactly the Gully Labs model you pointed me at. **If you want Devanagari glyphs as graphic marks, that is a one-commit change** and it would push this further.
+2. **Artwork — textures plus ornament**, i.e. the middle option. The generated imagery is material, not illustration, which is the low-risk end of that fork.
+3. **Structure — pothi folios**, the boldest of the three.
+
+## Housekeeping
+
+- `media-output/` holds 4.1 MB of source PNGs. The shipped assets are the 88 KB of WebP in `public/patterns/`; the sources are regenerable. **I left them in place rather than deleting your assets — exclude them or move them to `.archive/` if you would rather not carry the weight.**
+- `image_generate/` is tool bookkeeping (canvas ledger, Konva cache). Do not commit it.
+- `src/app/_fonts/yatra-one.ttf` (37 KB) is bundled deliberately so the OG route stays static and offline-buildable. Its labels still fall back to a default face — satori has no access to `next/font`, and I only wired the display weight.
+
+---
+
+# ART DIRECTION v3 — OLIVE AND CREAM
+
+v2 was still maximalist. You asked for the opposite: clean, one font, one colour, no orange, no palette switching, a smaller name that animates between scripts. All five are done. **v2 deleted the motif system; v3 deleted most of what v2 built.**
+
+## 1. Colour: one hue, both ends of it
+
+Not a neutral page with colour applied on top — cream and olive are the same family used at opposite ends, so the two themes are one palette with the roles swapped.
+
+| | v2 | v3 |
+|---|---|---|
+| Light | palm leaf `#E8DAB8` / lamp black | **cream `#F3F0E7` / dark olive `#23281A`** |
+| Dark | soot `#17120D` / palm-leaf | **olive `#1B1F14` / cream `#EDE9DC`** |
+| Accent | vermilion, 4 selectable palettes | **olive `#4A5D23`, one accent** |
+
+Body 13.3:1 / 13.8:1, frame 9.3:1 / 9.6:1, secondary 5.8:1 / 7.3:1. **25/25 WCAG AA.**
+
+**No orange anywhere** (verified by grep across `src/`), and **the palette switcher is gone** — the picker UI, the `[data-palette]` CSS blocks, the storage key, the pre-paint script and `ColorThemeContext.tsx` itself. Light/dark toggle stays, because you asked for dark mode to be adjusted rather than removed.
+
+## 2. The name
+
+Down from **176px to 120px** (`clamp(2.5rem, 8.6vw, 7.5rem)`), and back to **natural case** — a person's name, not a headline plate.
+
+It now cycles between scripts in CSS alone: no timer, no client JS, nothing to hydrate. `<h1 aria-label="Shubham Gupta">` announces the name once; the Devanagari half is `aria-hidden` and purely visual. Latin is the default state, so with JS off or motion reduced what renders is the ordinary name.
+
+**The interesting part was the measurement.** Devanagari vowel signs take no advance width in Mukta, so `शुभम` measures **1.965 em** against `Shubham` at **4.231 em** — the same nominal size would read as roughly half the weight. The Devanagari is therefore set at 1.1x to close that optical gap.
+
+That 1.1 is not a guess. My first attempt was **1.45x with a tightened line-height of 0.76**, and rendering it showed the two Devanagari lines **colliding** — descending matras need more vertical room than Latin, not less. The fix was to relax line-height to the ordinary 1.2 and pull the script lift back to 1.1. Both states verified by render.
+
+## 3. One font
+
+**Mukta** (Ek Type, Mumbai) for everything — display, body, labels. One family, three weights (400 / 600 / 800), no second voice.
+
+This was a requirement rather than a preference: the name animates between scripts, and both halves have to look like they belong to each other. Mukta draws Devanagari and Latin as one system, so they do. Yatra One, Rajdhani, JetBrains Mono, Archivo and Space Grotesk are all gone from the build.
+
+## 4. Deleted, not restyled
+
+`.folio` and its cord and printed band, `.grid-yantra`, `.leaf-fibre`, `.cover-grain`, `.pulli`, `.par`, `.stitch-box`, `.incised`, `.rule-stitch`, `.rule-step`, `.rule-graduated`, the grain overlay, the fills, the bidri inlay channel, the hard offset shadows, the Stepwell band, the Jali band, the Kolam figure, the seal marks, the graduated arcs. Frames are now a **1px hairline, a 4px radius and one soft shadow**; hover lifts instead of pressing into an offset.
+
+The generated textures survive only as the OG card's ground — the block-print and palm-leaf images are no longer used in the page.
+
+## 5. Two things looking caught that arithmetic could not
+
+1. **The Devanagari name collision**, above. Nothing in the markup or the metrics would have revealed it.
+2. **Orphaned provenance labels.** Six labels still named motifs v3 had deleted — "PADA GRID · VASTU PURUCHA MANDALA", "STEPWELL FLIGHTS · CHAND BAORI", "SEAL GEOMETRY · INDUS VALLEY", "PULLI LATTICE · KOLAM", "INLAY CHANNEL · BIDRIWARE" — and the footer colophon listed all of them as features. The site was claiming ornament it no longer had. All removed and the colophon rewritten.
+3. **`.rule` set to 16px tall.** It still carried `pt-4` from when it was a 7px graduated scale, so a 1px hairline was rendering as a filled grey block across the metric cards.
+
+## 6. Still true
+
+Verified by render at 1440 / 768 / 390 in both themes: **no horizontal overflow**, no element referencing a deleted class, 22 frames rendering. Build clean, 9 routes static.
+
+**The `/alt` page is untouched** — it still uses its own red and cream design and its own palette variable. It is not linked from anywhere, so it is dead weight rather than an inconsistency, but it is the one place in the repo where the old colour language survives.

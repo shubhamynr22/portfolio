@@ -1,7 +1,6 @@
 import { ArrowUpRight, MoveRight } from "lucide-react";
 import { projects } from "@/lib/data";
 import { Section, SectionHeading, Label, Pill } from "@/components/ui/primitives";
-import { Provenance, SealMark } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 import { ButtonLink } from "@/components/ui/button";
 
@@ -19,7 +18,7 @@ export default function Projects() {
     <Section
       id="projects"
       size="lg"
-      className="border-y-2 border-border-strong bg-muted"
+      className="bg-muted"
     >
       <div className="flex flex-wrap items-end justify-between gap-6">
         <SectionHeading
@@ -32,12 +31,6 @@ export default function Projects() {
           <Label>Scroll</Label>
           <MoveRight className="h-4 w-4 text-primary-ink" aria-hidden="true" />
         </div>
-      </div>
-
-      <div className="mt-5">
-        <Provenance>
-          Seal geometry · Indus Valley · c. 2600–1900 BCE
-        </Provenance>
       </div>
 
       {/* ── Rail ── */}
@@ -60,7 +53,7 @@ export default function Projects() {
                   <span className="flex items-center gap-2.5">
                     {/* Square stamp, geometric corpus only — the Indus script
                         is undeciphered, so no glyph is reproduced. */}
-                    <SealMark className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+
                     <Label tone="foreground">
                       {String(index + 1).padStart(2, "0")} /{" "}
                       {String(projects.length).padStart(2, "0")}
@@ -106,7 +99,7 @@ export default function Projects() {
                       </ButtonLink>
                     ) : (
                       /* No public repo exists — say so rather than linking a 404. */
-                      <span className="stitch-box inline-flex items-center px-3 py-2.5">
+                      <span className="frame inline-flex items-center px-3 py-2.5">
                         <Label>Repository available on request</Label>
                       </span>
                     )}
@@ -130,7 +123,7 @@ export default function Projects() {
 
           {/* End cap — keeps the rail from feeling truncated */}
           <div className="w-[60vw] shrink-0 snap-start sm:w-[240px]">
-            <div className="stitch-box flex h-full items-center justify-center bg-card p-6">
+            <div className="frame flex h-full items-center justify-center p-6">
               <div className="text-center">
                 <Label>More on GitHub</Label>
                 <a

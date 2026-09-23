@@ -3,7 +3,6 @@
 import { ArrowUp } from "lucide-react";
 import { navLinks, personalInfo } from "@/lib/data";
 import { Label } from "@/components/ui/primitives";
-import { JaliBand } from "@/components/ui/patterns";
 import { scrollToSection } from "@/components/SmoothScroll";
 
 const buildStack = [
@@ -19,14 +18,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="inverted relative border-t-2 border-border-strong bg-foreground text-background">
-      {/* ── Jali screen ──
-             Mughal pierced-stone lattice: the screen you pass through on the
-             way into the colophon. Coloured from `text-background` rather
-             than `border-strong`, because this surface is inverted and
-             border-strong sits too close to the footer's own fill. */}
-      <JaliBand className="text-background/30" height={27} />
-
+    <footer className="inverted cover-grain relative border-t-2 border-border-strong bg-foreground text-background">
       {/* ── Edge-to-edge wordmark ──
           SVG `textLength` stretches the text to exactly the container
           width, so it always fills the row without ever overflowing. */}
@@ -117,13 +109,12 @@ export default function Footer() {
           <Label className="text-background/60">Colophon</Label>
           <p className="mt-4 text-sm leading-relaxed text-background/70">
             Built from scratch with {buildStack.join(", ")}. Content lives in a
-            single typed data file; the palette is four CSS variables.
+            single typed data file; the palette is one accent.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-background/70">
-            Motif geometry is drawn to source rather than to mood: the Vastu
-            pada grid, Mughal jali lattice, Kolam pulli, Chand Baori flights,
-            Jantar Mantar graduations and Indus seal marks — each one labelled
-            where it appears.
+            Set in Mukta — one family drawn across Devanagari and Latin, so the
+            name is set in the same face in both scripts. Olive and cream, a
+            single accent, and nothing decorative that isn't doing work.
           </p>
         </div>
       </div>

@@ -56,17 +56,12 @@ export function Rule({
   variant = "hair",
 }: {
   className?: string;
-  /** hair   — 1px hairline
-   *  strong — 2px rule
-   *  stitch — kantha running stitch, Bengal
-   *  step   — interlocking flights, Chand Baori */
-  variant?: "hair" | "strong" | "stitch" | "step";
+  /** hair — 1px hairline, strong — 1px on the strong border colour */
+  variant?: "hair" | "strong";
 }) {
   const variants = {
     hair: "rule",
     strong: "rule-strong",
-    stitch: "rule-stitch",
-    step: "rule-step",
   } as const;
   return <div className={cn(variants[variant], className)} aria-hidden="true" />;
 }
@@ -179,29 +174,24 @@ export function Section({
   children,
   className,
   size = "md",
-  grid = false,
 }: {
   id?: string;
   children: ReactNode;
   className?: string;
   size?: "sm" | "md" | "lg";
-  grid?: boolean;
 }) {
+  /* Three vertical rhythms, in the section itself now that there is no
+     surface to supply the inner padding. */
   const sizes = {
     sm: "py-16 sm:py-20",
     md: "py-20 sm:py-28",
-    lg: "py-28 sm:py-40",
+    lg: "py-24 sm:py-32",
   } as const;
 
   return (
     <section
       id={id}
-      className={cn(
-        "relative isolate",
-        sizes[size],
-        grid && "grid-yantra",
-        className,
-      )}
+      className={cn("relative isolate", sizes[size], className)}
     >
       <div className="relative z-2 mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12">
         {children}
@@ -232,9 +222,7 @@ export function SectionHeading({
       <div className="flex items-center gap-3">
         <Index value={index} />
         <Label tone="muted">{eyebrow}</Label>
-        {/* Kantha running stitch rather than a hairline: the same divider,
-            but stitched. Bengal, worked in rows across layered cloth. */}
-        <Rule variant="stitch" className="flex-1" />
+        <Rule className="flex-1" />
       </div>
 
       <h2
