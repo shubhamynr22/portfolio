@@ -21,7 +21,10 @@ export function Label({
     muted: "text-muted-foreground",
     primary: "text-primary-ink",
     foreground: "text-foreground",
-    loud: "text-loud-2",
+    /* The *-ink* token, not the bright fill: the bright loud-2 only reaches
+       2.80:1 as type on the light paper. Borders and fills still use the
+       bright value — see globals.css. */
+    loud: "text-loud-2-ink",
   } as const;
   return (
     <span className={cn("mono", tones[tone], className)}>{children}</span>
@@ -53,12 +56,17 @@ export function Rule({
   variant = "hair",
 }: {
   className?: string;
-  variant?: "hair" | "strong" | "dashed";
+  /** hair   — 1px hairline
+   *  strong — 2px rule
+   *  stitch — kantha running stitch, Bengal
+   *  step   — interlocking flights, Chand Baori */
+  variant?: "hair" | "strong" | "stitch" | "step";
 }) {
   const variants = {
     hair: "rule",
     strong: "rule-strong",
-    dashed: "rule-dashed",
+    stitch: "rule-stitch",
+    step: "rule-step",
   } as const;
   return <div className={cn(variants[variant], className)} aria-hidden="true" />;
 }
@@ -191,7 +199,7 @@ export function Section({
       className={cn(
         "relative isolate",
         sizes[size],
-        grid && "grid-paper",
+        grid && "grid-yantra",
         className,
       )}
     >
@@ -224,7 +232,9 @@ export function SectionHeading({
       <div className="flex items-center gap-3">
         <Index value={index} />
         <Label tone="muted">{eyebrow}</Label>
-        <Rule className="flex-1" />
+        {/* Kantha running stitch rather than a hairline: the same divider,
+            but stitched. Bengal, worked in rows across layered cloth. */}
+        <Rule variant="stitch" className="flex-1" />
       </div>
 
       <h2

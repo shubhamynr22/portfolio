@@ -1,4 +1,5 @@
 import { Label } from "@/components/ui/primitives";
+import { Provenance, SealMark } from "@/components/ui/patterns";
 import { cn } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -95,9 +96,16 @@ const groups: Group[] = [
 export function StackSchematic({ className }: { className?: string }) {
   return (
     <figure className={cn("frame frame-hard-lg bg-card", className)}>
-      {/* Plate header */}
+      {/* Plate header. The stamp is the specimen-plate device used across the
+          site: a square Indus seal mark, geometric corpus only. Note that the
+          figure itself is deliberately NOT forced into sacred geometry — the
+          layers are a real SRE stack, and dressing a Kafka diagram as a
+          yantra would be pastiche rather than heritage. */}
       <figcaption className="flex items-center justify-between gap-3 border-b-2 border-border-strong px-4 py-3">
-        <Label tone="foreground">Fig. 01 — System I build</Label>
+        <span className="flex items-center gap-2.5">
+          <SealMark className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <Label tone="foreground">Fig. 01 — System I build</Label>
+        </span>
         <Label>8 layers</Label>
       </figcaption>
 
@@ -148,6 +156,12 @@ export function StackSchematic({ className }: { className?: string }) {
         <Label>
           Scale: 100K+ concurrent · 10K events/sec · near-100% delivery
         </Label>
+      </div>
+
+      {/* Every frame on this site carries this channel, so the reference is
+          labelled once, here, rather than repeated on each plate. */}
+      <div className="border-t-2 border-border-strong px-4 py-2.5">
+        <Provenance>Inlay channel · Bidriware, Bidar · 14C</Provenance>
       </div>
     </figure>
   );

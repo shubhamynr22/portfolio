@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { aboutBio, stats, education, personalInfo } from "@/lib/data";
 import { Section, SectionHeading, Label, HardCard, Rule } from "@/components/ui/primitives";
+import { Provenance } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -28,7 +29,7 @@ export default function About() {
                     sizes="(max-width: 1024px) 100vw, 33vw"
                     className="object-cover grayscale contrast-125"
                   />
-                  <div className="halftone pointer-events-none absolute inset-0" aria-hidden="true" />
+                  <div className="pulli pointer-events-none absolute inset-0" aria-hidden="true" />
                 </div>
                 <figcaption className="flex items-center justify-between gap-3 border-t-2 border-border-strong bg-card px-4 py-3">
                   <Label tone="foreground">{personalInfo.name}</Label>
@@ -46,6 +47,10 @@ export default function About() {
                 <Label>Domains</Label>
                 <p className="mt-1.5 text-sm font-medium">SaaS · Fintech · Web3</p>
               </div>
+            </div>
+
+            <div className="mt-4">
+              <Provenance>Pulli lattice · Kolam, Tamil Nadu</Provenance>
             </div>
           </div>
         </div>
@@ -67,13 +72,14 @@ export default function About() {
           <Reveal>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {stats.map((stat) => (
-                <HardCard key={stat.label} className="p-4">
+                <HardCard key={stat.label} className="flex flex-col p-4">
                   <div className="display display-md text-primary-ink">
                     <MetricCounter value={stat.value} suffix={stat.suffix} />
                   </div>
                   <div className="mono-sm mt-2 text-muted-foreground">
                     {stat.label}
                   </div>
+                  <div className="rule-graduated mt-auto pt-4" />
                 </HardCard>
               ))}
             </div>
@@ -81,7 +87,7 @@ export default function About() {
 
           {/* Education — previously defined in data.ts but never rendered */}
           <Reveal>
-            <div className="frame">
+            <div className="par">
               <div className="flex items-center justify-between gap-3 border-b-2 border-border-strong px-5 py-3">
                 <Label tone="foreground">Education</Label>
                 <Label>{education.year}</Label>

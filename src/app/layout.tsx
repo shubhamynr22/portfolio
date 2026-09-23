@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, JetBrains_Mono, Archivo } from "next/font/google";
+import {
+  Space_Grotesk,
+  JetBrains_Mono,
+  Archivo,
+  Rajdhani,
+} from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import {
   ColorThemeProvider,
@@ -9,9 +14,19 @@ import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
 /* ── Three type voices ──
- * Archivo      → display (huge statements)
- * Space Grotesk→ body & UI
- * JetBrains Mono → labels, indices, metadata
+ * Archivo        → display (huge statements)
+ * Space Grotesk  → body & UI
+ * Rajdhani       → labels, indices, metadata, provenance
+ *
+ * Rajdhani is an Indian Type Foundry Devanagari + Latin family. Its Latin
+ * letterforms are deliberately modularised — round bowls straightened,
+ * terminals ending flat on the horizontal or vertical — which is why it can
+ * carry the technical register that JetBrains Mono used to, while giving the
+ * label voice Indian typographic DNA through a Latin-only cut. Only the two
+ * weights the design actually uses are requested; a stray 400 request will
+ * resolve to 500 under the CSS font-matching rules rather than synthesising.
+ * JetBrains Mono stays loaded as the fallback for glyphs Rajdhani's latin
+ * subset does not carry.
  */
 const archivo = Archivo({
   subsets: ["latin"],
@@ -28,6 +43,13 @@ const spaceGrotesk = Space_Grotesk({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains",
+  display: "swap",
+});
+
+const rajdhani = Rajdhani({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  variable: "--font-rajdhani",
   display: "swap",
 });
 
@@ -94,11 +116,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // data-grid: 8x8 pada (Manduka) by default; 9x9 (Paramasaayika) also
+    // supported — it only changes the heavier mandala line's interval.
     <html
       lang="en"
-      data-palette="volt"
+      data-palette="indigo"
+      data-grid="8x8"
       suppressHydrationWarning
-      className={`${archivo.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
+      className={`${archivo.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} ${rajdhani.variable}`}
     >
       <body className="font-sans antialiased">
         {/* Pre-paint palette application — no flash, no client gate */}

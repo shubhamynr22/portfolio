@@ -22,7 +22,7 @@ export const buttonVariants = cva(
           "border-border-strong bg-transparent text-foreground hover:bg-foreground hover:text-background",
         ghost:
           "border-transparent bg-transparent text-foreground hover:border-border-strong hover:bg-muted",
-        link: "border-transparent bg-transparent text-primary-ink underline decoration-2 underline-offset-4 hover:decoration-loud-2",
+        link: "border-transparent bg-transparent text-primary-ink underline decoration-2 underline-offset-4 hover:decoration-loud-2-ink",
       },
       size: {
         sm: "h-9 px-3.5 text-[0.8125rem] shadow-[3px_3px_0_var(--shadow-color)]",

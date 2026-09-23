@@ -11,14 +11,67 @@ import {
 } from "@/lib/data";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Label, Marquee, StatusPill } from "@/components/ui/primitives";
+import { GraduatedArc, Provenance } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { StackSchematic } from "@/components/StackSchematic";
 import { scrollToSection } from "@/components/SmoothScroll";
 import { cn } from "@/lib/utils";
 
-/* ── Hard-edged ridge band. The original mountain illustration, redrawn in
-      the new visual language: straight segments, no gradients, no glow. ── */
-function RidgeBand() {
+/* ── Stepwell band ──
+   Chand Baori, Abhaneri, Rajasthan: roughly 3,500 steps across 13 storeys,
+   folded into a square as interlocking double flights on three of its walls.
+   That is what this replaces the previous mountain ridge with — a descending
+   staircase read from both directions, so the flights cross. No gradients,
+   no glow, same hard-segment language as before. */
+const STEPWELL_W = 1440;
+const STEPWELL_H = 260;
+
+/** One descending flight, as open points. Mirrored flights run the other way
+ *  so adjacent flights interlock rather than nest. */
+function stepEdge(
+  step: number,
+  rise: number,
+  startY: number,
+  mirrored: boolean,
+): Array<[number, number]> {
+  const pts: Array<[number, number]> = [];
+  const clampY = (y: number) => Math.min(y, STEPWELL_H);
+  let y = startY;
+
+  if (mirrored) {
+    pts.push([STEPWELL_W, startY]);
+    for (let x = STEPWELL_W; x > 0; x -= step) {
+      pts.push([x - step, y]);
+      y = clampY(y + rise);
+      pts.push([x - step, y]);
+    }
+  } else {
+    pts.push([0, startY]);
+    for (let x = 0; x < STEPWELL_W; x += step) {
+      pts.push([x + step, y]);
+      y = clampY(y + rise);
+      pts.push([x + step, y]);
+    }
+  }
+  return pts;
+}
+
+const toPointList = (pts: Array<[number, number]>) =>
+  pts.map(([x, y]) => `${x},${y}`).join(" ");
+
+function StepwellBand() {
+  const flights = [
+    { step: 44, rise: 11, startY: 96, mirrored: false, opacity: 0.05 },
+    { step: 38, rise: 10, startY: 138, mirrored: true, opacity: 0.08 },
+    { step: 32, rise: 9, startY: 180, mirrored: false, opacity: 0.12 },
+  ];
+  const topFlight = stepEdge(
+    flights[0].step,
+    flights[0].rise,
+    flights[0].startY,
+    flights[0].mirrored,
+  );
+
   return (
     <div
       aria-hidden="true"
@@ -26,27 +79,36 @@ function RidgeBand() {
     >
       <svg
         className="h-[200px] w-full sm:h-[260px]"
-        viewBox="0 0 1440 260"
+        viewBox={`0 0 ${STEPWELL_W} ${STEPWELL_H}`}
         preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <polygon
-          points="0,140 120,92 240,128 360,76 480,118 600,64 720,104 840,70 960,112 1080,58 1200,100 1320,74 1440,116 1440,260 0,260"
-          style={{ fill: "var(--border-strong)", opacity: 0.06 }}
-        />
-        <polygon
-          points="0,182 140,142 280,172 420,128 560,164 700,120 840,158 980,126 1120,166 1260,134 1400,170 1440,156 1440,260 0,260"
-          style={{ fill: "var(--border-strong)", opacity: 0.09 }}
-        />
+        {flights.map((flight) => {
+          const edge = stepEdge(
+            flight.step,
+            flight.rise,
+            flight.startY,
+            flight.mirrored,
+          );
+          return (
+            <polygon
+              key={`${flight.step}-${flight.startY}`}
+              points={toPointList([
+                ...edge,
+                [0, STEPWELL_H],
+                [STEPWELL_W, STEPWELL_H],
+              ])}
+              style={{ fill: "var(--border-strong)", opacity: flight.opacity }}
+            />
+          );
+        })}
+        {/* The lit edge of the topmost flight, derived from the same geometry
+            rather than hand-traced — it cannot drift out of alignment. */}
         <polyline
-          points="0,182 140,142 280,172 420,128 560,164 700,120 840,158 980,126 1120,166 1260,134 1400,170 1440,156"
+          points={toPointList(topFlight)}
           fill="none"
           style={{ stroke: "var(--border-strong)", opacity: 0.18 }}
           strokeWidth="1"
-        />
-        <polygon
-          points="0,218 160,196 320,212 480,186 640,208 800,190 960,210 1120,192 1280,208 1440,196 1440,260 0,260"
-          style={{ fill: "var(--border-strong)", opacity: 0.13 }}
         />
       </svg>
     </div>
@@ -59,8 +121,8 @@ export default function Hero() {
       id="hero"
       className="grain relative isolate overflow-hidden pt-32 pb-0 sm:pt-40"
     >
-      <div className="grid-paper absolute inset-0 -z-20" aria-hidden="true" />
-      <RidgeBand />
+      <div className="grid-yantra absolute inset-0 -z-20" aria-hidden="true" />
+      <StepwellBand />
 
       <div className="relative z-2 mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12">
         <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-14">
@@ -85,6 +147,15 @@ export default function Hero() {
                 {personalInfo.name.split(" ")[1]}
               </span>
             </h1>
+
+            {/* Names what the geometry above actually is. Without this the
+                grid reads as "nice graph paper" and the reference is lost. */}
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2">
+              <Provenance>Pada grid · Vastu Purusha Mandala · 8×8</Provenance>
+              <Provenance>
+                Stepwell flights · Chand Baori · Rajasthan
+              </Provenance>
+            </div>
           </div>
 
           {/* ── Row 2 — the pitch ── */}
@@ -139,32 +210,47 @@ export default function Hero() {
             <StackSchematic />
           </div>
 
-          {/* ── Metrics strip ── */}
-          <div className="frame frame-hard mb-14 grid grid-cols-2 lg:col-span-12 lg:grid-cols-4">
-            {heroMetrics.map((metric, index) => (
-              <div
-                key={metric.label}
-                className={cn(
-                  "border-border-strong p-5",
-                  index >= 2 && "border-t-2",
-                  index % 2 === 1 && "border-l-2",
-                  "lg:border-t-0",
-                  index > 0 && "lg:border-l-2",
-                )}
-              >
-                <div className="display display-md text-primary-ink">
-                  <MetricCounter
-                    value={metric.value}
-                    prefix={metric.prefix}
-                    suffix={metric.suffix}
-                  />
+          {/* ── Metrics strip ──
+                Now a plate with a header, so the numbers sit on an
+                instrument rather than floating. Each cell is closed by a
+                graduated scale — Jantar Mantar's quadrant, abstracted. */}
+          <div className="frame frame-hard mb-14 lg:col-span-12">
+            <div className="flex items-center justify-between gap-4 border-b-2 border-border-strong px-5 py-3">
+              <Provenance>
+                Graduated quadrant · Samrat Yantra · Jantar Mantar, Jaipur
+              </Provenance>
+              <GraduatedArc className="h-8 w-8 shrink-0" />
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4">
+              {heroMetrics.map((metric, index) => (
+                <div
+                  key={metric.label}
+                  className={cn(
+                    "flex flex-col p-5",
+                    index >= 2 && "border-t-2",
+                    index % 2 === 1 && "border-l-2",
+                    "lg:border-t-0",
+                    index > 0 && "lg:border-l-2",
+                  )}
+                >
+                  <div className="display display-md text-primary-ink">
+                    <MetricCounter
+                      value={metric.value}
+                      prefix={metric.prefix}
+                      suffix={metric.suffix}
+                    />
+                  </div>
+                  <div className="mt-2 text-sm font-medium">{metric.label}</div>
+                  <div className="mono-sm mt-1 text-muted-foreground">
+                    {metric.detail}
+                  </div>
+                  {/* mt-auto pins the scale to the cell floor so the four
+                      read as one instrument across the row. */}
+                  <div className="rule-graduated mt-auto pt-4" />
                 </div>
-                <div className="mt-2 text-sm font-medium">{metric.label}</div>
-                <div className="mono-sm mt-1 text-muted-foreground">
-                  {metric.detail}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -174,9 +260,12 @@ export default function Hero() {
         <Marquee duration="52s">
           {allTechnologies.map((tech) => (
             <span key={tech} className="flex items-center">
-              <span className="px-5 font-mono text-[0.75rem] tracking-[0.14em] uppercase">
+              <span className="px-5 font-mono text-[0.8125rem] tracking-[0.12em] uppercase">
                 {tech}
               </span>
+              {/* Bright loud-2, not the *-ink* variant: this band is an
+                  inverted surface, so the text-safe token would sink into it.
+                  Decorative glyph, aria-hidden — no text threshold applies. */}
               <span className="text-loud-2" aria-hidden="true">
                 ✦
               </span>

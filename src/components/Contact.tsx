@@ -6,6 +6,7 @@ import { SiGithub } from "react-icons/si";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { availability, personalInfo } from "@/lib/data";
 import { Section, SectionHeading, Label, StatusPill } from "@/components/ui/primitives";
+import { KolamField, Provenance } from "@/components/ui/patterns";
 import { ButtonLink } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -97,6 +98,23 @@ export default function Contact() {
 
         {/* ── Availability + elsewhere ── */}
         <div className="space-y-5 lg:col-span-5">
+          {/* The kolam draws itself once this enters. Under reduced motion, or
+              with JS off, the stroke is simply already complete — see
+              .kolam-draw in globals.css. */}
+          <Reveal delay={40}>
+            <div className="par p-5">
+              <KolamField
+                draw
+                className="mx-auto h-24 w-24 text-muted-foreground sm:h-28 sm:w-28"
+              />
+              <div className="mt-4">
+                <Provenance>
+                  One stroke · 25 pulli · Kolam picture grammar
+                </Provenance>
+              </div>
+            </div>
+          </Reveal>
+
           <Reveal delay={80}>
             <div className="frame p-5">
               <StatusPill>{availability.status}</StatusPill>

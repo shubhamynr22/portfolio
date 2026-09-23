@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <main className="grid-paper relative isolate flex min-h-screen flex-col items-center justify-center px-5 py-20">
+    <main className="grid-yantra relative isolate flex min-h-screen flex-col items-center justify-center px-5 py-20">
       <div className="w-full max-w-2xl">
         <div className="flex items-center gap-3">
           <span className="mono-sm text-muted-foreground">[404]</span>

@@ -3,6 +3,7 @@
 import { ArrowUp } from "lucide-react";
 import { navLinks, personalInfo } from "@/lib/data";
 import { Label } from "@/components/ui/primitives";
+import { JaliBand } from "@/components/ui/patterns";
 import { scrollToSection } from "@/components/SmoothScroll";
 
 const buildStack = [
@@ -19,6 +20,13 @@ export default function Footer() {
 
   return (
     <footer className="inverted relative border-t-2 border-border-strong bg-foreground text-background">
+      {/* ── Jali screen ──
+             Mughal pierced-stone lattice: the screen you pass through on the
+             way into the colophon. Coloured from `text-background` rather
+             than `border-strong`, because this surface is inverted and
+             border-strong sits too close to the footer's own fill. */}
+      <JaliBand className="text-background/30" height={27} />
+
       {/* ── Edge-to-edge wordmark ──
           SVG `textLength` stretches the text to exactly the container
           width, so it always fills the row without ever overflowing. */}
@@ -62,7 +70,7 @@ export default function Footer() {
                   <span className="font-mono text-[0.625rem] tracking-[0.16em] text-background/50">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className="text-sm font-medium transition-colors group-hover:text-loud-2">
+                  <span className="text-sm font-medium transition-colors group-hover:text-loud-2-ink">
                     {link.label}
                   </span>
                 </button>
@@ -79,7 +87,7 @@ export default function Footer() {
                 href={personalInfo.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium transition-colors hover:text-loud-2"
+                className="text-sm font-medium transition-colors hover:text-loud-2-ink"
               >
                 GitHub
               </a>
@@ -89,7 +97,7 @@ export default function Footer() {
                 href={personalInfo.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium transition-colors hover:text-loud-2"
+                className="text-sm font-medium transition-colors hover:text-loud-2-ink"
               >
                 LinkedIn
               </a>
@@ -97,7 +105,7 @@ export default function Footer() {
             <li>
               <a
                 href={`mailto:${personalInfo.email}`}
-                className="text-sm font-medium break-all transition-colors hover:text-loud-2"
+                className="text-sm font-medium break-all transition-colors hover:text-loud-2-ink"
               >
                 {personalInfo.email}
               </a>
@@ -109,7 +117,13 @@ export default function Footer() {
           <Label className="text-background/60">Colophon</Label>
           <p className="mt-4 text-sm leading-relaxed text-background/70">
             Built from scratch with {buildStack.join(", ")}. Content lives in a
-            single typed data file; the palette is three CSS variables.
+            single typed data file; the palette is four CSS variables.
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-background/70">
+            Motif geometry is drawn to source rather than to mood: the Vastu
+            pada grid, Mughal jali lattice, Kolam pulli, Chand Baori flights,
+            Jantar Mantar graduations and Indus seal marks — each one labelled
+            where it appears.
           </p>
         </div>
       </div>
@@ -120,11 +134,14 @@ export default function Footer() {
           © {year} {personalInfo.name}
         </Label>
         <Label className="text-background/60">
+          Archivo · Space Grotesk · Rajdhani <span className="text-background/40">(Indian Type Foundry)</span>
+        </Label>
+        <Label className="text-background/60">
           {personalInfo.timezone}
         </Label>
         <button
           onClick={() => scrollToSection(0, 0)}
-          className="inline-flex items-center gap-2 border-2 border-background/40 px-3 py-2 transition-colors hover:border-loud-2 hover:text-loud-2"
+          className="inline-flex items-center gap-2 border-2 border-background/40 px-3 py-2 transition-colors hover:border-loud-2 hover:text-loud-2-ink"
           aria-label="Back to top"
         >
           <ArrowUp className="h-3.5 w-3.5" />

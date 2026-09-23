@@ -8,8 +8,9 @@ export const contentType = "image/png";
    preview matches the page it links to. */
 const INK = "#131316";
 const PAPER = "#E0DAD2";
-const VOLT = "#7B93FF";
-const SIGNAL = "#C8F135";
+const INDIGO = "#7B93FF";
+const MEHENDI = "#C8F135";
+const MUTED = "#A8A29A";
 
 const metrics = [
   { value: "3+", label: "Years shipping" },
@@ -41,10 +42,34 @@ export default function Image() {
             justifyContent: "space-between",
             fontSize: 20,
             letterSpacing: 3,
-            color: "#A8A29A",
+            color: MUTED,
           }}
         >
-          <div style={{ display: "flex" }}>PORTFOLIO / 2026</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {/* Indus seal mark — square body, inner ring. Same geometry as the
+                favicon and the plate stamps, so the card is recognisably the
+                same object as the site. */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 26,
+                height: 26,
+                border: `2px solid ${PAPER}`,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  width: 10,
+                  height: 10,
+                  border: `1px solid ${PAPER}`,
+                }}
+              />
+            </div>
+            <div style={{ display: "flex" }}>PORTFOLIO / 2026</div>
+          </div>
           <div
             style={{
               display: "flex",
@@ -60,7 +85,7 @@ export default function Image() {
               style={{
                 width: 10,
                 height: 10,
-                background: SIGNAL,
+                background: MEHENDI,
                 display: "flex",
               }}
             />
@@ -85,7 +110,7 @@ export default function Image() {
             style={{
               marginTop: 20,
               fontSize: 36,
-              color: VOLT,
+              color: INDIGO,
               display: "flex",
             }}
           >
@@ -95,7 +120,7 @@ export default function Image() {
             style={{
               marginTop: 18,
               fontSize: 24,
-              color: "#A8A29A",
+              color: MUTED,
               display: "flex",
             }}
           >
@@ -122,7 +147,7 @@ export default function Image() {
                   style={{
                     fontSize: 44,
                     fontWeight: 800,
-                    color: SIGNAL,
+                    color: MEHENDI,
                     display: "flex",
                   }}
                 >
@@ -131,7 +156,7 @@ export default function Image() {
                 <div
                   style={{
                     fontSize: 18,
-                    color: "#A8A29A",
+                    color: MUTED,
                     letterSpacing: 2,
                     display: "flex",
                   }}
@@ -142,15 +167,45 @@ export default function Image() {
             ))}
           </div>
 
+          {/* Graduated scale — Jantar Mantar's divided quadrant, replacing the
+              flat accent bar. Ticks are real elements rather than a CSS
+              gradient because satori's gradient support is partial; every
+              fourth tick is long, so it reads as a measuring instrument
+              rather than as a dashed rule. */}
           <div
             style={{
-              marginTop: 28,
-              height: 12,
+              marginTop: 26,
               width: "100%",
-              background: SIGNAL,
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              height: 16,
+            }}
+          >
+            {Array.from({ length: 96 }).map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  width: 2,
+                  height: i % 4 === 0 ? 16 : 8,
+                  background: i % 4 === 0 ? MEHENDI : MUTED,
+                }}
+              />
+            ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: 12,
+              fontSize: 15,
+              letterSpacing: 2,
+              color: MUTED,
               display: "flex",
             }}
-          />
+          >
+            PADA GRID · VASTU PURUSHA MANDALA · 8×8
+          </div>
         </div>
       </div>
     ),

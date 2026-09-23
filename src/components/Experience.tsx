@@ -2,14 +2,15 @@ import { experiences } from "@/lib/data";
 import {
   Section,
   SectionHeading,
-  Index,
   Label,
+  Rule,
   StatusPill,
 } from "@/components/ui/primitives";
+import { Provenance } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 
 /* ──────────────────────────────────────────────────────────────────
- *  EXPERIENCE
+ *  EXPERIENCE — the stepwell
  *
  *  A sticky-scroll narrative rather than an alternating timeline:
  *  the role/company rail pins next to its highlights as you scroll,
@@ -18,7 +19,48 @@ import { Reveal } from "@/components/motion/Reveal";
  *  `position: sticky` does the work natively — no scroll library, no
  *  pinning to break, and it degrades to a normal stacked layout on
  *  mobile and under reduced motion.
+ *
+ *  The Chand Baori framing is the one place on this site where a cultural
+ *  reference carries INFORMATION rather than decorating: each role is a
+ *  storey, and each storey's flight length is its real tenure in months.
+ *  That is why the step count is derived from the data instead of fixed.
  * ────────────────────────────────────────────────────────────────── */
+
+/** Months between the two ends of a period string. Null if it won't parse —
+ *  the UI must degrade to an unlabelled flight rather than print a wrong
+ *  number, so every unparseable case returns null instead of a guess. */
+function monthsIn(period: string): number | null {
+  // The data uses an em dash; an en dash or hyphen is accepted too so a
+  // future content edit cannot silently turn every tenure into a fallback.
+  const [startRaw, endRaw] = period.split(/\s*[—–-]\s*/);
+  if (!startRaw || !endRaw) return null;
+
+  const start = new Date(startRaw);
+  const end = /present|current|now/i.test(endRaw) ? new Date() : new Date(endRaw);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null;
+
+  const months =
+    (end.getFullYear() - start.getFullYear()) * 12 +
+    (end.getMonth() - start.getMonth()) +
+    1;
+  return months > 0 ? months : null;
+}
+
+const TENURES = experiences.map((exp) => monthsIn(exp.period));
+const LONGEST_TENURE = Math.max(...TENURES.map((m) => m ?? 0), 1);
+
+/** A flight of steps whose width is proportional to real tenure. Reuses the
+ *  same stepped-rule geometry as the section dividers. */
+function StepFlight({ months }: { months: number | null }) {
+  const steps = months ? Math.max(3, Math.round((months / LONGEST_TENURE) * 12)) : 6;
+  return (
+    <span
+      className="rule-step inline-block align-middle"
+      style={{ width: `${(steps / 12) * 100}%`, minWidth: "44px" }}
+      aria-hidden="true"
+    />
+  );
+}
 
 export default function Experience() {
   return (
@@ -27,18 +69,37 @@ export default function Experience() {
         index={3}
         eyebrow="Experience"
         title="Where I've shipped"
-        description="Five roles, in reverse order. Each one leads with the number it moved."
+        description="Six roles, in reverse order. Each one leads with the number it moved."
       />
 
-      <div className="mt-14">
+      <div className="mt-8">
+        <Provenance>
+          Stepwell · Chand Baori, Abhaneri · 13 storeys, ~3,500 steps
+        </Provenance>
+      </div>
+
+      <div className="mt-10">
         {experiences.map((exp, index) => (
           <Reveal key={`${exp.company}-${exp.period}`}>
-            <article className="grid gap-6 border-t-2 border-border-strong pt-8 pb-14 md:grid-cols-12 md:gap-10">
+            {/* Interlocking flights instead of a straight divider. */}
+            <Rule variant="step" />
+            <article className="grid gap-6 pt-8 pb-14 md:grid-cols-12 md:gap-10">
               {/* ── Sticky rail ── */}
               <div className="md:col-span-4 md:sticky md:top-28 md:self-start">
                 <div className="flex items-center gap-3">
-                  <Index value={index + 1} />
+                  <Label tone="foreground">
+                    Storey {String(index + 1).padStart(2, "0")}
+                  </Label>
                   <Label>{exp.location}</Label>
+                </div>
+
+                {/* Flight width = real tenure. The months are printed too, so
+                    the encoding is legible rather than a private metaphor. */}
+                <div className="mt-4 flex items-center gap-3">
+                  <StepFlight months={TENURES[index]} />
+                  <Label>
+                    {TENURES[index] ? `${TENURES[index]} mo` : "—"}
+                  </Label>
                 </div>
 
                 <h3 className="display display-md mt-3 text-balance text-foreground">

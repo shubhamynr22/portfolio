@@ -20,43 +20,65 @@ import {
  *  <body> on the server and was invisible to crawlers and link previews.
  * ────────────────────────────────────────────────────────────────── */
 
-export type PaletteName = "volt" | "hazard" | "signal";
+export type PaletteName = "indigo" | "madder" | "mehendi" | "bidri";
 
 export interface ColorPalette {
   name: PaletteName;
   label: string;
   /** Saturated fill colour — used for the picker swatch */
   swatch: string;
-  /** What the palette is for, shown in the picker */
+  /** The material and its source, shown in the picker. Named rather than
+      slang: the palette is a material system, not a mood. */
   note: string;
 }
 
 export const palettes: ColorPalette[] = [
   {
-    name: "volt",
-    label: "Volt",
+    name: "indigo",
+    label: "Indigo",
     swatch: "#2B4EFF",
-    note: "electric blue",
+    note: "indigo dye · Ajrakh",
   },
   {
-    name: "hazard",
-    label: "Hazard",
+    name: "madder",
+    label: "Madder",
     swatch: "#FF4D00",
-    note: "signal orange",
+    note: "madder root · Kalamkari",
   },
   {
-    name: "signal",
-    label: "Signal",
+    name: "mehendi",
+    label: "Mehendi",
     swatch: "#C8F135",
-    note: "acid lime",
+    note: "henna leaf",
+  },
+  {
+    name: "bidri",
+    label: "Bidri",
+    swatch: "#C9CCD1",
+    note: "silver inlay · Bidar",
   },
 ];
 
-export const DEFAULT_PALETTE: PaletteName = "volt";
+export const DEFAULT_PALETTE: PaletteName = "indigo";
 const STORAGE_KEY = "color-theme";
 
-function isPalette(value: string | null): value is PaletteName {
-  return value === "volt" || value === "hazard" || value === "signal";
+/* These palettes shipped under earlier names. A preference stored on a
+   previous visit must keep resolving rather than silently resetting, so old
+   keys are mapped forward instead of being treated as invalid. */
+const LEGACY_PALETTES: Record<string, PaletteName> = {
+  volt: "indigo",
+  hazard: "madder",
+  signal: "mehendi",
+};
+
+const PALETTE_KEYS = palettes.map((palette) => palette.name);
+
+function normalisePalette(value: string | null): PaletteName | null {
+  if (!value) return null;
+  if (value in LEGACY_PALETTES) return LEGACY_PALETTES[value];
+  return PALETTE_KEYS.includes(value as PaletteName)
+    ? (value as PaletteName)
+    : null;
 }
 
 interface ColorThemeCtx {
@@ -79,13 +101,15 @@ export function ColorThemeProvider({ children }: { children: ReactNode }) {
   /* Sync React state with whatever the pre-paint inline script already set,
      so the picker's selected state matches the rendered palette. */
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (isPalette(stored)) {
+    const stored = normalisePalette(localStorage.getItem(STORAGE_KEY));
+    if (stored) {
       setColorThemeState(stored);
       return;
     }
-    const attr = document.documentElement.getAttribute("data-palette");
-    if (isPalette(attr)) setColorThemeState(attr);
+    const attr = normalisePalette(
+      document.documentElement.getAttribute("data-palette"),
+    );
+    if (attr) setColorThemeState(attr);
   }, []);
 
   const setColorTheme = useCallback((name: PaletteName) => {
@@ -111,4 +135,4 @@ export function ColorThemeProvider({ children }: { children: ReactNode }) {
  * Runs before first paint to apply the stored palette without a flash.
  * Rendered as the first element in <body>.
  */
-export const paletteInitScript = `(function(){try{var v=['volt','hazard','signal'];var s=localStorage.getItem('${STORAGE_KEY}');document.documentElement.setAttribute('data-palette',v.indexOf(s)>-1?s:'${DEFAULT_PALETTE}');}catch(e){document.documentElement.setAttribute('data-palette','${DEFAULT_PALETTE}');}})();`;
+export const paletteInitScript = `(function(){try{var v=['indigo','madder','mehendi','bidri'];var l={volt:'indigo',hazard:'madder',signal:'mehendi'};var s=localStorage.getItem('${STORAGE_KEY}');s=l[s]||s;document.documentElement.setAttribute('data-palette',v.indexOf(s)>-1?s:'${DEFAULT_PALETTE}');}catch(e){document.documentElement.setAttribute('data-palette','${DEFAULT_PALETTE}');}})();`;
