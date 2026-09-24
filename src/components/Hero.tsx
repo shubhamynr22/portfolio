@@ -17,6 +17,7 @@ import {
   LiveDot,
   NameCycler,
   ScriptCaption,
+  devaDigits,
 } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { StackSchematic } from "@/components/StackSchematic";
@@ -93,7 +94,7 @@ export default function Hero() {
                 <div className="flex flex-col">
                   <Label tone="foreground">{personalInfo.title}</Label>
                   <Label tone="outline" className="mt-1">
-                    {personalInfo.location} · {personalInfo.timezone}
+                    {devaDigits(`${personalInfo.location} · ${personalInfo.timezone}`)}
                   </Label>
                 </div>
               </div>
@@ -131,7 +132,7 @@ export default function Hero() {
               </div>
 
               <p className="mt-6 max-w-xl text-[1.0625rem] leading-relaxed text-muted-foreground">
-                {summary}
+                {devaDigits(summary)}
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -188,9 +189,11 @@ export default function Hero() {
                     suffix={metric.suffix}
                   />
                 </div>
-                <div className="mt-2 text-sm font-medium">{metric.label}</div>
+                <div className="mt-2 text-sm font-medium">
+                  {devaDigits(metric.label)}
+                </div>
                 <div className="mt-0.5">
-                  <Label tone="outline">{metric.detail}</Label>
+                  <Label tone="outline">{devaDigits(metric.detail)}</Label>
                 </div>
               </div>
             ))}

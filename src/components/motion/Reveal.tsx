@@ -25,11 +25,16 @@ export function Reveal({
   children,
   className,
   delay = 0,
+  stagger = false,
 }: {
   children: ReactNode;
   className?: string;
   /** Stagger in milliseconds */
   delay?: number;
+  /** Reveal direct children in sequence rather than the block as a whole.
+   *  Delays come from :nth-child in globals.css, so no child has to carry a
+   *  computed index. */
+  stagger?: boolean;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -69,6 +74,7 @@ export function Reveal({
     <div
       ref={ref}
       className={cn("reveal", className)}
+      data-stagger={stagger ? "true" : undefined}
       style={{ "--reveal-delay": `${delay}ms` } as React.CSSProperties}
     >
       {children}

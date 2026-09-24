@@ -1,5 +1,6 @@
 import { aboutBio, stats, education } from "@/lib/data";
 import { Section, SectionHeading, Label, Panel } from "@/components/ui/primitives";
+import { devaDigits } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { Reveal } from "@/components/motion/Reveal";
 
@@ -28,7 +29,7 @@ export default function About() {
               key={paragraph.slice(0, 24)}
               className="text-base leading-relaxed text-muted-foreground sm:text-[1.0625rem]"
             >
-              {paragraph}
+              {devaDigits(paragraph)}
             </p>
           ))}
 
@@ -87,7 +88,7 @@ export default function About() {
                 {education.institution}
               </p>
               <p className="mt-2 font-mono text-[0.6875rem] text-outline">
-                {education.location} · CGPA {education.cgpa}
+                {devaDigits(`${education.location} · CGPA ${education.cgpa}`)}
               </p>
             </div>
 

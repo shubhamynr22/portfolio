@@ -5,7 +5,7 @@ import {
   Label,
   Panel,
 } from "@/components/ui/primitives";
-import { LiveDot, devaNumber } from "@/components/ui/patterns";
+import { LiveDot, devaDigits, devaNumber } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 
@@ -99,7 +99,7 @@ export default function Experience() {
                 <div className="mt-3 flex items-center gap-3">
                   <StepFlight months={TENURES[index]} />
                   <Label tone="outline" className="shrink-0 tabular-nums">
-                    {TENURES[index] ? `${TENURES[index]} mo` : "—"}
+                    {TENURES[index] ? devaDigits(`${TENURES[index]} mo`) : "—"}
                   </Label>
                 </div>
 
@@ -109,7 +109,7 @@ export default function Experience() {
 
                 <p className="mt-2 text-sm font-medium">{exp.role}</p>
                 <p className="mt-1 font-mono text-[0.6875rem] text-outline">
-                  {exp.period}
+                  {devaDigits(exp.period)}
                 </p>
 
                 {exp.current ? (
@@ -121,7 +121,7 @@ export default function Experience() {
 
                 <Panel className="mt-5 px-4 py-3.5">
                   <div className="display display-md text-primary">
-                    {exp.headline.value}
+                    {devaDigits(exp.headline.value)}
                   </div>
                   <div className="mt-1">
                     <Label tone="outline">{exp.headline.label}</Label>
@@ -140,7 +140,7 @@ export default function Experience() {
                       {devaNumber(i + 1, 2)}
                     </span>
                     <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
-                      {highlight}
+                      {devaDigits(highlight)}
                     </p>
                   </li>
                 ))}

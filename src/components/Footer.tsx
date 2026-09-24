@@ -3,14 +3,14 @@
 import { ArrowUp } from "lucide-react";
 import { navLinks, personalInfo } from "@/lib/data";
 import { Label } from "@/components/ui/primitives";
-import { LiveDot, devaNumber } from "@/components/ui/patterns";
+import { LiveDot, devaDigits, devaNumber } from "@/components/ui/patterns";
 import { scrollToSection } from "@/components/SmoothScroll";
 
 const buildStack = [
-  "Next.js 16",
-  "React 19",
+  "Next.js",
+  "React",
   "TypeScript",
-  "Tailwind CSS v4",
+  "Tailwind CSS",
   "Motion",
   "Lenis",
 ];
@@ -89,7 +89,7 @@ export default function Footer() {
             <span className="text-outline" aria-hidden="true">
               ·
             </span>
-            <Label tone="outline">{personalInfo.timezone}</Label>
+            <Label tone="outline">{devaDigits(personalInfo.timezone)}</Label>
           </div>
         </div>
 
@@ -157,7 +157,7 @@ export default function Footer() {
       {/* ── Baseline ── */}
       <div className="mx-auto flex w-full max-w-[1200px] flex-wrap items-center justify-between gap-4 border-t border-outline-variant px-5 py-5 sm:px-8 lg:px-12">
         <Label tone="outline">
-          © {year} {personalInfo.name}
+          © {devaDigits(String(year))} {personalInfo.name}
         </Label>
         <Label tone="outline" className="hidden md:inline">
           {typeStack.join(" · ")}

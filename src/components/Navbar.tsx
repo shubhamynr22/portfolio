@@ -7,7 +7,7 @@ import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
 import { navLinks, personalInfo, availability } from "@/lib/data";
 import { ButtonLink } from "@/components/ui/button";
 import { Label } from "@/components/ui/primitives";
-import { LiveDot, devaNumber } from "@/components/ui/patterns";
+import { LiveDot, devaDigits, devaNumber } from "@/components/ui/patterns";
 import { scrollToSection } from "@/components/SmoothScroll";
 import { cn } from "@/lib/utils";
 
@@ -34,8 +34,7 @@ function useIstClock() {
       // IST is UTC+5:30 with no DST, so the offset is a constant and does
       // not need a timezone database.
       const ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
-      // The clock keeps Latin digits — it is a timestamp, not notation.
-      const p = (n: number) => String(n).padStart(2, "0");
+      const p = (n: number) => devaNumber(n, 2);
       setTime(`${p(ist.getHours())}:${p(ist.getMinutes())}:${p(ist.getSeconds())}`);
     };
     tick();
@@ -107,7 +106,7 @@ export default function Navbar() {
                   {personalInfo.location}
                 </Label>
                 <span className="hidden truncate sm:inline">
-                  <Label tone="outline">{availability.note}</Label>
+                  <Label tone="outline">{devaDigits(availability.note)}</Label>
                 </span>
               </div>
 
@@ -119,7 +118,7 @@ export default function Navbar() {
                   ·
                 </span>
                 <Label tone="outline" className="hidden sm:inline">
-                  {personalInfo.location} [IST · UTC+5:30]
+                  {devaDigits(`${personalInfo.location} [IST · UTC+5:30]`)}
                 </Label>
               </div>
             </div>

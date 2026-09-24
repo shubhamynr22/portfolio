@@ -70,7 +70,12 @@ export function MetricCounter({
   return (
     <span ref={ref} className={className}>
       {prefix}
-      <NumberFlow value={display} />
+      {/* `hi-IN-u-nu-deva` is the Intl numbering system for Devanagari
+          digits, so the odometer rolls through ०१२३… rather than 0123…
+          Doing it here rather than by string-replacing the output keeps the
+          digit-transition animation intact — NumberFlow is animating per
+          digit glyph, and it can only do that for digits it owns. */}
+      <NumberFlow value={display} locales="hi-IN-u-nu-deva" />
       {suffix}
     </span>
   );

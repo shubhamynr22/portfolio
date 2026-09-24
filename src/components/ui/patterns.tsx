@@ -176,7 +176,7 @@ const GLYPH_STEP = 0.06;
 export function NameCycler({
   line,
   animate = true,
-  cycle = "18s",
+  cycle = "14s",
   className,
 }: {
   line: "first" | "last";
@@ -269,6 +269,53 @@ export function devaNumber(n: number, pad = 0): string {
     .split("")
     .map((d) => DEVA_DIGITS[Number(d)] ?? d)
     .join("");
+}
+
+/** Converts every digit, protection off. For values that are only ever
+ *  numbers — a metric, a phone number — never for mixed strings. */
+export function devaForce(input: string): string {
+  return input.replace(/\d/g, (d) => DEVA_DIGITS[Number(d)] ?? d);
+}
+
+/* ── devaDigits ──
+   For mixed strings: dates, counters, captions, prose.
+
+   The hard part is not converting digits, it is knowing which ones are not
+   numbers. `ERC-1155` is a token standard, `shubhamynr22` is a handle,
+   `S3` is a service — transliterating any of them produces a string that
+   is wrong and sometimes unlinkable. All three share one shape: the digit
+   run is glued to a Latin letter or a hyphen.
+
+   A digit run preceded by a Latin letter or a digit belongs to an
+   identifier and is left alone: `S3`, `EC2`, `OAuth2`, `Web3`, `shubhamynr22`.
+   Everything else is a number and converts.
+
+   The `0-9` in that class is load-bearing, not padding. Without it a failing
+   lookbehind at the first digit makes the engine retry one character later,
+   where the preceding character is a digit and the guard passes — so
+   `ERC-20` came out as `ERC-2०`. Partially transliterated identifiers are
+   worse than untransliterated ones, because they look deliberate.
+
+   The one thing a lookbehind cannot express is `ERC-1155`, which is an
+   identifier whose separator is a hyphen and whose digits therefore follow
+   neither letter nor digit. Rather than ban every hyphenated digit — which
+   would also protect `near-100%` and `sub-100ms`, and those are quantities —
+   the standards bodies get an explicit list. There are not many, and they do
+   not change. */
+const STANDARD_CODES = /\b(?:ERC|RFC|ISO|IEEE|IEC|ANSI|UTF|HL7)-\d+\b/g;
+
+export function devaDigits(input: string): string {
+  const codes = input.match(STANDARD_CODES) ?? [];
+  // split() on a group-free regex removes the matches, so the odd-indexed
+  // pieces are exactly the codes in order.
+  return input
+    .split(STANDARD_CODES)
+    .map((part) =>
+      part.replace(/(?<![A-Za-z0-9])\d+/g, (run) =>
+        run.replace(/\d/g, (d) => DEVA_DIGITS[Number(d)] ?? d),
+      ),
+    )
+    .reduce((acc, part, i) => acc + part + (codes[i] ?? ""), "");
 }
 
 /** Zero-padded to two places, matching the "०१" the reference counts in. */

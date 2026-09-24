@@ -6,7 +6,7 @@ import {
   Marquee,
   Pill,
 } from "@/components/ui/primitives";
-import { devaNumber } from "@/components/ui/patterns";
+import { devaDigits, devaNumber } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 
 export default function Skills() {
@@ -32,14 +32,14 @@ export default function Skills() {
               <div className="md:col-span-5">
                 <div className="flex items-baseline gap-2.5">
                   <span className="font-mono text-[0.6875rem] tracking-[0.1em] text-secondary tabular-nums">
-                    {String(index + 1).padStart(2, "0")}
+                    {devaNumber(index + 1, 2)}
                   </span>
                   <h3 className="font-display text-[1.0625rem] font-semibold tracking-tight">
                     {category.title}
                   </h3>
                 </div>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-                  {category.evidence}
+                  {devaDigits(category.evidence)}
                 </p>
               </div>
 
@@ -71,7 +71,7 @@ export default function Skills() {
             <Label tone="gold">Full inventory</Label>
           </span>
           <Label tone="outline">
-            {String(allTechnologies.length).padStart(2, "0")} tools
+            {devaNumber(allTechnologies.length, 2)} tools
           </Label>
         </div>
         <div className="rounded-xl border border-outline-variant bg-surface-low py-3">

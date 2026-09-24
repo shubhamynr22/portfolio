@@ -50,10 +50,10 @@ const PRIMARY = "#FFB68C";
 const GOLD = "#E9C349";
 
 const metrics = [
-  { value: "3+", label: "Years shipping" },
-  { value: "100K+", label: "Concurrent users" },
-  { value: "50%", label: "Latency cut" },
-  { value: "10K", label: "Events / sec" },
+  { value: "३+", label: "Years shipping" },
+  { value: "१००K+", label: "Concurrent users" },
+  { value: "५०%", label: "Latency cut" },
+  { value: "१०K", label: "Events / sec" },
 ];
 
 const mono = "Space Mono";
@@ -307,7 +307,7 @@ export default async function Image() {
               <div style={{ display: "flex" }}>
                 SPACE GROTESK · PLUS JAKARTA SANS · SPACE MONO · MUKTA
               </div>
-              <div style={{ display: "flex" }}>INDIA · IST · UTC+5:30</div>
+              <div style={{ display: "flex" }}>INDIA · IST · UTC+५:३०</div>
             </div>
           </div>
         </div>

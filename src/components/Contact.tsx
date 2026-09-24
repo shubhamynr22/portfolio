@@ -11,8 +11,9 @@ import {
   Label,
   Terminal,
 } from "@/components/ui/primitives";
-import { CornerMarks, Jali, LiveDot } from "@/components/ui/patterns";
+import { CornerMarks, Jali, LiveDot, devaDigits, devaForce } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
+import { Spotlight } from "@/components/motion/Spotlight";
 import { cn } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -111,7 +112,7 @@ export default function Contact() {
       code: "०३",
       group: "Wire",
       title: "WhatsApp",
-      handle: personalInfo.phone,
+      handle: devaForce(personalInfo.phone),
       action: "Instant sync",
       href: whatsapp,
       icon: SiWhatsapp,
@@ -228,7 +229,7 @@ export default function Contact() {
                 <div className="flex flex-col justify-between rounded-xl border border-outline-variant bg-surface/70 px-3.5 py-3">
                   <Label tone="outline">Direct wire</Label>
                   <span className="mt-1 font-display text-[0.9375rem] font-semibold">
-                    {personalInfo.phone}
+                    {devaForce(personalInfo.phone)}
                   </span>
                   <span className="mt-0.5">
                     <Label tone="gold">Voice · WhatsApp</Label>
@@ -237,10 +238,10 @@ export default function Contact() {
                 <div className="flex flex-col justify-between rounded-xl border border-outline-variant bg-surface/70 px-3.5 py-3">
                   <Label tone="outline">Chronometer</Label>
                   <span className="mt-1 font-display text-[0.9375rem] font-semibold tabular-nums">
-                    {clock ? `${clock} IST` : "--:--:-- IST"}
+                    {clock ? devaDigits(`${clock} IST`) : "--:--:-- IST"}
                   </span>
                   <span className="mt-0.5">
-                    <Label tone="primary">UTC+5:30 · India</Label>
+                    <Label tone="primary">{devaDigits("UTC+5:30 · India")}</Label>
                   </span>
                 </div>
               </div>
@@ -335,7 +336,7 @@ export default function Contact() {
             const Icon = node.icon;
             return (
               <Reveal key={node.title} delay={index * 60}>
-                <a
+                <Spotlight
                   href={node.href}
                   {...(node.download
                     ? { download: "" }
@@ -370,7 +371,7 @@ export default function Contact() {
                       →
                     </span>
                   </div>
-                </a>
+                </Spotlight>
               </Reveal>
             );
           })}

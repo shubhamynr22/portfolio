@@ -1,8 +1,9 @@
 import { ArrowUpRight, MoveRight } from "lucide-react";
 import { projects } from "@/lib/data";
 import { Section, SectionHeading, Label, Pill } from "@/components/ui/primitives";
-import { Jali, devaNumber } from "@/components/ui/patterns";
+import { Jali, devaDigits, devaNumber } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
+import { Spotlight } from "@/components/motion/Spotlight";
 import { ButtonLink } from "@/components/ui/button";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -44,7 +45,7 @@ export default function Projects() {
               delay={index * 60}
               className="w-[84vw] shrink-0 snap-start sm:w-[420px] lg:w-[520px]"
             >
-              <article className="flex h-full flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-low transition-colors hover:border-outline">
+              <Spotlight className="flex h-full flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-low transition-colors hover:border-outline">
                 <div className="relative flex items-center justify-between gap-3 border-b border-outline-variant px-4 py-2.5">
                   <Label tone="gold">
                     {devaNumber(index + 1, 2)} /{" "}
@@ -61,13 +62,13 @@ export default function Projects() {
                   </h3>
 
                   <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted-foreground">
-                    {project.summary}
+                    {devaDigits(project.summary)}
                   </p>
 
                   <div className="mt-5 rounded-md border-l-2 border-secondary/50 bg-surface/60 py-3 pr-3 pl-4">
                     <Label tone="outline">Why it exists</Label>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {project.problem}
+                      {devaDigits(project.problem)}
                     </p>
                   </div>
 
@@ -110,7 +111,7 @@ export default function Projects() {
                     ) : null}
                   </div>
                 </div>
-              </article>
+              </Spotlight>
             </Reveal>
           ))}
 

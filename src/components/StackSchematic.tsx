@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/primitives";
-import { devaNumber } from "@/components/ui/patterns";
+import { devaDigits, devaNumber } from "@/components/ui/patterns";
 import { cn } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -35,16 +35,16 @@ const groups: Group[] = [
     accent: "var(--outline)",
     muted: true,
     layers: [
-      { index: "01", name: "Client", detail: "React · Next.js · WebSocket" },
-      { index: "02", name: "Channels", detail: "Email · WhatsApp Business API" },
+      { index: "०१", name: "Client", detail: "React · Next.js · WebSocket" },
+      { index: "०२", name: "Channels", detail: "Email · WhatsApp Business API" },
     ],
   },
   {
     title: "Intelligence",
     accent: "var(--primary)",
     layers: [
-      { index: "03", name: "Agents", detail: "Orchestrator · Sub-agents · Tool calling" },
-      { index: "04", name: "Grounding", detail: "OpenAI API · RAG · Execution plans" },
+      { index: "०३", name: "Agents", detail: "Orchestrator · Sub-agents · Tool calling" },
+      { index: "०४", name: "Grounding", detail: "OpenAI API · RAG · Execution plans" },
     ],
   },
   {
@@ -52,8 +52,8 @@ const groups: Group[] = [
     accent: "var(--outline)",
     muted: true,
     layers: [
-      { index: "05", name: "Services", detail: "Identity · RBAC · Orders · Wallet" },
-      { index: "06", name: "Events", detail: "EventBridge · SQS · Kafka · RabbitMQ" },
+      { index: "०५", name: "Services", detail: "Identity · RBAC · Orders · Wallet" },
+      { index: "०६", name: "Events", detail: "EventBridge · SQS · Kafka · RabbitMQ" },
     ],
   },
   {
@@ -61,8 +61,8 @@ const groups: Group[] = [
     accent: "var(--outline-variant)",
     muted: true,
     layers: [
-      { index: "07", name: "Data", detail: "PostgreSQL · MongoDB · Redis" },
-      { index: "08", name: "Runtime", detail: "AWS · Docker · CI/CD" },
+      { index: "०७", name: "Data", detail: "PostgreSQL · MongoDB · Redis" },
+      { index: "०८", name: "Runtime", detail: "AWS · Docker · CI/CD" },
     ],
   },
 ];
@@ -127,7 +127,9 @@ export function StackSchematic({ className }: { className?: string }) {
 
       <div className="border-t border-outline-variant px-4 py-2.5">
         <Label tone="outline">
-          Scale: 100K+ concurrent · 10K events/sec · near-100% delivery
+          {devaDigits(
+            "Scale: 100K+ concurrent · 10K events/sec · near-100% delivery",
+          )}
         </Label>
       </div>
     </figure>
