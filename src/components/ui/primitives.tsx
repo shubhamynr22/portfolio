@@ -13,10 +13,14 @@ export function Label({
   children,
   className,
   tone = "muted",
+  lang,
 }: {
   children: ReactNode;
   className?: string;
   tone?: "muted" | "primary" | "foreground" | "gold" | "outline";
+  /** Set where the label is not English — Devanagari notation and
+   *  Devanagari numerals — so a screen reader picks the right voice. */
+  lang?: string;
 }) {
   const tones = {
     muted: "text-muted-foreground",
@@ -28,7 +32,11 @@ export function Label({
     gold: "text-secondary",
     foreground: "text-foreground",
   } as const;
-  return <span className={cn("label", tones[tone], className)}>{children}</span>;
+  return (
+    <span lang={lang} className={cn("label", tones[tone], className)}>
+      {children}
+    </span>
+  );
 }
 
 /* ── Structure ── */
@@ -174,11 +182,12 @@ export function SectionHeading({
   size = "lg",
 }: {
   index: number;
-  eyebrow: string;
+  /** Optional. Omitted wherever it would only restate the title. */
+  eyebrow?: string;
   title: ReactNode;
   description?: string;
   className?: string;
-  /** Right-hand notation, e.g. "08 domains" — balances the header row. */
+  /** Right-hand notation, e.g. "०८ domains" — balances the header row. */
   aside?: string;
   size?: "md" | "lg";
 }) {
@@ -187,7 +196,7 @@ export function SectionHeading({
       <div className="flex items-center gap-3 pb-4">
         <span className="h-px w-5 bg-secondary" aria-hidden="true" />
         <DevaIndex value={index} />
-        <Label tone="gold">{eyebrow}</Label>
+        {eyebrow ? <Label tone="gold">{eyebrow}</Label> : null}
         <span className="flex-1" />
         {aside ? <Label tone="outline">{aside}</Label> : null}
       </div>

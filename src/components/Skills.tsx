@@ -6,6 +6,7 @@ import {
   Marquee,
   Pill,
 } from "@/components/ui/primitives";
+import { devaNumber } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 
 export default function Skills() {
@@ -13,10 +14,9 @@ export default function Skills() {
     <Section id="skills" size="lg">
       <SectionHeading
         index={2}
-        eyebrow="Capabilities"
-        title="Technical depth"
-        description="Eight areas I work in, with the outcome each one produced. Every evidence line is traceable to a role below."
-        aside={`${String(skillCategories.length).padStart(2, "0")} domains`}
+        title="Capabilities"
+        description="Eight areas, each with the outcome it produced — every line traceable to a role below."
+        aside={`${devaNumber(skillCategories.length, 2)} domains`}
       />
 
       {/* ── Capability matrix ── */}

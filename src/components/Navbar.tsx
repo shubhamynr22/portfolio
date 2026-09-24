@@ -7,7 +7,7 @@ import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react";
 import { navLinks, personalInfo, availability } from "@/lib/data";
 import { ButtonLink } from "@/components/ui/button";
 import { Label } from "@/components/ui/primitives";
-import { LiveDot } from "@/components/ui/patterns";
+import { LiveDot, devaNumber } from "@/components/ui/patterns";
 import { scrollToSection } from "@/components/SmoothScroll";
 import { cn } from "@/lib/utils";
 
@@ -34,6 +34,7 @@ function useIstClock() {
       // IST is UTC+5:30 with no DST, so the offset is a constant and does
       // not need a timezone database.
       const ist = new Date(now.getTime() + (330 + now.getTimezoneOffset()) * 60000);
+      // The clock keeps Latin digits — it is a timestamp, not notation.
       const p = (n: number) => String(n).padStart(2, "0");
       setTime(`${p(ist.getHours())}:${p(ist.getMinutes())}:${p(ist.getSeconds())}`);
     };
@@ -97,10 +98,13 @@ export default function Navbar() {
             )}
           >
             <div className="mx-auto flex h-8 w-full max-w-[1200px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+              {/* Was the availability line, which also sits in the hero
+                  directly above the name. This rail is a locator, so it
+                  locates: where the work is done, and what time it is there. */}
               <div className="flex min-w-0 items-center gap-2.5">
-                <LiveDot tone="live" />
+                <LiveDot tone="secondary" />
                 <Label tone="gold" className="shrink-0">
-                  {availability.status}
+                  {personalInfo.location}
                 </Label>
                 <span className="hidden truncate sm:inline">
                   <Label tone="outline">{availability.note}</Label>
@@ -150,7 +154,7 @@ export default function Navbar() {
                   className="group flex items-baseline gap-1.5 rounded-md px-2.5 py-2 transition-colors hover:bg-surface-high"
                 >
                   <span className="font-mono text-[0.625rem] tracking-[0.1em] text-outline transition-colors group-hover:text-secondary">
-                    {String(index + 1).padStart(2, "0")}
+                    {devaNumber(index + 1, 2)}
                   </span>
                   <span className="text-sm text-muted-foreground transition-colors group-hover:text-foreground">
                     {link.label}
@@ -230,7 +234,7 @@ export default function Navbar() {
                   className="group flex w-full items-baseline gap-4 border-b border-outline-variant/60 py-5 text-left"
                 >
                   <span className="font-mono text-[0.6875rem] tracking-[0.12em] text-secondary">
-                    {String(index + 1).padStart(2, "0")}
+                    {devaNumber(index + 1, 2)}
                   </span>
                   <span className="display display-md text-foreground transition-colors group-hover:text-primary">
                     {link.label}
@@ -240,10 +244,6 @@ export default function Navbar() {
             </nav>
 
             <div className="shrink-0 space-y-4 border-t border-outline-variant px-5 py-6">
-              <div className="flex items-center gap-2.5">
-                <LiveDot tone="live" />
-                <Label tone="gold">{availability.status}</Label>
-              </div>
               <div className="grid grid-cols-2 gap-2">
                 <ButtonLink href={`mailto:${personalInfo.email}`} size="lg">
                   Email

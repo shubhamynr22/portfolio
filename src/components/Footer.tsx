@@ -3,7 +3,7 @@
 import { ArrowUp } from "lucide-react";
 import { navLinks, personalInfo } from "@/lib/data";
 import { Label } from "@/components/ui/primitives";
-import { LiveDot } from "@/components/ui/patterns";
+import { LiveDot, devaNumber } from "@/components/ui/patterns";
 import { scrollToSection } from "@/components/SmoothScroll";
 
 const buildStack = [
@@ -102,7 +102,7 @@ export default function Footer() {
               className="group flex items-baseline gap-2.5 text-left"
             >
               <span className="font-mono text-[0.625rem] tracking-[0.12em] text-outline">
-                {String(index + 1).padStart(2, "0")}
+                {devaNumber(index + 1, 2)}
               </span>
               <span className="text-sm text-muted-foreground transition-colors group-hover:text-primary">
                 {link.label}
@@ -147,11 +147,10 @@ export default function Footer() {
 
       {/* ── Colophon ── */}
       <div className="mx-auto w-full max-w-[1200px] px-5 pb-8 sm:px-8 lg:px-12">
-        <p className="max-w-3xl text-[0.8125rem] leading-relaxed text-muted-foreground">
-          Built from scratch with {buildStack.join(", ")}. Content lives in a
-          single typed data file. Set in {typeStack.slice(0, 3).join(", ")} with{" "}
-          {typeStack[3]} carrying every Devanagari glyph — the hero name holds
-          both scripts in one line and alternates between them.
+        {/* One line. It was three, and the third explained the type system to
+            the one person on earth who already knew it. */}
+        <p className="text-[0.8125rem] leading-relaxed text-muted-foreground">
+          Built from scratch with {buildStack.join(", ")}.
         </p>
       </div>
 
@@ -161,7 +160,7 @@ export default function Footer() {
           © {year} {personalInfo.name}
         </Label>
         <Label tone="outline" className="hidden md:inline">
-          Type: Space Grotesk · Plus Jakarta Sans · Space Mono · Mukta
+          {typeStack.join(" · ")}
         </Label>
         <button
           onClick={() => scrollToSection(0, 0)}

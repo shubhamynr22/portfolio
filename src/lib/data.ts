@@ -123,8 +123,7 @@ export const heroMetrics: Metric[] = [
  * ────────────────────────────────────────────────────────────────── */
 
 export const aboutBio = [
-  "I'm an AI-focused backend engineer with 3+ years building and scaling distributed systems in Node.js and NestJS across SaaS, Fintech, and consumer AI products. At Memorea I designed and built a multi-agent architecture from scratch — a custom agent harness with an orchestrator, specialised sub-agents and tool calling — to replace a single prompt-response model.",
-  "I care about the parts that decide whether a system holds up: grounding model output in real data instead of guesses, making message delivery reliable at scale, and the failure modes nobody sees until 3am. I've shipped production agentic systems used by real users, supported 100k+ concurrent users, and led backend design for a financial platform from zero to production.",
+  "I designed and built the multi-agent architecture at Memorea from scratch — a custom agent harness with an orchestrator, specialised sub-agents and tool calling, replacing a single prompt-response model. Most of the work since has been in the parts that decide whether that holds up under load: grounding model output in real data, delivery that survives a broker going down, and the failure modes nobody sees until 3am.",
 ];
 
 export const stats = [
@@ -447,7 +446,7 @@ export const education = {
   degree: "B.Tech in Information Technology",
   institution: "Indian Institute of Information Technology, Sonepat",
   location: "Sonepat",
-  year: "2019 — 2023",
+  year: "२०१९ — २०२३",
   cgpa: "7.9/10",
   coursework:
     "Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, Object-Oriented Programming",

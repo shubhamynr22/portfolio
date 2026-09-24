@@ -4,6 +4,66 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════════════════════════════════
+   THE NAME'S INDIC FACES
+
+   Five script subsets, cut to the exact glyphs of the name and self-hosted.
+   They total 15 KB — the same five families unsubsetted are ~630 KB, because
+   next/font offers only whole-script subsets for these and its `text` option
+   is absent from the loader's type in this version. Preloaded in layout.tsx.
+
+   The `Subset` suffix keeps them from colliding with a system-installed Noto
+   of the same family at a different version, which would silently render a
+   different cut of the letterforms depending on the visitor's machine.
+
+   Devanagari is not here: Mukta is loaded through next/font as a full
+   `devanagari` subset, because the rest of the site writes in it too.
+   ═══════════════════════════════════════════════════════════════════ */
+@font-face {
+  font-family: "Noto Bengali Subset";
+  src: url("/fonts/bengali-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Gurmukhi Subset";
+  src: url("/fonts/gurmukhi-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Gujarati Subset";
+  src: url("/fonts/gujarati-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Tamil Subset";
+  src: url("/fonts/tamil-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Telugu Subset";
+  src: url("/fonts/telugu-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bound to the same custom properties lib/scripts.ts hands the name. */
+:root {
+  --font-bengali: "Noto Bengali Subset";
+  --font-gurmukhi: "Noto Gurmukhi Subset";
+  --font-gujarati: "Noto Gujarati Subset";
+  --font-tamil: "Noto Tamil Subset";
+  --font-telugu: "Noto Telugu Subset";
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    ARCHIVAL TERMINAL — DESIGN TOKENS
 
    One system, two grounds. The dark theme is the primary reading of it
@@ -271,67 +331,265 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   THE NAME, IN TWO SCRIPTS
+   THE NAME, IN SEVEN SCRIPTS, GLYPH BY GLYPH
 
-   Unchanged in principle from the previous round, re-measured for the new
-   faces: Latin is Space Grotesk 700, Devanagari is Mukta 800. They are no
-   longer the same family, so --deva-scale is doing more work than before —
-   see the measurement note in Hero.tsx.
+   Every script is in the DOM at once, stacked in one grid cell, and each is
+   moved through a window of a single shared cycle. Only one script is
+   readable at any moment; adjacent windows overlap by ~3%, which is where
+   the hand-off happens.
+
+   ── Why each glyph animates separately ──
+   The interesting part of the effect is not the crossfade, it is that the
+   letters arrive as a wave: glyph n waits `--glyph-step` longer than glyph
+   n-1, so a six-letter word resolves left to right and dissolves the same
+   way. That is one animation-name per script and one delay per glyph —
+   both generated from lib/scripts.ts, so adding a script is data, not CSS.
+
+   ── Cycle budget (18s) ──
+     latin        0    → 21    visible, out by 24
+     devanagari   18.5 → 21.5  in, 21.5 → 30.5 visible, out by 33.5
+     bengali      31   → 34    in, 34   → 43   visible, out by 46
+     gurmukhi     44   → 47    in, 47   → 56   visible, out by 59
+     gujarati     57   → 60    in, 60   → 69   visible, out by 72
+     tamil        70   → 73    in, 73   → 82   visible, out by 85
+     telugu       83   → 86    in, 86   → 97   visible, out by 100
+   Latin holds twice as long as any other because it is the resting state:
+   a visitor who looks away and looks back should see the name in Latin,
+   not catch it mid-rotation.
 
    Both spans share one grid cell, so the block is always as wide as the
-   wider script and the layout never shifts as it alternates. */
-.name-swap {
+   widest script and the layout never shifts as it cycles. */
+
+.name-scripts {
   display: grid;
   align-items: baseline;
 }
-.name-swap > * {
+.name-scripts > * {
   grid-area: 1 / 1;
   min-width: 0;
 }
-/* 1.1, measured rather than inherited. Canvas ink metrics at 100px:
-     Space Grotesk 700 "Shubham"  ascent 0.714 em, advance 4.516 em
-     Mukta 800        "शुभम"      ascent 0.650 em, advance 1.965 em
-   The Devanagari body is 91% of the Latin cap height at the same nominal
-   size, so the multiplier closes that gap. Matching the *advance* instead
-   would need 2.3x, which is the wrong target: Devanagari is genuinely more
-   compact horizontally, and scaling it up to match Latin width would make
-   it tower over the Latin line. Height is what the eye reads as size. */
-.name-swap .name-deva {
-  font-family: var(--font-mukta), sans-serif;
-  font-weight: 800;
-  font-size: calc(1em * var(--deva-scale, 1.1));
+
+.name-variant {
+  white-space: nowrap;
   line-height: 1;
+  /* Each script's optical correction, measured per face — see lib/scripts.ts. */
+  font-size: calc(1em * var(--script-scale, 1));
+  font-family: var(--script-font, inherit);
+  font-weight: 700;
 }
+
+/* Mukta's display weight is 800, not the 700 the Noto faces carry; without
+   this the browser would synthesise a bold and smear it. */
+.name-variant[data-script="devanagari"] {
+  font-weight: 800;
+}
+
+.name-glyph {
+  display: inline-block;
+  animation-duration: var(--name-cycle, 18s);
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  /* `both` matters: before a glyph's delay elapses it must show the
+     keyframe's 0% state, not its own un-animated style, or the first
+     letter of each script flashes in the previous script's place. */
+  animation-fill-mode: both;
+  animation-delay: var(--glyph-delay, 0s);
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .name-swap[data-animate="true"] .name-latin,
-  .name-swap[data-animate="true"] .name-deva {
-    animation: name-swap var(--name-cycle, 10s) var(--ease-in-out) infinite;
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="latin"]
+    .name-glyph {
+    animation-name: name-flip-latin;
   }
-  .name-swap[data-animate="true"] .name-deva {
-    animation-delay: calc(var(--name-cycle, 10s) / -2);
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="devanagari"]
+    .name-glyph {
+    animation-name: name-flip-devanagari;
+  }
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="bengali"]
+    .name-glyph {
+    animation-name: name-flip-bengali;
+  }
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="gurmukhi"]
+    .name-glyph {
+    animation-name: name-flip-gurmukhi;
+  }
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="gujarati"]
+    .name-glyph {
+    animation-name: name-flip-gujarati;
+  }
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="tamil"]
+    .name-glyph {
+    animation-name: name-flip-tamil;
+  }
+  .name-scripts[data-animate="true"]
+    .name-variant[data-script="telugu"]
+    .name-glyph {
+    animation-name: name-flip-telugu;
+  }
+
+  /* The caption names whichever script is on screen, on the same clock. */
+  .name-caption .name-script-label {
+    animation-duration: var(--name-cycle, 18s);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+  }
+  .name-caption .name-script-label[data-script="latin"] {
+    animation-name: name-flip-latin;
+  }
+  .name-caption .name-script-label[data-script="devanagari"] {
+    animation-name: name-flip-devanagari;
+  }
+  .name-caption .name-script-label[data-script="bengali"] {
+    animation-name: name-flip-bengali;
+  }
+  .name-caption .name-script-label[data-script="gurmukhi"] {
+    animation-name: name-flip-gurmukhi;
+  }
+  .name-caption .name-script-label[data-script="gujarati"] {
+    animation-name: name-flip-gujarati;
+  }
+  .name-caption .name-script-label[data-script="tamil"] {
+    animation-name: name-flip-tamil;
+  }
+  .name-caption .name-script-label[data-script="telugu"] {
+    animation-name: name-flip-telugu;
   }
 }
+
+/* Without motion, the name is simply the name: Latin, still, every other
+   script removed from the flow rather than hidden behind an animation that
+   will never run. */
 @media (prefers-reduced-motion: reduce) {
-  .name-swap .name-deva {
+  .name-variant:not([data-script="latin"]),
+  .name-caption .name-script-label:not([data-script="latin"]) {
     display: none;
   }
 }
-/* Half the cycle each, with the hand-off held short so most of the time is
-   spent legible rather than mid-fade. */
-@keyframes name-swap {
+
+/* Latin is the resting state, so its window opens visible at 0% and closes
+   visible at 100% — anything else would pop on the loop boundary. */
+@keyframes name-flip-latin {
   0%,
-  42% {
+  21% {
     opacity: 1;
     transform: translateY(0);
   }
-  50%,
-  92% {
+  24%,
+  97% {
     opacity: 0;
-    transform: translateY(-0.08em);
+    transform: translateY(0.28em);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+@keyframes name-flip-devanagari {
+  0%,
+  18.5% {
+    opacity: 0;
+    transform: translateY(0.28em);
+  }
+  21.5%,
+  30.5% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  33.5%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.22em);
+  }
+}
+@keyframes name-flip-bengali {
+  0%,
+  31% {
+    opacity: 0;
+    transform: translateY(0.28em);
+  }
+  34%,
+  43% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  46%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.22em);
+  }
+}
+@keyframes name-flip-gurmukhi {
+  0%,
+  44% {
+    opacity: 0;
+    transform: translateY(0.28em);
+  }
+  47%,
+  56% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  59%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.22em);
+  }
+}
+@keyframes name-flip-gujarati {
+  0%,
+  57% {
+    opacity: 0;
+    transform: translateY(0.28em);
+  }
+  60%,
+  69% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  72%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.22em);
+  }
+}
+@keyframes name-flip-tamil {
+  0%,
+  70% {
+    opacity: 0;
+    transform: translateY(0.28em);
+  }
+  73%,
+  82% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  85%,
+  100% {
+    opacity: 0;
+    transform: translateY(-0.22em);
+  }
+}
+@keyframes name-flip-telugu {
+  0%,
+  83% {
+    opacity: 0;
+    transform: translateY(0.28em);
+  }
+  86%,
+  97% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-0.22em);
   }
 }
 

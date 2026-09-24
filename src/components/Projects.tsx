@@ -1,7 +1,7 @@
 import { ArrowUpRight, MoveRight } from "lucide-react";
 import { projects } from "@/lib/data";
 import { Section, SectionHeading, Label, Pill } from "@/components/ui/primitives";
-import { Jali } from "@/components/ui/patterns";
+import { Jali, devaNumber } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 import { ButtonLink } from "@/components/ui/button";
 
@@ -47,8 +47,8 @@ export default function Projects() {
               <article className="flex h-full flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-low transition-colors hover:border-outline">
                 <div className="relative flex items-center justify-between gap-3 border-b border-outline-variant px-4 py-2.5">
                   <Label tone="gold">
-                    {String(index + 1).padStart(2, "0")} /{" "}
-                    {String(projects.length).padStart(2, "0")}
+                    {devaNumber(index + 1, 2)} /{" "}
+                    {devaNumber(projects.length, 2)}
                   </Label>
                   <Label tone="outline">
                     {project.repo ? "Repository" : "On request"}

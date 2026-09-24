@@ -15,7 +15,8 @@ import {
   CornerMarks,
   Jali,
   LiveDot,
-  NameLine,
+  NameCycler,
+  ScriptCaption,
 } from "@/components/ui/patterns";
 import { MetricCounter } from "@/components/motion/MetricCounter";
 import { StackSchematic } from "@/components/StackSchematic";
@@ -44,8 +45,6 @@ import { cn } from "@/lib/utils";
  * ────────────────────────────────────────────────────────────────── */
 
 export default function Hero() {
-  const [first, last] = personalInfo.name.split(" ");
-
   return (
     <section id="hero" className="relative isolate overflow-hidden pt-32 pb-0 sm:pt-36">
       {/* Ambient specular — the one place a blur is allowed, because it is
@@ -60,34 +59,18 @@ export default function Hero() {
       />
 
       <div className="relative mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-12">
-        {/* ── Transmission rail ── */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-primary" aria-hidden="true">
-              ◊
-            </span>
-            <Label tone="gold">Direct transmission · संवाद</Label>
-          </div>
-          <Label tone="outline">Portfolio · 2026</Label>
-        </div>
-
-        {/* ── Availability banner ── */}
-        <div className="mb-6 flex flex-col gap-4 rounded-xl border border-outline-variant bg-surface-low px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+        {/* ── Availability banner ──
+            The single home for "open to new roles" on the whole site. It was
+            in three places at once — here, the navbar rail and the contact
+            banner — which made a status line read as filler. */}
+        <div className="mb-6 flex flex-col gap-3 rounded-xl border border-outline-variant bg-surface-low px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <LiveDot tone="live" />
             <span className="label font-semibold text-foreground">
               {availability.status}
             </span>
-            <span className="hidden text-outline sm:inline" aria-hidden="true">
-              •
-            </span>
-            <span className="hidden sm:inline">
-              <Label tone="outline">{availability.note}</Label>
-            </span>
           </div>
-          <Label tone="primary" className="rounded-sm bg-surface-high px-2.5 py-1">
-            Node · Kafka · AWS · Python
-          </Label>
+          <Label tone="outline">{availability.note}</Label>
         </div>
 
         {/* ── Primary terminal ── */}
@@ -116,17 +99,23 @@ export default function Hero() {
               </div>
 
               {/* aria-label carries the plain name so a screen reader
-                  announces it once; the Devanagari half is aria-hidden and
-                  purely visual. Two lines, in two scripts each. */}
+                  announces it exactly once; all seven script variants are
+                  aria-hidden and purely visual. */}
               <h1
                 className="display display-xl mt-8 text-foreground"
                 aria-label={personalInfo.name}
               >
-                <NameLine latin={first} deva="शुभम" />
-                <NameLine latin={last} deva="गुप्ता" className="text-primary" />
+                <NameCycler line="first" />
+                <NameCycler line="last" className="text-primary" />
               </h1>
 
-              <div className="mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+              {/* Names the script currently on screen — the same keyframes on
+                  the same clock as the name itself. */}
+              <div className="mt-3">
+                <ScriptCaption />
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
                 {heroRoles.map((role, index) => (
                   <span key={role} className="flex items-center gap-2.5">
                     {index > 0 && (
@@ -176,12 +165,10 @@ export default function Hero() {
           </div>
         </Terminal>
 
-        {/* ── Instrument strip ── */}
+        {/* ── Instrument strip ──
+            No header row: "Telemetry · 4 channels" labelled four numbers that
+            two of them already label themselves. */}
         <div className="mt-6 overflow-hidden rounded-xl border border-outline-variant bg-surface-low">
-          <div className="flex items-center justify-between border-b border-outline-variant px-4 py-2.5">
-            <Label tone="gold">Telemetry</Label>
-            <Label tone="outline">4 channels</Label>
-          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4">
             {heroMetrics.map((metric, index) => (
               <div

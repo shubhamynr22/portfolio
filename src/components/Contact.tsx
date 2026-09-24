@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { ArrowUpRight, Check, Copy, FileText, Send } from "lucide-react";
 import { SiGithub, SiWhatsapp } from "react-icons/si";
 import { FaLinkedinIn } from "react-icons/fa6";
-import { availability, personalInfo } from "@/lib/data";
+import { personalInfo } from "@/lib/data";
 import {
   Section,
+  SectionHeading,
   Label,
   Terminal,
 } from "@/components/ui/primitives";
@@ -129,47 +130,25 @@ export default function Contact() {
 
   return (
     <Section id="contact" size="lg">
-      {/* ── Header ── */}
-      <header className="flex flex-col gap-6 border-b border-outline-variant pb-6 md:flex-row md:items-end md:justify-between">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-primary" aria-hidden="true">
-              ◊
-            </span>
-            <Label tone="gold">Direct transmission · संवाद</Label>
-          </div>
-          <h2 className="display display-lg text-foreground">
+      {/* ── Header ──
+          No availability banner. "Open to new roles" was in three places and
+          is now in one (the hero); a status line repeated at every scroll
+          depth stops reading as a status. No eyebrow above the heading
+          either — "Direct transmission · संवाद" said nothing the heading
+          does not, and a heading with a label over it is a heading twice. */}
+      <SectionHeading
+        index={5}
+        title={
+          <>
             Let&rsquo;s talk{" "}
             <span className="font-normal text-primary">— संवाद करें</span>
-          </h2>
-        </div>
-        <p className="max-w-md text-sm leading-relaxed text-muted-foreground md:text-[0.9375rem]">
-          Open to backend AI, high-concurrency platform and distributed-systems
-          roles. The wire is open below.
-        </p>
-      </header>
-
-      {/* ── Availability ── */}
-      <div className="mt-6 flex flex-col gap-4 rounded-xl border border-outline-variant bg-surface-low px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <LiveDot tone="live" />
-          <span className="label font-semibold text-foreground">
-            {availability.status}
-          </span>
-          <span className="hidden text-outline sm:inline" aria-hidden="true">
-            •
-          </span>
-          <span className="hidden sm:inline">
-            <Label tone="outline">{availability.note}</Label>
-          </span>
-        </div>
-        <Label tone="primary" className="rounded-sm bg-surface-high px-2.5 py-1">
-          Replies within a day
-        </Label>
-      </div>
+          </>
+        }
+        description="Open to backend AI, high-concurrency platform and distributed-systems roles."
+      />
 
       {/* ── Primary terminal ── */}
-      <Reveal className="mt-6">
+      <Reveal className="mt-10">
         <Terminal className="overflow-hidden p-6 sm:p-8">
           <Jali id="jali-contact" opacity={0.065} className="text-secondary" />
           <CornerMarks
@@ -202,10 +181,10 @@ export default function Contact() {
               {/* Dispatch target */}
               <div className="flex flex-col gap-3 rounded-xl border border-outline-variant bg-surface px-4 py-4">
                 <div className="flex items-center justify-between gap-3">
-                  <Label tone="outline">Primary dispatch target</Label>
+                  <Label tone="outline">Email</Label>
                   <span className="flex items-center gap-1.5">
                     <LiveDot tone="live" />
-                    <Label tone="gold">Direct to inbox</Label>
+                    <Label tone="gold">Direct</Label>
                   </span>
                 </div>
 
@@ -277,12 +256,6 @@ export default function Contact() {
                     </span>
                     <Label tone="gold">Quick dispatch console</Label>
                   </span>
-                  <Label
-                    tone="outline"
-                    className="shrink-0 whitespace-nowrap"
-                  >
-                    Ingress ०५
-                  </Label>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -319,13 +292,7 @@ export default function Contact() {
                   />
                 </Field>
 
-                <div className="flex flex-col gap-3 pt-0.5 sm:flex-row sm:items-center sm:justify-between">
-                  {/* Shown at every width, not just desktop: this is the one
-                      sentence that stops the console from being mistaken for
-                      a form that transmits. */}
-                  <Label tone="outline" className="text-center sm:text-left">
-                    Opens your mail client — nothing sends from this page
-                  </Label>
+                <div className="flex flex-col gap-3 pt-0.5 sm:flex-row sm:items-center sm:justify-end">
                   <button
                     type="submit"
                     className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-lg bg-primary-fill px-5 text-[0.9375rem] font-medium whitespace-nowrap text-on-primary-fill shadow-[0_0_18px_-2px_var(--accent-halo)] transition-colors hover:bg-primary-fill-hover active:scale-[0.98] sm:w-auto"
@@ -358,9 +325,9 @@ export default function Contact() {
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <span className="flex items-center gap-2">
             <span className="h-px w-5 bg-secondary" aria-hidden="true" />
-            <Label tone="gold">Relay channels · प्राधिकृत लिंक</Label>
+            <Label tone="gold">Elsewhere</Label>
           </span>
-          <Label tone="outline">4 nodes synchronised</Label>
+          <Label tone="outline">४ sync</Label>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

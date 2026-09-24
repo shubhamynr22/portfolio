@@ -1,4 +1,5 @@
 import { Label } from "@/components/ui/primitives";
+import { devaNumber } from "@/components/ui/patterns";
 import { cn } from "@/lib/utils";
 
 /* ──────────────────────────────────────────────────────────────────
@@ -74,9 +75,9 @@ export function StackSchematic({ className }: { className?: string }) {
           <span className="text-primary" aria-hidden="true">
             ◊
           </span>
-          <Label tone="foreground">Fig. 01 — System I build</Label>
+          <Label tone="foreground">The system</Label>
         </span>
-        <Label tone="outline">8 layers</Label>
+        <Label tone="outline">{devaNumber(8, 2)} layers</Label>
       </figcaption>
 
       <div className="divide-y divide-outline-variant/60">

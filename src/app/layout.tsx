@@ -9,6 +9,15 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
+/** Kept in step with the @font-face block in globals.css. */
+const INDIC_FONTS = [
+  "bengali-700.woff2",
+  "gurmukhi-700.woff2",
+  "gujarati-700.woff2",
+  "tamil-700.woff2",
+  "telugu-700.woff2",
+];
+
 /* ── The type system ──
  * Three Latin voices, each with one job, plus one Devanagari face that is
  * not a voice at all but a fallback.
@@ -49,7 +58,7 @@ const mono = Space_Mono({
   display: "swap",
 });
 
-/* Devanagari only. The hero name alternates between scripts and the site
+/* Devanagari only. The hero name cycles through six scripts and the site
  * carries a handful of Devanagari notations; the Latin half of Mukta would
  * be dead weight that never gets reached. */
 const mukta = Mukta({
@@ -58,6 +67,27 @@ const mukta = Mukta({
   variable: "--font-mukta",
   display: "swap",
 });
+
+/* ── One face per script, and why they are not loaded here ──
+ *
+ * The five non-Devanagari scripts are declared as @font-face in globals.css
+ * and served from public/fonts/, not through next/font.
+ *
+ * next/font would have been the obvious place for them, but it offers only
+ * `subsets` for these families — the whole Bengali or Telugu subset, 139 KB
+ * and 179 KB respectively — and its `text` option, which is what this needs,
+ * is not in the loader's type for this version. Full subsets for five
+ * scripts came to ~630 KB to render seven fixed words.
+ *
+ * So the subsetting happens once, at authoring time, against Google's CSS
+ * API with `text=<the name>`. The five files total 15 KB. They are declared
+ * with `font-display: swap` and preloaded in <head> below, because they are
+ * all above the fold.
+ *
+ * The family names carry a `Subset` suffix so they cannot collide with a
+ * system-installed Noto of the same name at a different version.
+ */
+
 
 import { SITE_URL } from "@/lib/site";
 
@@ -128,6 +158,20 @@ export default function RootLayout({
       className={`${grotesk.variable} ${jakarta.variable} ${mono.variable} ${mukta.variable}`}
     >
       <body className="font-sans antialiased">
+        {/* The five Indic subsets. React hoists these into <head>; they are
+            small enough that preloading all of them costs less than one hero
+            image, and every one of them is above the fold — the name cycles
+            through the lot. */}
+        {INDIC_FONTS.map((file) => (
+          <link
+            key={file}
+            rel="preload"
+            href={`/fonts/${file}`}
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        ))}
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { nameInScripts } from "@/lib/scripts";
 
 /* ═══════════════════════════════════════════════════════════════════
    MOTIF LAYER
@@ -140,56 +141,137 @@ export function LiveDot({
   );
 }
 
-/* ── NameLine ──
-   One line of the name, held in both scripts at once and cycled between
-   them by CSS alone — no timer, no client JS, nothing to hydrate.
+/* ── NameCycler ──
+   One line of the name, present in all seven scripts at once and moved
+   between them by CSS alone — no timer, no client JS, nothing to hydrate.
 
-   Accessibility: the wrapping <h1> carries aria-label with the plain Latin
-   name and the Devanagari span is aria-hidden, so a screen reader hears the
-   name once rather than twice. Latin stays the visible default, so with JS
-   off or motion reduced what renders is the ordinary name. */
-export function NameLine({
-  latin,
-  deva,
+   Grapheme segmentation is not optional here. Splitting by code point would
+   cut शुभम into श + ु, and each span shapes independently, so the vowel sign
+   would detach from its consonant and render against a dotted circle.
+   Intl.Segmenter keeps clusters intact, and the Indic rules it implements
+   (UAX #29 / InCB) keep conjuncts like गु*प्ता* in one piece. The fallback
+   only fires on runtimes without it, and is worse rather than wrong. */
+function splitGraphemes(word: string): string[] {
+  const Segmenter = (
+    Intl as unknown as {
+      Segmenter?: new (
+        locale?: string,
+        opts?: { granularity: string },
+      ) => { segment(input: string): Iterable<{ segment: string }> };
+    }
+  ).Segmenter;
+
+  if (typeof Segmenter === "function") {
+    const segmenter = new Segmenter(undefined, { granularity: "grapheme" });
+    return Array.from(segmenter.segment(word), (s) => s.segment);
+  }
+  return Array.from(word);
+}
+
+/** Seconds each glyph waits behind the one before it, so the word arrives
+ *  as a wave rather than all at once. Kept small: the whole stagger for a
+ *  six-letter word has to fit inside the ~3% overlap between two scripts. */
+const GLYPH_STEP = 0.06;
+
+export function NameCycler({
+  line,
   animate = true,
-  cycle = "10s",
+  cycle = "18s",
   className,
 }: {
-  latin: string;
-  deva: string;
+  line: "first" | "last";
   animate?: boolean;
-  /** Full cycle length; each script holds for half of it. */
+  /** Full cycle length — every script's window is a percentage of it. */
   cycle?: string;
   className?: string;
 }) {
   return (
     <span
-      className={cn("name-swap", className)}
+      className={cn("name-scripts", className)}
       data-animate={animate ? "true" : undefined}
       style={{ "--name-cycle": cycle } as CSSProperties}
+      aria-hidden="true"
     >
-      <span className="name-latin">{latin}</span>
-      <span className="name-deva" lang="hi" aria-hidden="true">
-        {deva}
-      </span>
+      {nameInScripts.map((script) => {
+        const word = line === "first" ? script.first : script.last;
+        return (
+          <span
+            key={script.id}
+            className="name-variant"
+            data-script={script.id}
+            lang={script.lang}
+            style={
+              {
+                "--script-font": `var(${script.font})`,
+                "--script-scale": script.scale,
+              } as CSSProperties
+            }
+          >
+            {splitGraphemes(word).map((glyph, index) => (
+              <span
+                key={index}
+                className="name-glyph"
+                style={
+                  {
+                    "--glyph-delay": `${(index * GLYPH_STEP).toFixed(3)}s`,
+                  } as CSSProperties
+                }
+              >
+                {glyph}
+              </span>
+            ))}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+/* ── ScriptCaption ──
+   Names whichever script is on screen, driven by the same keyframes on the
+   same clock. Without it a visitor who does not read the script sees only
+   that the name changed into something they cannot identify — the caption is
+   what turns the animation from a trick into a piece of information. */
+export function ScriptCaption({ className }: { className?: string }) {
+  return (
+    <span className={cn("name-caption inline-grid align-baseline", className)}>
+      {nameInScripts.map((script) => (
+        <span
+          key={script.id}
+          className="name-script-label label text-secondary"
+          data-script={script.id}
+          lang={script.lang}
+          style={{ gridArea: "1 / 1" }}
+        >
+          {script.label}
+        </span>
+      ))}
     </span>
   );
 }
 
 /* ── Devanagari numerals ──
-   Section indices are counted in the script the site's culture actually
-   counts in. Used as notation, next to the Latin numeral rather than
-   replacing it, so nothing becomes unreadable to a visitor who cannot read
-   Devanagari digits. */
+   Every counting number on the site is written in Devanagari: section
+   indices, nav numbering, career storeys, project positions, relay codes.
+   These are notation — they label where you are, they are not data you have
+   to read a value off — so the script costs a visitor nothing.
+
+   Quantities are the deliberate exception and stay in Latin digits: 3+
+   years, 100K+ concurrent users, 50% latency cut, a 7.9/10 CGPA. Those are
+   the numbers a recruiter scans for, and १००K+ is a decode step in front of
+   the one piece of proof on the page. Notation converts; measurements do
+   not. */
 const DEVA_DIGITS = ["०", "१", "२", "३", "४", "५", "६", "७", "८", "९"];
 
-export function devaNumber(n: number): string {
-  return String(n)
+export function devaNumber(n: number, pad = 0): string {
+  const digits = pad > 0 ? String(n).padStart(pad, "0") : String(n);
+  return digits
     .split("")
     .map((d) => DEVA_DIGITS[Number(d)] ?? d)
     .join("");
 }
 
+/** Zero-padded to two places, matching the "०१" the reference counts in. */
 export function DevaIndex({
   value,
   className,
@@ -199,7 +281,7 @@ export function DevaIndex({
 }) {
   return (
     <span className={cn("label text-secondary", className)} lang="hi">
-      {devaNumber(value)}
+      {devaNumber(value, 2)}
     </span>
   );
 }

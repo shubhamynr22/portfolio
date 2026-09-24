@@ -5,7 +5,7 @@ import {
   Label,
   Panel,
 } from "@/components/ui/primitives";
-import { LiveDot } from "@/components/ui/patterns";
+import { LiveDot, devaNumber } from "@/components/ui/patterns";
 import { Reveal } from "@/components/motion/Reveal";
 import { cn } from "@/lib/utils";
 
@@ -68,10 +68,9 @@ export default function Experience() {
     <Section id="experience" size="lg">
       <SectionHeading
         index={3}
-        eyebrow="Experience"
-        title="Where I've shipped"
-        description="Six roles, in reverse order. Each one leads with the number it moved."
-        aside={`${String(experiences.length).padStart(2, "0")} storeys`}
+        title="Experience"
+        description="Six roles, most recent first. Each leads with the number it moved."
+        aside={`${devaNumber(experiences.length, 2)} storeys`}
       />
 
       <div className="mt-10">
@@ -87,7 +86,7 @@ export default function Experience() {
               <div className="md:col-span-4 md:sticky md:top-28 md:self-start">
                 <div className="flex items-center gap-2.5">
                   <Label tone="gold">
-                    Storey {String(index + 1).padStart(2, "0")}
+                    Storey {devaNumber(index + 1, 2)}
                   </Label>
                   <span className="text-outline" aria-hidden="true">
                     ·
@@ -138,7 +137,7 @@ export default function Experience() {
                     className="flex gap-4 rounded-r-md border-l-2 border-outline-variant bg-surface-low/40 py-3 pr-4 pl-4"
                   >
                     <span className="mt-0.5 shrink-0 font-mono text-[0.6875rem] tracking-[0.1em] text-secondary tabular-nums">
-                      {String(i + 1).padStart(2, "0")}
+                      {devaNumber(i + 1, 2)}
                     </span>
                     <p className="text-[0.9375rem] leading-relaxed text-muted-foreground">
                       {highlight}
