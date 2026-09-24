@@ -1,12 +1,13 @@
 import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { DevaIndex } from "@/components/ui/patterns";
 
 /* ═══════════════════════════════════════════════════════════════════
    PRESENTATIONAL PRIMITIVES
    Server-safe (no hooks) so they work in both Server and Client trees.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Mono notation ── */
+/* ── Notation ── */
 
 export function Label({
   children,
@@ -15,38 +16,19 @@ export function Label({
 }: {
   children: ReactNode;
   className?: string;
-  tone?: "muted" | "primary" | "foreground" | "loud";
+  tone?: "muted" | "primary" | "foreground" | "gold" | "outline";
 }) {
   const tones = {
     muted: "text-muted-foreground",
-    primary: "text-primary-ink",
+    outline: "text-outline",
+    primary: "text-primary",
+    /* Gold is the notation accent. It clears 5:1 on every ground in both
+       themes, so unlike the previous build's bright accent it needs no
+       separate *-ink* variant. */
+    gold: "text-secondary",
     foreground: "text-foreground",
-    /* The *-ink* token, not the bright fill: the bright loud-2 only reaches
-       2.80:1 as type on the light paper. Borders and fills still use the
-       bright value — see globals.css. */
-    loud: "text-loud-2-ink",
   } as const;
-  return (
-    <span className={cn("mono", tones[tone], className)}>{children}</span>
-  );
-}
-
-export function Index({
-  value,
-  className,
-}: {
-  value: number | string;
-  className?: string;
-}) {
-  const formatted =
-    typeof value === "number" ? String(value).padStart(2, "0") : value;
-  return (
-    <span
-      className={cn("mono-sm text-muted-foreground tabular-nums", className)}
-    >
-      [{formatted}]
-    </span>
-  );
+  return <span className={cn("label", tones[tone], className)}>{children}</span>;
 }
 
 /* ── Structure ── */
@@ -56,83 +38,69 @@ export function Rule({
   variant = "hair",
 }: {
   className?: string;
-  /** hair — 1px hairline, strong — 1px on the strong border colour */
   variant?: "hair" | "strong";
 }) {
-  const variants = {
-    hair: "rule",
-    strong: "rule-strong",
-  } as const;
-  return <div className={cn(variants[variant], className)} aria-hidden="true" />;
+  return (
+    <div
+      className={cn(variant === "hair" ? "rule" : "rule-strong", className)}
+      aria-hidden="true"
+    />
+  );
 }
 
-export function HardCard({
+/* ── Surfaces ── */
+
+/** The site's anchor surface: the reference's terminal card. */
+export function Terminal({
   children,
   className,
   as: Tag = "div",
 }: {
   children: ReactNode;
   className?: string;
-  as?: "div" | "article" | "li";
+  as?: "div" | "article" | "li" | "figure" | "form";
 }) {
-  return (
-    <Tag className={cn("frame frame-hard frame-press", className)}>
-      {children}
-    </Tag>
-  );
+  return <Tag className={cn("terminal", className)}>{children}</Tag>;
+}
+
+export function Panel({
+  children,
+  className,
+  as: Tag = "div",
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: "div" | "article" | "li" | "figure";
+}) {
+  return <Tag className={cn("panel", className)}>{children}</Tag>;
 }
 
 /* ── Status ── */
 
-export function StatusPill({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-2 border-2 border-border-strong bg-card px-3 py-1.5",
-        className,
-      )}
-    >
-      <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-        <span className="blink absolute inline-flex h-2 w-2 rounded-full bg-live" />
-      </span>
-      <span className="mono-sm text-foreground">{children}</span>
-    </span>
-  );
-}
-
 export function Pill({
   children,
   className,
+  tone = "default",
 }: {
   children: ReactNode;
   className?: string;
+  tone?: "default" | "gold" | "primary";
 }) {
+  const tones = {
+    default: "border-outline-variant text-muted-foreground",
+    gold: "border-secondary/40 text-secondary",
+    primary: "border-primary/40 text-primary",
+  } as const;
   return (
     <span
       className={cn(
-        "inline-flex items-center border border-border-strong px-2.5 py-1 font-mono text-[0.6875rem] leading-none tracking-wide",
+        "inline-flex items-center gap-1.5 rounded-sm border bg-surface-high/60 px-2 py-1 font-mono text-[0.6875rem] leading-none whitespace-nowrap",
+        tones[tone],
         className,
       )}
     >
       {children}
     </span>
-  );
-}
-
-/* ── Texture overlays ── */
-
-export function Grain({ className }: { className?: string }) {
-  return (
-    <div
-      aria-hidden="true"
-      className={cn("grain pointer-events-none absolute inset-0", className)}
-    />
   );
 }
 
@@ -141,7 +109,7 @@ export function Grain({ className }: { className?: string }) {
 export function Marquee({
   children,
   className,
-  duration = "42s",
+  duration = "48s",
   reverse = false,
 }: {
   children: ReactNode;
@@ -166,9 +134,7 @@ export function Marquee({
 }
 
 /* ── Section scaffolding ──
-   Deliberately allows three different vertical rhythms instead of the
-   single `py-20 sm:py-28` that made every section feel identical. */
-
+   The reference's page rhythm: a 1200px column, 3rem gutters at desktop. */
 export function Section({
   id,
   children,
@@ -180,34 +146,31 @@ export function Section({
   className?: string;
   size?: "sm" | "md" | "lg";
 }) {
-  /* Three vertical rhythms, in the section itself now that there is no
-     surface to supply the inner padding. */
   const sizes = {
-    sm: "py-16 sm:py-20",
-    md: "py-20 sm:py-28",
-    lg: "py-24 sm:py-32",
+    sm: "py-14 sm:py-16",
+    md: "py-16 sm:py-24",
+    lg: "py-20 sm:py-28",
   } as const;
 
   return (
-    <section
-      id={id}
-      className={cn("relative isolate", sizes[size], className)}
-    >
-      <div className="relative z-2 mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12">
+    <section id={id} className={cn("relative isolate", sizes[size], className)}>
+      <div className="relative mx-auto w-full max-w-[1200px] px-5 sm:px-8 lg:px-12">
         {children}
       </div>
     </section>
   );
 }
 
-/* ── Section heading ── */
-
+/* ── Section heading ──
+   The reference's own header: a short gold dash, an uppercase mono label,
+   and a counter on the far right — then the statement underneath. */
 export function SectionHeading({
   index,
   eyebrow,
   title,
   description,
   className,
+  aside,
   size = "lg",
 }: {
   index: number;
@@ -215,19 +178,23 @@ export function SectionHeading({
   title: ReactNode;
   description?: string;
   className?: string;
+  /** Right-hand notation, e.g. "08 domains" — balances the header row. */
+  aside?: string;
   size?: "md" | "lg";
 }) {
   return (
     <header className={cn("relative", className)}>
-      <div className="flex items-center gap-3">
-        <Index value={index} />
-        <Label tone="muted">{eyebrow}</Label>
-        <Rule className="flex-1" />
+      <div className="flex items-center gap-3 pb-4">
+        <span className="h-px w-5 bg-secondary" aria-hidden="true" />
+        <DevaIndex value={index} />
+        <Label tone="gold">{eyebrow}</Label>
+        <span className="flex-1" />
+        {aside ? <Label tone="outline">{aside}</Label> : null}
       </div>
 
       <h2
         className={cn(
-          "display mt-5 text-balance text-foreground",
+          "display text-balance text-foreground",
           size === "lg" ? "display-lg" : "display-md",
         )}
       >
@@ -235,7 +202,7 @@ export function SectionHeading({
       </h2>
 
       {description ? (
-        <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
+        <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground">
           {description}
         </p>
       ) : null}

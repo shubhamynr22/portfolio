@@ -4,130 +4,172 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ═══════════════════════════════════════════════════════════════════
-   ENGINEERED MAXIMALISM — DESIGN TOKENS
-   Dense, loud, technical. Rigid grid underneath, hard edges on top.
-   Rules: 2px borders · hard offset shadows · zero blur · 3 loud colours
+   ARCHIVAL TERMINAL — DESIGN TOKENS
+
+   One system, two grounds. The dark theme is the primary reading of it
+   (deep slate ground, warm peach accent, gold secondary); the light theme
+   is the same family inverted onto warm paper.
+
+   Discipline:
+     · a surface ramp, not a pile of greys — five steps, each one job
+     · two accents and no more: peach carries action, gold carries notation
+     · hairlines at 40% of the outline token; nothing heavier than 1px
+     · radius 2 / 4 / 8 / 12 — soft enough to read as machined, never pillowy
    ═══════════════════════════════════════════════════════════════════ */
 
 @theme inline {
-  /* ── Surfaces & type ── */
+  /* ── Surfaces ──
+     A ramp, so a panel can sit inside a card inside the page without any
+     of the three needing a new colour invented for it. */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-muted: var(--muted);
+  --color-surface-lowest: var(--surface-lowest);
+  --color-surface-low: var(--surface-low);
+  --color-surface: var(--surface);
+  --color-surface-high: var(--surface-high);
+  --color-surface-highest: var(--surface-highest);
   --color-muted-foreground: var(--muted-foreground);
+
+  /* ── Lines ── */
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
+
+  /* ── Accents ──
+     --primary* is the peach/burnt-orange family. `primary` is the value safe
+     to set AS TYPE on the page ground; `primary-fill` is the value safe to
+     use as a BUTTON FILL, paired with `on-primary-fill`. They are different
+     colours on purpose — one bright peach that reads on near-black and one
+     mid orange that carries dark text are not the same swatch. */
   --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary-ink: var(--primary-ink);
-  --color-loud-2: var(--loud-2);
-  --color-loud-2-ink: var(--loud-2-ink);
-  --color-loud-3: var(--loud-3);
-  --color-inlay: var(--inlay);
+  --color-primary-fill: var(--primary-fill);
+  --color-primary-fill-hover: var(--primary-fill-hover);
+  --color-on-primary-fill: var(--on-primary-fill);
+
+  /* Gold — the notation accent. Indices, coordinates, provenance. */
+  --color-secondary: var(--secondary);
+  --color-secondary-fill: var(--secondary-fill);
+  --color-on-secondary-fill: var(--on-secondary-fill);
+
   --color-live: var(--live);
+  --color-glow: var(--glow);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
 
-  /* ── Three type voices, all with Indian design lineage ──
-     Display — Yatra One. Drawn from the hand-painted signage of the Mumbai
-     local railway: heavy, high-contrast, one weight, and about as far from a
-     neutral grotesque as a Latin display face gets. Sets "SHUBHAM" at
-     5.153 em, which is narrower than the Archivo it replaces (5.459), so the
-     hero clamp survives it with more headroom than before.
-     Text — Mukta (Ek Type, Mumbai). A humanist sans built as one family
-     across nine Indic scripts; the Latin is drawn to sit beside them rather
-     than borrowed from a Western model.
-     Labels — Rajdhani (Indian Type Foundry). Modularised uppercase —
-     straightened bowls, flat terminals — for indices and provenance.
-     JetBrains Mono stays in the fallback chain for glyphs the latin subsets
-     lack (the ✦ separators). */
-  --font-sans: var(--font-mukta), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-mukta), ui-monospace, monospace;
-  --font-display: var(--font-mukta), ui-sans-serif, system-ui, sans-serif;
+  /* ── Type ──
+     Three Latin voices in the reference's own division of labour, plus one
+     Devanagari face in the tail of every stack.
 
-  /* ── Radius: near-zero. 16px rounded cards are what made it look
-        like every other shadcn template. ── */
-  --radius-sm: 0px;
-  --radius-md: 2px;
-  --radius-lg: 3px;
-  --radius-xl: 4px;
-  --radius-2xl: 4px;
-  --radius-3xl: 4px;
-  --radius-4xl: 4px;
+     Mukta is not a fourth voice — it is the fallback that catches every
+     Devanagari glyph the three Latin faces do not contain. CSS resolves
+     fonts per glyph, so `संवाद` inside a Space Mono label renders in Mukta
+     with no class, no wrapper and no asking. That is also what lets the
+     hero name hold both scripts in one grid cell. */
+  --font-display: var(--font-space-grotesk), var(--font-mukta), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), var(--font-mukta), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-mono: var(--font-space-mono), var(--font-mukta), ui-monospace,
+    "SFMono-Regular", monospace;
+
+  /* ── Radius ── */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 8px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+  --radius-4xl: 12px;
+
+  /* ── Elevation ──
+     One soft shadow, tinted with the ground rather than black, so a card on
+     near-black reads as lifted instead of punched out. */
+  --shadow-card: 0 1px 2px var(--shadow-color), 0 12px 32px -12px var(--shadow-color);
+  --shadow-lift: 0 2px 4px var(--shadow-color), 0 20px 48px -16px var(--shadow-color);
+  --shadow-accent: 0 0 0 1px var(--accent-halo), 0 0 18px var(--accent-halo);
 }
 
-/* ── Light: palm leaf ──
-   The ground is an aged palm-leaf folio and the ink is lamp black — the
-   actual material pairing of an Indian manuscript, not a warm-grey
-   approximation of one. Body text 13.2:1, 2px frame 10.3:1, secondary
-   6.1:1, every accent >= 4.5:1. Measured, not eyeballed. */
-/* ── Light: cream ground, olive ink ──
-   One hue family used at both ends of its range rather than a neutral page
-   with colour applied on top. Body 13.3:1, hairline frame 9.3:1, secondary
-   5.8:1, olive accent 8.1:1, label on an olive fill 6.4:1. */
+/* ── Light: warm paper ──
+   The reference has no light mode, so this is the same family inverted: the
+   ground goes to warm paper, the peach becomes a burnt orange dark enough to
+   set as type, and the gold darkens until it clears 5:1. Every value below is
+   measured — see .archive/contrast-check.mjs. */
 :root {
-  --background: #F3F0E7;
-  --foreground: #23281A;
-  --card: #FAF8F2;
-  --card-foreground: #23281A;
-  --muted: #E8E4D6;
-  --muted-foreground: #5B5F4A;
-  --border: rgba(35, 40, 26, 0.16);
-  --border-strong: #3A4227;
-  --shadow-color: rgba(35, 40, 26, 0.1);
-  --grid-line: rgba(35, 40, 26, 0.06);
-  --grid-line-strong: rgba(35, 40, 26, 0.12);
-  --inlay: rgba(35, 40, 26, 0.2);
-  --grain-opacity: 0;
-  --destructive: #9B2C2C;
-  --live: #4A5D23;
-  --ring: var(--primary);
-  --pada: 8px;
+  --background: #faf7f2;
+  --foreground: #14171e;
+  --surface-lowest: #ffffff;
+  --surface-low: #ffffff;
+  --surface: #f2ece3;
+  --surface-high: #e9e1d5;
+  --surface-highest: #e2d9cb;
+  --muted-foreground: #4b4238;
 
-  /* ONE accent for the whole site. */
-  --primary: #4A5D23;
-  --primary-foreground: #F3F0E7;
-  --primary-ink: #3D4D1C;
-  /* Kept so existing utilities keep resolving; all olive now. */
-  --loud-2: #6B7A3A;
-  --loud-2-ink: #4A5D23;
-  --loud-3: #3A4227;
+  --outline: #5f5549;
+  --outline-variant: #d6ccbc;
+  /* Hairline: the reference's `border-.../40`, pre-mixed so the same 1px
+     weight lands identically in both themes. */
+  --border: rgba(95, 85, 73, 0.28);
+  --border-strong: #a89a86;
+
+  --primary: #9c3b0e;
+  --primary-fill: #c2410c;
+  --primary-fill-hover: #9a3412;
+  --on-primary-fill: #fff3ec;
+
+  --secondary: #6b5004;
+  --secondary-fill: #e9c349;
+  --on-secondary-fill: #2a1f00;
+
+  --live: #c2410c;
+  --glow: rgba(194, 65, 12, 0.16);
+  --accent-halo: rgba(194, 65, 12, 0.35);
+  --shadow-color: rgba(60, 45, 30, 0.1);
+  --grain-opacity: 0.025;
+
+  --ring: var(--foreground);
+  --destructive: #9b2c2c;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-fast: 150ms;
-  --dur: 300ms;
-  --dur-slow: 700ms;
+  --dur: 250ms;
+  --dur-slow: 600ms;
 }
 
-/* ── Dark: olive ground, cream type ──
-   The same two colours with the roles swapped. Body 13.8:1, hairline frame
-   9.6:1, secondary 7.3:1, olive accent 8.2:1. */
+/* ── Dark: deep slate ──
+   The reference's own values, used as given. on-surface 14.4:1, secondary
+   text 10.9:1, outline 5.9:1, peach accent 10.9:1, gold 10.9:1, button ink
+   on the fill 4.6:1. */
 .dark {
-  --background: #1B1F14;
-  --foreground: #EDE9DC;
-  --card: #232919;
-  --card-foreground: #EDE9DC;
-  --muted: #2C331F;
-  --muted-foreground: #A9AD96;
-  --border: rgba(237, 233, 220, 0.15);
-  --border-strong: #C4C6AF;
-  --shadow-color: rgba(0, 0, 0, 0.45);
-  --grid-line: rgba(237, 233, 220, 0.05);
-  --grid-line-strong: rgba(237, 233, 220, 0.1);
-  --inlay: rgba(237, 233, 220, 0.22);
-  --grain-opacity: 0;
-  --destructive: #E08585;
-  --live: #A8BE6B;
+  --background: #10131b;
+  --foreground: #dfe2ed;
+  --surface-lowest: #0a0e15;
+  --surface-low: #181c23;
+  --surface: #1c2027;
+  --surface-high: #262a32;
+  --surface-highest: #31353d;
+  --muted-foreground: #dbc1b4;
 
-  --primary: #A8BE6B;
-  --primary-foreground: #1B1F14;
-  --primary-ink: #A8BE6B;
-  --loud-2: #A8BE6B;
-  --loud-2-ink: #A8BE6B;
-  --loud-3: #8FA357;
+  --outline: #a38c80;
+  --outline-variant: #554339;
+  --border: rgba(163, 140, 128, 0.24);
+  --border-strong: #554339;
+
+  --primary: #ffb68c;
+  --primary-fill: #d97736;
+  --primary-fill-hover: #e56f2d;
+  --on-primary-fill: #491d00;
+
+  --secondary: #e9c349;
+  --secondary-fill: #e9c349;
+  --on-secondary-fill: #3c2f00;
+
+  --live: #e9c349;
+  --glow: rgba(217, 119, 54, 0.12);
+  --accent-halo: rgba(217, 119, 54, 0.4);
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --grain-opacity: 0.03;
 }
 
 @layer base {
@@ -145,93 +187,137 @@
     overflow-x: hidden;
   }
   ::selection {
-    background: var(--primary);
-    color: var(--primary-foreground);
+    background: var(--primary-fill);
+    color: var(--on-primary-fill);
   }
-  /* One focus treatment for the entire site.
-     Deliberately ink, not the accent colour: an accent ring fails contrast
-     against the primary-coloured buttons it most often sits on, and against
-     the page. Ink clears 3:1 against every background in every palette and
-     theme (13.4:1 at the extremes — measured, not assumed).
-     The 2px offset matters: it keeps the ring on the page surface rather
-     than on top of the element's own fill. */
+  /* Ink ring, not accent. An accent ring fails against the accent-filled
+     buttons it most often lands on; ink clears 3:1 on every ground in both
+     themes. The 2px offset keeps the ring on the surface behind the element
+     rather than on top of its own fill. */
   :focus-visible {
-    outline: 2px solid var(--foreground);
+    outline: 2px solid var(--ring);
     outline-offset: 2px;
+    border-radius: 2px;
   }
-
   /* Inverted surfaces (the footer paints itself with --foreground) would
-     swallow an ink ring. Flip it there so it is never invisible. */
+     swallow an ink ring. Flip it there. */
   .inverted :focus-visible {
     outline-color: var(--background);
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TYPE VOICES
+   TYPE
+
+   Space Grotesk for statements, Plus Jakarta Sans for reading, Space Mono
+   for notation. Devanagari rides in each stack's tail as Mukta.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Huge statements. Fluid, tight, near-solid leading. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  /* Devanagari matras descend below the Latin baseline, so the display
+     leading is set for the taller of the two scripts rather than the
+     tighter one — otherwise the two lines of the hero name collide. */
+  line-height: 1.14;
+}
+/* 5.5rem ceiling against the old 7.5rem — a 27% reduction, which is what
+   "a little smaller" asked for, where a drop to the reference's own 56px
+   would have made the name stop being the hero. Measured against Space
+   Grotesk 700, "Shubham" is 4.516 em, so at the 88px ceiling it sets 397px
+   inside a 584px column: it fills the measure without ever approaching it,
+   which is why the name no longer needs a dedicated full-width row. */
+.display-xl {
+  font-size: clamp(2.5rem, 7.4vw, 5.5rem);
+  line-height: 1.06;
+}
+.display-lg {
+  font-size: clamp(1.75rem, 3.8vw, 2.5rem);
+  line-height: 1.14;
+}
+.display-md {
+  font-size: clamp(1.1875rem, 2.1vw, 1.625rem);
+  line-height: 1.24;
+}
+.display-sm {
+  font-size: 1.0625rem;
+  line-height: 1.34;
+  letter-spacing: -0.01em;
+}
+
+/* Notation — indices, coordinates, status, provenance.
+   11px floor, not the reference's 10px: this is real reading type on a
+   phone at arm's length, and 10px tracked-out uppercase is not. */
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.label-lg {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+}
+/* Sentence-case monospace — for addresses, versions and identifiers where
+   the uppercase transform would be lying about the content. */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    THE NAME, IN TWO SCRIPTS
-   The heading holds both scripts at once and cycles between them. Two
-   things make this work rather than merely function:
 
-   1. Both spans sit in ONE grid cell, so the block is always as wide as
-      the wider script and the layout never shifts as it alternates.
-   2. The two scripts are NOT the same size. Devanagari vowel signs take
-      no advance width in Mukta, so "शुभम" measures 1.965 em against
-      "Shubham" at 4.231 em — the same nominal size would read as about
-      half the weight. --deva-scale closes that optical gap.
+   Unchanged in principle from the previous round, re-measured for the new
+   faces: Latin is Space Grotesk 700, Devanagari is Mukta 800. They are no
+   longer the same family, so --deva-scale is doing more work than before —
+   see the measurement note in Hero.tsx.
 
-   Reads as a crossfade in place, no layout movement, and only between
-   opacity and a 0.1em shift so it stays quiet. Fails safe: the Latin
-   state is what renders with JS off, and it is the only state under
-   reduced motion.
-   ═══════════════════════════════════════════════════════════════════ */
-
+   Both spans share one grid cell, so the block is always as wide as the
+   wider script and the layout never shifts as it alternates. */
 .name-swap {
   display: grid;
-  align-items: center;
+  align-items: baseline;
 }
 .name-swap > * {
   grid-area: 1 / 1;
   min-width: 0;
 }
-
+/* 1.1, measured rather than inherited. Canvas ink metrics at 100px:
+     Space Grotesk 700 "Shubham"  ascent 0.714 em, advance 4.516 em
+     Mukta 800        "शुभम"      ascent 0.650 em, advance 1.965 em
+   The Devanagari body is 91% of the Latin cap height at the same nominal
+   size, so the multiplier closes that gap. Matching the *advance* instead
+   would need 2.3x, which is the wrong target: Devanagari is genuinely more
+   compact horizontally, and scaling it up to match Latin width would make
+   it tower over the Latin line. Height is what the eye reads as size. */
 .name-swap .name-deva {
-  /* 1.1, not 1.45. Devanagari is compact for its size, so it needs a lift to
-     sit at the same optical weight as the Latin — but the glyphs are
-     physically taller, so a large multiplier eats the line height and the
-     two lines collide. 1.1 lifts it without outgrowing the row. */
+  font-family: var(--font-mukta), sans-serif;
+  font-weight: 800;
   font-size: calc(1em * var(--deva-scale, 1.1));
-  /* The box, not the glyphs. At 1.4x with line-height 1 the Devanagari's
-     line box measured 1.4em against the Latin's 1.04em, so every row grew
-     and the two lines of the name drifted apart. 0.76 x 1.4 = 1.064em,
-     which matches the Latin — the glyphs still paint at full size because
-     nothing here clips. */
   line-height: 1;
 }
-
 @media (prefers-reduced-motion: no-preference) {
   .name-swap[data-animate="true"] .name-latin,
   .name-swap[data-animate="true"] .name-deva {
-    animation: name-swap var(--name-cycle, 9s) var(--ease-in-out) infinite;
+    animation: name-swap var(--name-cycle, 10s) var(--ease-in-out) infinite;
   }
   .name-swap[data-animate="true"] .name-deva {
-    animation-delay: calc(var(--name-cycle, 9s) / -2);
+    animation-delay: calc(var(--name-cycle, 10s) / -2);
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .name-swap .name-deva {
     display: none;
   }
 }
-
-/* Half the cycle Latin, half Devanagari, with the transition held short so
-   most of the time is spent legible rather than mid-fade. */
+/* Half the cycle each, with the hand-off held short so most of the time is
+   spent legible rather than mid-fade. */
 @keyframes name-swap {
   0%,
   42% {
@@ -241,7 +327,7 @@
   50%,
   92% {
     opacity: 0;
-    transform: translateY(-0.1em);
+    transform: translateY(-0.08em);
   }
   100% {
     opacity: 1;
@@ -249,150 +335,185 @@
   }
 }
 
-.display {
-  font-family: var(--font-display);
-  /* Yatra One ships exactly one weight. Asking for 800 makes the browser
-     synthesise a bold, which smears a face that is already heavy and would
-     be the single most visible way to make this look cheap. */
-  font-weight: 800;
-  /* Natural case, gentle tracking. This is a person's name, not a headline
-     plate — and Devanagari has no case at all, so an uppercase transform
-     would make the two states of the animated name inconsistent. */
-  letter-spacing: -0.02em;
-  /* 1.2, not 1.04. The Devanagari half of the name carries descending matras
-     that need more vertical room than Latin, and at 1.04 the two lines of
-     the name collided. 1.2 is ordinary leading for a face this size. */
-  line-height: 1.2;
-}
-.display-xl {
-  /* Re-measured from Yatra One's own hmtx table after the face changed:
-     "SHUBHAM" is 5.153 em, which is NARROWER than the Archivo it replaced
-     (5.459 em), so this clamp survives the swap with more headroom than it
-     had before rather than less. The name still needs its own full-width
-     row — at 13vw the word outgrows any fractional grid column — and the
-     2.75rem floor keeps it inside the 320px content box on the smallest
-     phones, with 13vw taking over above ~308px. */
-  font-size: clamp(2.5rem, 8.6vw, 7.5rem);
-}
-.display-lg {
-  font-size: clamp(1.7rem, 4.2vw, 3.1rem);
-}
-.display-md {
-  font-size: clamp(1.3rem, 2.4vw, 2rem);
-}
-
-/* Label notation — indices, metadata, status, provenance.
-   Sized for Rajdhani rather than for a monospace: it is a condensed face, so
-   the optical size needs a small bump (10px → 11px for mono-sm, which also
-   clears a long-standing legibility floor) and the tracking comes down, since
-   0.14em was carrying monospace width that Rajdhani does not need. Weight 600
-   because Rajdhani's 500 is thin at these sizes. Net effect on measured
-   width is still a decrease, so the label columns get safer, not tighter. */
-.mono {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-.mono-sm {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   STRUCTURE — hard edges, offset shadows, zero blur
-   ═══════════════════════════════════════════════════════════════════ */
-
 /* ═══════════════════════════════════════════════════════════════════
    SURFACES
-   A hairline border, a 4px radius, one soft shadow. Nothing offset,
-   nothing doubled, nothing inset — the ornament used to be here and is
-   now deliberately absent.
+
+   Terminal card → panel → well. Three levels, one hairline each, one soft
+   shadow on the outer only. The reference's card is the anchor for the
+   whole site, not just the contact page.
    ═══════════════════════════════════════════════════════════════════ */
 
-.frame,
-.frame-hard,
-.frame-hard-lg {
-  border: 1px solid var(--border);
+.terminal {
+  position: relative;
+  border: 1px solid var(--outline-variant);
+  border-radius: 12px;
+  background: var(--surface-low);
+  box-shadow: var(--shadow-card);
+  /* The corner marks are positioned against this box, so it has to be a
+     containing block — but only for them, hence `relative` here rather
+     than on every consumer. */
+}
+.panel {
+  border: 1px solid var(--outline-variant);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.well {
+  border: 1px solid var(--outline-variant);
   border-radius: 4px;
-  background: var(--card);
+  background: var(--surface-high);
 }
 
-.frame-hard,
-.frame-hard-lg {
-  border-color: var(--border-strong);
-  box-shadow: 0 1px 3px var(--shadow-color);
-}
-
-/* Lift, rather than press into an offset shadow. */
-.frame-press {
+/* Lift on hover for anything that is a link. Movement is 2px — enough to
+   register as a response, not enough to make a grid of cards wobble. */
+.lift {
   transition:
     transform var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out);
 }
-.frame-hard.frame-press:hover,
-.frame-hard-lg.frame-press:hover {
+.lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px var(--shadow-color);
+  border-color: var(--outline);
+  box-shadow: var(--shadow-lift);
 }
 
+/* ── Rules ── */
 .rule {
   height: 1px;
   background: var(--border);
 }
 .rule-strong {
-  height: 2px;
-  background: var(--border-strong);
-}
-/* Kantha — Bengal. The running stitch, worked in even rows across layered
-   cloth. Replaces the generic CSS dashed hairline: an actual stitched line
-   rather than a hairline with gaps in it. */
-.rule-dashed {
-  height: 0;
-  border-top: 1px dashed var(--border);
+  height: 1px;
+  background: var(--outline-variant);
 }
 
-/* The same stitch, wrapped around all four edges — a stitched box instead of
-   a dashed one. Four 2px gradients, one per edge, painted in the border box
-   so they land exactly where the border would be. */
+/* ── Corner marks ──
+   Four bracket glyphs pinned to the corners of a terminal card. This is the
+   reference's own device and it is the cheapest possible way to make a
+   rectangle read as an instrument. Kept as four elements so the glyphs come
+   from the mono face rather than being an SVG drawing of themselves. */
+.corner {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  color: var(--secondary);
+  opacity: 0.75;
+  pointer-events: none;
+  user-select: none;
+}
+/* Right-hand corners mirror, so the bracket always sits on the outside edge
+   and the inscription always points inward. */
+.corner[data-side="right"] {
+  flex-direction: row-reverse;
+}
+.corner-bracket {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-color: currentColor;
+  border-style: solid;
+  border-width: 0;
+}
+.corner[data-side="left"] .corner-bracket {
+  border-left-width: 1px;
+}
+.corner[data-side="right"] .corner-bracket {
+  border-right-width: 1px;
+}
+/* Which horizontal edge the bracket closes. Matched on the positioning class
+   the caller already supplies, so there is no second prop to keep in sync. */
+.corner[class*="top-"] .corner-bracket {
+  border-top-width: 1px;
+}
+.corner[class*="bottom-"] .corner-bracket {
+  border-bottom-width: 1px;
+}
+
+/* ── Ambient glow ──
+   Two blurred discs behind the hero. The reference's specular ambience: the
+   only place on the site where a blur is allowed, because it is not
+   pretending to be an edge. */
+.glow {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--glow);
+  filter: blur(120px);
+  pointer-events: none;
+}
+
+/* ── Grain ──
+   Mid-grey, so one tile works on both a dark ground and an inverted band
+   without being re-authored. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOTION
+   Content is visible by default; JS may only hide what is below the fold.
+   ═══════════════════════════════════════════════════════════════════ */
+
 .reveal[data-reveal="pending"] {
   opacity: 0;
-  transform: translateY(22px);
+  transform: translateY(18px);
 }
 .reveal[data-reveal="in"] {
   opacity: 1;
   transform: none;
-  transition: opacity var(--dur-slow) var(--ease-out),
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
     transform var(--dur-slow) var(--ease-out);
   transition-delay: var(--reveal-delay, 0ms);
 }
-.reveal[data-reveal="in"][data-reveal-kind="left"] {
-  transition-property: opacity, transform;
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .reveal[data-reveal="pending"],
-  .reveal[data-reveal="in"] {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
+@keyframes blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  50%,
+  95% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
   }
 }
+.blink {
+  animation: blink 2.4s steps(1, end) infinite;
+}
 
-/* ── KOLAM DRAW — one continuous stroke, drawing itself ──
-   Same inversion as the rest of the reveal contract: the stroke is DRAWN by
-   default, and only JS marking the wrapper "pending" (below the fold, motion
-   allowed) hides it. Without JS, or with motion reduced, the kolam is simply
-   complete. A scroll-gated version that defaulted to hidden would make the
-   contact section's only figure invisible to crawlers and no-JS readers. */
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.ping-soft {
+  animation: ping-soft 2s var(--ease-out) infinite;
+}
+
+/* Marquee */
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee var(--marquee-duration, 40s) linear infinite;
+  animation: marquee var(--marquee-duration, 48s) linear infinite;
 }
 .marquee-track[data-reverse="true"] {
   animation-direction: reverse;
@@ -409,28 +530,6 @@
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   AMBIENT MOTION
-   ═══════════════════════════════════════════════════════════════════ */
-
-@keyframes blink {
-  0%, 45% { opacity: 1; }
-  50%, 95% { opacity: 0.25; }
-  100% { opacity: 1; }
-}
-.blink {
-  animation: blink 2.4s steps(1, end) infinite;
-}
-
-@keyframes ticker {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   GLOBAL REDUCED-MOTION CONTRACT
-   ═══════════════════════════════════════════════════════════════════ */
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -440,6 +539,12 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+  .reveal[data-reveal="pending"],
+  .reveal[data-reveal="in"] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
   .marquee-track {
     animation: none;
     transform: none;
@@ -448,7 +553,6 @@
   }
 }
 
-/* Utility: hide scrollbar on horizontal rails while keeping it scrollable */
 .no-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;

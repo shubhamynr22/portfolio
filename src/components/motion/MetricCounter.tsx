@@ -44,7 +44,11 @@ export function MetricCounter({
     // Already on screen — keep the true value, don't fake a count-up.
     if (el.getBoundingClientRect().top < viewportHeight * 0.92) return;
 
-    setDisplay(0);
+    /* Reset through a frame callback rather than in the effect body. The
+       element is below the fold by definition at this point, so there is
+       nothing on screen to flash, and the state change belongs to a callback
+       rather than to the render pass. */
+    const raf = requestAnimationFrame(() => setDisplay(0));
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -57,7 +61,10 @@ export function MetricCounter({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+    };
   }, [value]);
 
   return (

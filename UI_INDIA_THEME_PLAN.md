@@ -696,3 +696,80 @@ The generated textures survive only as the OG card's ground — the block-print 
 Verified by render at 1440 / 768 / 390 in both themes: **no horizontal overflow**, no element referencing a deleted class, 22 frames rendering. Build clean, 9 routes static.
 
 **The `/alt` page is untouched** — it still uses its own red and cream design and its own palette variable. It is not linked from anywhere, so it is dead weight rather than an inconsistency, but it is the one place in the repo where the old colour language survives.
+
+---
+
+# v4 — Archival Terminal (the `design.rtf` direction)
+
+**Supersedes v3's palette, typography and restraint rules by explicit user
+decision.** The user supplied a contact-page mockup and, asked directly,
+chose: apply it to the **whole site**, use its **palette exactly as drawn**
+(incl. the orange that v3 was told to drop), and adopt its **three-font
+system** (overriding v3's single-family rule).
+
+## What the reference is
+
+A dark "archival terminal": #10131B ground, peach `#FFB68C` / `#D97736`
+accent, gold `#E9C349` notation, a 32px jali lattice overlay, bracket-and-
+inscription corner marks, a status rail with a live IST clock, and Space
+Grotesk / Plus Jakarta Sans / Space Mono. Its own contrasts were measured
+before anything was built on them: on-surface 14.4:1, accent 10.9:1, gold
+10.9:1, button ink on fill 4.6:1, hairline 1.99:1.
+
+## v4 decisions worth keeping
+
+1. **A surface ramp, not a pile of greys.** `surface-lowest → surface-low →
+   surface → surface-high → surface-highest`, five steps, each with one job.
+   Both themes use it, so a panel inside a card inside a page never needs a
+   new colour invented for it.
+2. **Mukta is a fallback, not a fourth voice.** It sits at the tail of all
+   three Latin stacks, so Devanagari resolves per-glyph with no class and no
+   wrapper. Devanagari only is loaded — the Latin half is dead weight here.
+3. **`--deva-scale: 1.1`, measured.** Canvas ink metrics at 100px: Space
+   Grotesk 700 "Shubham" ascent 0.714 em / advance 4.516 em; Mukta 800
+   "शुभम" ascent 0.650 em / advance 1.965 em. The Devanagari body is 91% of
+   the Latin cap height, so 1.1 closes it. Matching *advance* would need
+   2.3x and would tower over the Latin line — height is what reads as size.
+4. **The name came down to `clamp(2.5rem, 7.4vw, 5.5rem)`** — a 27%
+   reduction from 7.5rem, which is what "a little smaller" asked for, where
+   the reference's own 56px would have stopped the name being the hero. At
+   the 88px ceiling it sets 397px inside a 584px column, so it no longer
+   needs a full-width row.
+5. **Corner brackets are drawn, not typed.** The reference uses U+250C
+   box-drawing glyphs. That is a font-coverage bet, not a design decision —
+   and it lost twice: on the page it silently fell through to whatever
+   system font had the glyph, and in satori (no fallback chain at all) it
+   rendered as tofu. Now two borders on a 9px span, with the inscription
+   beside them.
+6. **The light theme is invented and measured**, since the reference has
+   none: warm paper ground, the peach darkened to a burnt orange `#9C3B0E`
+   that clears 6.45:1 as type, the gold darkened to `#6B5004` for 7.08:1.
+
+## Verification
+
+- `eslint` exit 0 (fixed 3 real errors: `//` inside JSX children, and
+  `setState` in two effect bodies — the latter by reading the theme from the
+  `dark` class next-themes already sets, which also removed the hydration
+  window a `mounted` flag leaves open).
+- **Contrast 56/56 WCAG AA**, both themes. One assertion was a false
+  positive and was traced before "fixing" anything: the harness claimed
+  `text-outline` on `surface-highest`, and grep proved that pairing never
+  occurs. Replaced with the four that do.
+- No horizontal overflow at 1440 or 390. Build clean, 6 routes static.
+- Every section rendered in both themes and reviewed; three defects found
+  that way and fixed (invisible jali at 0.045 opacity, a wrapping submit
+  button, and the mail-client disclaimer being hidden on mobile).
+- The OG card had to be re-done twice: satori has no `filter: blur` (the
+  ambient discs rendered as hard-edged blobs — now radial gradients) and no
+  font fallback (box-drawing tofu). Its corner inscriptions were removed
+  rather than shipped broken.
+
+## Deliberate exceptions, on the record
+
+- **Hairlines measure 1.49:1 (light) / 1.99:1 (dark).** WCAG 1.4.11 governs
+  controls and meaningful graphics, not a content container's border; the
+  reference ships its own at 1.99:1. Reported by the harness, never failed.
+  Interactive cards do reach 5.39–7.29:1 on hover.
+- **The `/alt` page is deleted.** It was 597 lines of a self-contained red
+  and cream design, unlinked from anywhere, and the last place the old
+  colour language survived. Recoverable from `88c6a95`.

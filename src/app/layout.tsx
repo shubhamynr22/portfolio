@@ -1,24 +1,59 @@
 import type { Metadata } from "next";
-import { Mukta } from "next/font/google";
+import {
+  Space_Grotesk,
+  Plus_Jakarta_Sans,
+  Space_Mono,
+  Mukta,
+} from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
-/* ── ONE typeface for the entire interface ──
- * Mukta (Ek Type, Mumbai) — a single family that draws Devanagari and Latin
- * together as one system rather than pairing a Latin face with an Indic one.
- * That is the requirement here rather than a preference: the name animates
- * between the two scripts, so both halves have to look like they belong to
- * each other, and they do because they were designed together.
+/* ── The type system ──
+ * Three Latin voices, each with one job, plus one Devanagari face that is
+ * not a voice at all but a fallback.
  *
- * Weights are the only variation — 400 for body, 600 for labels and UI,
- * 800 for display. One family, three weights, no second voice.
+ *   Space Grotesk ......... statements. A grotesque with the terminals cut
+ *                           off square — reads as instrument labelling
+ *                           rather than as editorial.
+ *   Plus Jakarta Sans ..... reading. Open apertures, generous x-height, and
+ *                           it stays calm at 15px for long paragraphs.
+ *   Space Mono ............ notation. Indices, coordinates, timestamps. The
+ *                           monospace IS the archive aesthetic here.
+ *   Mukta ................. every Devanagari glyph. It sits at the tail of
+ *                           each stack in globals.css, so it catches the
+ *                           script automatically — no wrapper, no class, and
+ *                           nothing to remember when new copy is added.
  *
- * Both subsets are loaded. Devanagari is not optional: the name needs it,
- * and next/font self-hosts it with no runtime dependency on a foreign CDN.
+ * Weights are declared explicitly because none of these four is variable on
+ * Google Fonts: omitting `weight` would ship every weight of every face.
  */
+const grotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
+
+const mono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
+  display: "swap",
+});
+
+/* Devanagari only. The hero name alternates between scripts and the site
+ * carries a handful of Devanagari notations; the Latin half of Mukta would
+ * be dead weight that never gets reached. */
 const mukta = Mukta({
-  subsets: ["latin", "devanagari"],
+  subsets: ["devanagari"],
   weight: ["400", "600", "800"],
   variable: "--font-mukta",
   display: "swap",
@@ -76,8 +111,8 @@ export const metadata: Metadata = {
 
 export const viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#EFEBE4" },
-    { media: "(prefers-color-scheme: dark)", color: "#131316" },
+    { media: "(prefers-color-scheme: light)", color: "#FAF7F2" },
+    { media: "(prefers-color-scheme: dark)", color: "#10131B" },
   ],
 };
 
@@ -87,9 +122,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // data-grid: 8x8 pada (Manduka) by default; 9x9 (Paramasaayika) also
-    // supported — it only changes the heavier mandala line's interval.
-    <html lang="en" suppressHydrationWarning className={mukta.variable}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${grotesk.variable} ${jakarta.variable} ${mono.variable} ${mukta.variable}`}
+    >
       <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"

@@ -45,3 +45,8 @@ next-env.d.ts
 
 # image tool scratch (canvas ledger, cache)
 /image_generate/
+
+# generated artwork, unreferenced since the motif layer was removed
+/public/patterns/
+# image-tool scratch
+/media-output/

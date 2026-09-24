@@ -16,27 +16,25 @@ export default function Skills() {
         eyebrow="Capabilities"
         title="Technical depth"
         description="Eight areas I work in, with the outcome each one produced. Every evidence line is traceable to a role below."
+        aside={`${String(skillCategories.length).padStart(2, "0")} domains`}
       />
 
-      {/* ── Capability matrix ──
-             Enclosed in a par: the Madhubani doubled border, drawn first and
-             drawn as two lines rather than one. */}
-      <div className="frame mt-8">
+      {/* ── Capability matrix ── */}
+      <div className="mt-10 overflow-hidden rounded-xl border border-outline-variant bg-surface-low">
         {skillCategories.map((category, index) => (
           <Reveal
             key={category.title}
             className={
-              index > 0 ? "border-t-2 border-border-strong" : undefined
+              index > 0 ? "border-t border-outline-variant" : undefined
             }
           >
-            <div className="grid gap-4 p-5 md:grid-cols-12 md:gap-8 md:p-6">
-              {/* Category + evidence */}
+            <div className="grid gap-4 p-4 md:grid-cols-12 md:gap-8 md:p-5">
               <div className="md:col-span-5">
-                <div className="flex items-baseline gap-3">
-                  <span className="mono-sm text-muted-foreground tabular-nums">
+                <div className="flex items-baseline gap-2.5">
+                  <span className="font-mono text-[0.6875rem] tracking-[0.1em] text-secondary tabular-nums">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="font-display text-xl font-extrabold tracking-tight">
+                  <h3 className="font-display text-[1.0625rem] font-semibold tracking-tight">
                     {category.title}
                   </h3>
                 </div>
@@ -45,15 +43,14 @@ export default function Skills() {
                 </p>
               </div>
 
-              {/* Technologies */}
-              <ul className="flex flex-wrap content-start gap-2 md:col-span-7">
+              <ul className="flex flex-wrap content-start gap-1.5 md:col-span-7">
                 {category.skills.map((skill) => {
                   const Icon = skill.icon;
                   return (
                     <li key={skill.name}>
-                      <Pill className="bg-background transition-colors hover:border-loud-2 hover:text-primary-ink">
+                      <Pill className="transition-colors hover:border-secondary/50 hover:text-secondary">
                         {Icon ? (
-                          <Icon className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" />
+                          <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                         ) : null}
                         {skill.name}
                       </Pill>
@@ -68,21 +65,24 @@ export default function Skills() {
 
       {/* ── Inventory ticker ── */}
       <div className="mt-10">
-        <div className="mb-3 flex items-center justify-between">
-          <Label>Full inventory</Label>
-          <Label>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <span className="flex items-center gap-2">
+            <span className="h-px w-5 bg-secondary" aria-hidden="true" />
+            <Label tone="gold">Full inventory</Label>
+          </span>
+          <Label tone="outline">
             {String(allTechnologies.length).padStart(2, "0")} tools
           </Label>
         </div>
-        <div className="border-y-2 border-border-strong py-3.5">
-          <Marquee duration="58s" reverse>
+        <div className="rounded-xl border border-outline-variant bg-surface-low py-3">
+          <Marquee duration="62s" reverse>
             {allTechnologies.map((tech) => (
               <span
                 key={tech}
-                className="flex items-center whitespace-nowrap px-4 font-mono text-[0.8125rem] tracking-[0.12em] uppercase text-muted-foreground"
+                className="flex items-center px-4 font-mono text-[0.75rem] tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
               >
                 {tech}
-                <span className="ml-4 text-primary" aria-hidden="true">
+                <span className="ml-4 text-secondary" aria-hidden="true">
                   /
                 </span>
               </span>

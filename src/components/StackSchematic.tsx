@@ -4,13 +4,15 @@ import { cn } from "@/lib/utils";
 /* ──────────────────────────────────────────────────────────────────
  *  STACK SCHEMATIC
  *
- *  The hero's focal visual: a readable picture of the system, rather
- *  than decoration. Every label is drawn from real work in `lib/data.ts`
- *  — no invented claims.
+ *  The hero's focal visual: a readable picture of the system, rather than
+ *  decoration. Every label is drawn from real work in `lib/data.ts` — no
+ *  invented claims, and the figure is deliberately NOT forced into sacred
+ *  geometry. The layers are a real SRE stack, and dressing a Kafka
+ *  diagram as a yantra would be pastiche rather than heritage.
  *
- *  Colour encodes layer group. "Intelligence" carries the loud accent
- *  because multi-agent work is the current specialisation; the
- *  foundation layer is deliberately neutral.
+ *  Colour carries one distinction only: the layer group that is the
+ *  current specialisation takes the accent, everything else is neutral.
+ *  Four competing accents on a figure this size is noise.
  * ────────────────────────────────────────────────────────────────── */
 
 interface Layer {
@@ -22,125 +24,96 @@ interface Layer {
 interface Group {
   title: string;
   accent: string;
+  muted?: boolean;
   layers: Layer[];
 }
 
 const groups: Group[] = [
   {
     title: "Interface",
-    accent: "var(--primary)",
+    accent: "var(--outline)",
+    muted: true,
     layers: [
-      {
-        index: "01",
-        name: "Client",
-        detail: "React · Next.js · WebSocket",
-      },
-      {
-        index: "02",
-        name: "Channels",
-        detail: "Email · WhatsApp Business API",
-      },
+      { index: "01", name: "Client", detail: "React · Next.js · WebSocket" },
+      { index: "02", name: "Channels", detail: "Email · WhatsApp Business API" },
     ],
   },
   {
     title: "Intelligence",
-    accent: "var(--loud-2)",
+    accent: "var(--primary)",
     layers: [
-      {
-        index: "03",
-        name: "Agents",
-        detail: "Orchestrator · Sub-agents · Tool calling",
-      },
-      {
-        index: "04",
-        name: "Grounding",
-        detail: "OpenAI API · RAG · Execution plans",
-      },
+      { index: "03", name: "Agents", detail: "Orchestrator · Sub-agents · Tool calling" },
+      { index: "04", name: "Grounding", detail: "OpenAI API · RAG · Execution plans" },
     ],
   },
   {
     title: "Platform",
-    accent: "var(--loud-3)",
+    accent: "var(--outline)",
+    muted: true,
     layers: [
-      {
-        index: "05",
-        name: "Services",
-        detail: "Identity · RBAC · Orders · Wallet",
-      },
-      {
-        index: "06",
-        name: "Events",
-        detail: "EventBridge · SQS · Kafka · RabbitMQ",
-      },
+      { index: "05", name: "Services", detail: "Identity · RBAC · Orders · Wallet" },
+      { index: "06", name: "Events", detail: "EventBridge · SQS · Kafka · RabbitMQ" },
     ],
   },
   {
     title: "Foundation",
-    accent: "var(--border-strong)",
+    accent: "var(--outline-variant)",
+    muted: true,
     layers: [
-      {
-        index: "07",
-        name: "Data",
-        detail: "PostgreSQL · MongoDB · Redis",
-      },
-      {
-        index: "08",
-        name: "Runtime",
-        detail: "AWS · Docker · CI/CD",
-      },
+      { index: "07", name: "Data", detail: "PostgreSQL · MongoDB · Redis" },
+      { index: "08", name: "Runtime", detail: "AWS · Docker · CI/CD" },
     ],
   },
 ];
 
 export function StackSchematic({ className }: { className?: string }) {
   return (
-    <figure className={cn("frame frame-hard-lg bg-card", className)}>
-      {/* Plate header. The stamp is the specimen-plate device used across the
-          site: a square Indus seal mark, geometric corpus only. Note that the
-          figure itself is deliberately NOT forced into sacred geometry — the
-          layers are a real SRE stack, and dressing a Kafka diagram as a
-          yantra would be pastiche rather than heritage. */}
-      <figcaption className="flex items-center justify-between gap-3 border-b-2 border-border-strong px-4 py-3">
-        <span className="flex items-center gap-2.5">
-
+    <figure className={cn("panel overflow-hidden", className)}>
+      <figcaption className="flex items-center justify-between gap-3 border-b border-outline-variant px-4 py-2.5">
+        <span className="flex items-center gap-2">
+          <span className="text-primary" aria-hidden="true">
+            ◊
+          </span>
           <Label tone="foreground">Fig. 01 — System I build</Label>
         </span>
-        <Label>8 layers</Label>
+        <Label tone="outline">8 layers</Label>
       </figcaption>
 
-      <div className="divide-y-2 divide-border-strong">
+      <div className="divide-y divide-outline-variant/60">
         {groups.map((group) => (
-          <div key={group.title} className="p-4">
-            <div className="mb-3 flex items-center gap-2">
+          <div key={group.title} className="px-4 py-3.5">
+            <div className="mb-2.5 flex items-center gap-2">
               <span
-                className="h-2.5 w-2.5 shrink-0"
+                className="h-2 w-2 shrink-0 rounded-sm"
                 style={{ background: group.accent }}
                 aria-hidden="true"
               />
-              <Label>{group.title}</Label>
+              <Label tone={group.muted ? "outline" : "primary"}>
+                {group.title}
+              </Label>
             </div>
 
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {group.layers.map((layer) => (
                 <li
                   key={layer.index}
-                  className="flex items-stretch border-2 border-border-strong"
+                  className="flex items-stretch overflow-hidden rounded-md border border-outline-variant/70 bg-surface-low/60"
                 >
                   <span
-                    className="w-1.5 shrink-0"
+                    className="w-1 shrink-0"
                     style={{ background: group.accent }}
                     aria-hidden="true"
                   />
-                  <span className="flex flex-1 flex-wrap items-baseline justify-between gap-x-3 gap-y-1 px-3 py-2.5">
+                  <span className="flex flex-1 flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 px-2.5 py-2">
                     <span className="flex items-baseline gap-2">
-                      <span className="mono-sm text-muted-foreground">
+                      <span className="font-mono text-[0.625rem] tracking-[0.1em] text-outline">
                         {layer.index}
                       </span>
-                      <span className="font-display text-base font-extrabold tracking-tight">
+                      <span className="font-display text-[0.9375rem] font-semibold tracking-tight">
                         {layer.name}
                       </span>
                     </span>
-                    <span className="font-mono text-[0.6875rem] text-muted-foreground">
+                    <span className="font-mono text-[0.625rem] text-outline">
                       {layer.detail}
                     </span>
                   </span>
@@ -151,15 +124,10 @@ export function StackSchematic({ className }: { className?: string }) {
         ))}
       </div>
 
-      <div className="border-t-2 border-border-strong bg-muted px-4 py-3">
-        <Label>
+      <div className="border-t border-outline-variant px-4 py-2.5">
+        <Label tone="outline">
           Scale: 100K+ concurrent · 10K events/sec · near-100% delivery
         </Label>
-      </div>
-
-      {/* Every frame on this site carries this channel, so the reference is
-          labelled once, here, rather than repeated on each plate. */}
-      <div className="border-t-2 border-border-strong px-4 py-2.5">
       </div>
     </figure>
   );
