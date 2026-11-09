@@ -1,93 +1,28 @@
 import type { Metadata } from "next";
-import {
-  Space_Grotesk,
-  Plus_Jakarta_Sans,
-  Space_Mono,
-  Mukta,
-} from "next/font/google";
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { EB_Garamond, Geist, Geist_Mono } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
-/** Kept in step with the @font-face block in globals.css. */
-const INDIC_FONTS = [
-  "bengali-700.woff2",
-  "gurmukhi-700.woff2",
-  "gujarati-700.woff2",
-  "tamil-700.woff2",
-  "telugu-700.woff2",
-];
-
-/* ── The type system ──
- * Three Latin voices, each with one job, plus one Devanagari face that is
- * not a voice at all but a fallback.
- *
- *   Space Grotesk ......... statements. A grotesque with the terminals cut
- *                           off square — reads as instrument labelling
- *                           rather than as editorial.
- *   Plus Jakarta Sans ..... reading. Open apertures, generous x-height, and
- *                           it stays calm at 15px for long paragraphs.
- *   Space Mono ............ notation. Indices, coordinates, timestamps. The
- *                           monospace IS the archive aesthetic here.
- *   Mukta ................. every Devanagari glyph. It sits at the tail of
- *                           each stack in globals.css, so it catches the
- *                           script automatically — no wrapper, no class, and
- *                           nothing to remember when new copy is added.
- *
- * Weights are declared explicitly because none of these four is variable on
- * Google Fonts: omitting `weight` would ship every weight of every face.
- */
-const grotesk = Space_Grotesk({
+/* Geist for the interface, EB Garamond for the one human headline, Geist
+ * Mono inside the product-style mockups. */
+const geist = Geist({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-space-grotesk",
+  variable: "--font-geist",
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-jakarta",
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
-const mono = Space_Mono({
+const garamond = EB_Garamond({
   subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-space-mono",
+  weight: ["400", "500"],
+  variable: "--font-eb-garamond",
   display: "swap",
 });
-
-/* Devanagari only. The hero name cycles through six scripts and the site
- * carries a handful of Devanagari notations; the Latin half of Mukta would
- * be dead weight that never gets reached. */
-const mukta = Mukta({
-  subsets: ["devanagari"],
-  weight: ["400", "600", "800"],
-  variable: "--font-mukta",
-  display: "swap",
-});
-
-/* ── One face per script, and why they are not loaded here ──
- *
- * The five non-Devanagari scripts are declared as @font-face in globals.css
- * and served from public/fonts/, not through next/font.
- *
- * next/font would have been the obvious place for them, but it offers only
- * `subsets` for these families — the whole Bengali or Telugu subset, 139 KB
- * and 179 KB respectively — and its `text` option, which is what this needs,
- * is not in the loader's type for this version. Full subsets for five
- * scripts came to ~630 KB to render seven fixed words.
- *
- * So the subsetting happens once, at authoring time, against Google's CSS
- * API with `text=<the name>`. The five files total 15 KB. They are declared
- * with `font-display: swap` and preloaded in <head> below, because they are
- * all above the fold.
- *
- * The family names carry a `Subset` suffix so they cannot collide with a
- * system-installed Noto of the same name at a different version.
- */
-
 
 import { SITE_URL } from "@/lib/site";
 
@@ -140,10 +75,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAF7F2" },
-    { media: "(prefers-color-scheme: dark)", color: "#10131B" },
-  ],
+  themeColor: "#2f6fd6",
 };
 
 export default function RootLayout({
@@ -154,33 +86,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      suppressHydrationWarning
-      className={`${grotesk.variable} ${jakarta.variable} ${mono.variable} ${mukta.variable}`}
+      className={`${geist.variable} ${geistMono.variable} ${garamond.variable}`}
     >
       <body className="font-sans antialiased">
-        {/* The five Indic subsets. React hoists these into <head>; they are
-            small enough that preloading all of them costs less than one hero
-            image, and every one of them is above the fold — the name cycles
-            through the lot. */}
-        {INDIC_FONTS.map((file) => (
-          <link
-            key={file}
-            rel="preload"
-            href={`/fonts/${file}`}
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-          />
-        ))}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SmoothScroll />
-          {children}
-        </ThemeProvider>
+        <SmoothScroll />
+        {children}
       </body>
     </html>
   );

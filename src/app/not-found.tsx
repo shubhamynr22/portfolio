@@ -1,43 +1,24 @@
 import Link from "next/link";
-import { Jali } from "@/components/ui/patterns";
 
 export default function NotFound() {
   return (
-    <main className="relative isolate flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-20">
-      <div aria-hidden="true" className="glow top-1/4 left-1/2 h-[24rem] w-[24rem] -translate-x-1/2" />
-
-      <div className="relative w-full max-w-xl overflow-hidden rounded-xl border border-outline-variant bg-surface-low p-7 sm:p-9">
-        <Jali id="jali-404" opacity={0.05} className="text-secondary" />
-
-        <div className="relative">
-          <div className="flex items-center gap-2.5">
-            <span className="font-mono text-[0.6875rem] tracking-[0.12em] text-secondary">
-              ४०४
-            </span>
-            <span className="h-px w-5 bg-secondary" aria-hidden="true" />
-            <span className="label text-outline">Route not found</span>
-          </div>
-
-          <h1 className="display display-lg mt-5">
-            Dead
-            <br />
-            <span className="text-primary">end</span>
-          </h1>
-
-          <p className="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-muted-foreground">
-            This path doesn&apos;t exist. Nothing was deployed here — which, as
-            a backend engineer, is exactly the kind of failure I try to make
-            obvious rather than silent.
-          </p>
-
-          <Link
-            href="/"
-            className="mt-8 inline-flex h-11 items-center rounded-lg bg-primary-fill px-5 text-sm font-medium text-on-primary-fill shadow-[0_0_18px_-2px_var(--accent-halo)] transition-colors hover:bg-primary-fill-hover active:scale-[0.98]"
-          >
-            Back to the portfolio
-          </Link>
-        </div>
-      </div>
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#2a63cf_0%,#6d9fe8_35%,#d4e2f6_70%,#ffffff_100%)] px-5 text-center">
+      <p className="rounded-full bg-white/15 px-3.5 py-1.5 text-sm font-medium text-white ring-1 ring-white/35 backdrop-blur-md">
+        404
+      </p>
+      <h1 className="mt-6 font-serif text-[clamp(2.75rem,8vw,5rem)] leading-none font-medium text-white">
+        Nothing up here
+      </h1>
+      <p className="mt-5 max-w-md text-[1.0625rem] leading-relaxed text-white/90">
+        This path doesn&apos;t exist. Nothing was deployed here — exactly the
+        kind of failure I try to make obvious rather than silent.
+      </p>
+      <Link
+        href="/"
+        className="btn-gloss mt-9 inline-flex h-12 items-center rounded-xl px-6 text-[0.9375rem] font-medium"
+      >
+        Back to the portfolio
+      </Link>
     </main>
   );
 }

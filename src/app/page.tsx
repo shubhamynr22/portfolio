@@ -1,9 +1,11 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import About from "@/components/About";
-import Skills from "@/components/Skills";
-import Experience from "@/components/Experience";
+import Companies from "@/components/Companies";
+import HowIBuild from "@/components/HowIBuild";
 import Projects from "@/components/Projects";
+import Impact from "@/components/Impact";
+import Experience from "@/components/Experience";
+import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { personalInfo, summary } from "@/lib/data";
@@ -54,10 +56,12 @@ export default function Home() {
       <Navbar />
       <main id="main">
         <Hero />
-        <About />
-        <Skills />
-        <Experience />
+        <Companies />
+        <HowIBuild />
         <Projects />
+        <Impact />
+        <Experience />
+        <Skills />
         <Contact />
       </main>
       <Footer />

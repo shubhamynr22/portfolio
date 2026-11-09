@@ -89,6 +89,8 @@ export interface Metric {
   suffix?: string;
   label: string;
   detail: string;
+  /** One sentence, shown beside the number in the Impact section. */
+  description: string;
 }
 
 export const heroMetrics: Metric[] = [
@@ -97,24 +99,32 @@ export const heroMetrics: Metric[] = [
     suffix: "+",
     label: "Years shipping",
     detail: "SaaS · Fintech · AI",
+    description:
+      "Backend systems across AI assistants, enterprise SaaS, gaming and Web3 banking.",
   },
   {
     value: 100,
     suffix: "K+",
     label: "Concurrent users",
     detail: "API gateway + realtime",
+    description:
+      "Supported after rearchitecting the API gateway of a high-traffic gaming platform.",
   },
   {
     value: 50,
     suffix: "%",
     label: "Delivery latency cut",
     detail: "Event-driven pipeline",
+    description:
+      "Replaced a cron-based system with EventBridge and SQS, with near-100% delivery reliability.",
   },
   {
     value: 10,
     suffix: "K",
-    label: "Events / second",
+    label: "Events per second",
     detail: "Kafka pipelines",
+    description:
+      "Real-time Kafka and Redis pipelines with sub-100ms game-state updates at peak.",
   },
 ];
 
@@ -431,10 +441,9 @@ export const projects: Project[] = [
  * ────────────────────────────────────────────────────────────────── */
 
 export const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Capabilities", href: "#skills" },
+  { label: "Work", href: "#work" },
   { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
+  { label: "Toolkit", href: "#toolkit" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -446,7 +455,7 @@ export const education = {
   degree: "B.Tech in Information Technology",
   institution: "Indian Institute of Information Technology, Sonepat",
   location: "Sonepat",
-  year: "२०१९ — २०२३",
+  year: "2019 — 2023",
   cgpa: "7.9/10",
   coursework:
     "Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, Object-Oriented Programming",

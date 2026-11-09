@@ -1,95 +1,99 @@
-import { skillCategories, allTechnologies } from "@/lib/data";
-import {
-  Section,
-  SectionHeading,
-  Label,
-  Marquee,
-  Pill,
-} from "@/components/ui/primitives";
-import { devaDigits, devaNumber } from "@/components/ui/patterns";
+import type { CSSProperties } from "react";
+import { skillCategories, type Skill } from "@/lib/data";
+import { Container, SectionHeading } from "@/components/ui/primitives";
 import { Reveal } from "@/components/motion/Reveal";
+
+/* ──────────────────────────────────────────────────────────────────
+ *  TOOLKIT
+ *  Two rows of tools drifting in opposite directions (hover pauses), then
+ *  the eight areas as a quiet grid with bold lead-ins.
+ * ────────────────────────────────────────────────────────────────── */
+
+const allSkills = skillCategories.flatMap((c) => c.skills);
+const half = Math.ceil(allSkills.length / 2);
+const rowA = allSkills.slice(0, half);
+const rowB = allSkills.slice(half);
+
+function SkillPill({ skill }: { skill: Skill }) {
+  const Icon = skill.icon;
+  return (
+    <span className="mx-1.5 inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-3.5 py-2 text-[0.875rem] font-medium whitespace-nowrap text-ink-2 shadow-[var(--shadow-soft)] ring-1 ring-black/5">
+      {Icon ? (
+        <Icon className="h-4 w-4 text-[#5a6cb0]" aria-hidden="true" />
+      ) : (
+        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#9fb0e6]" />
+      )}
+      {skill.name}
+    </span>
+  );
+}
+
+function Row({
+  skills,
+  reverse = false,
+  duration,
+}: {
+  skills: Skill[];
+  reverse?: boolean;
+  duration: string;
+}) {
+  return (
+    <div className="marquee mask-x overflow-hidden py-2">
+      <div
+        className="marquee-track"
+        data-reverse={reverse ? "true" : undefined}
+        style={{ "--marquee-duration": duration } as CSSProperties}
+      >
+        <div className="flex">
+          {skills.map((s) => (
+            <SkillPill key={s.name} skill={s} />
+          ))}
+        </div>
+        <div className="flex" aria-hidden="true">
+          {skills.map((s) => (
+            <SkillPill key={s.name} skill={s} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Skills() {
   return (
-    <Section id="skills" size="lg">
-      <SectionHeading
-        index={2}
-        title="Capabilities"
-        description="Eight areas, each with the outcome it produced — every line traceable to a role below."
-        aside={`${devaNumber(skillCategories.length, 2)} domains`}
-      />
+    <section
+      id="toolkit"
+      aria-labelledby="toolkit-title"
+      className="scroll-mt-20 overflow-hidden py-20 sm:py-28"
+    >
+      <Container>
+        <Reveal>
+          <SectionHeading
+            id="toolkit-title"
+            align="center"
+            title="The toolkit"
+            description="Every tool here has shipped in production — each area traces back to a role above."
+          />
+        </Reveal>
+      </Container>
 
-      {/* ── Capability matrix ── */}
-      <div className="mt-10 overflow-hidden rounded-xl border border-outline-variant bg-surface-low">
-        {skillCategories.map((category, index) => (
-          <Reveal
-            key={category.title}
-            className={
-              index > 0 ? "border-t border-outline-variant" : undefined
-            }
-          >
-            <div className="grid gap-4 p-4 md:grid-cols-12 md:gap-8 md:p-5">
-              <div className="md:col-span-5">
-                <div className="flex items-baseline gap-2.5">
-                  <span className="font-mono text-[0.6875rem] tracking-[0.1em] text-secondary tabular-nums">
-                    {devaNumber(index + 1, 2)}
-                  </span>
-                  <h3 className="font-display text-[1.0625rem] font-semibold tracking-tight">
-                    {category.title}
-                  </h3>
-                </div>
-                <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-                  {devaDigits(category.evidence)}
-                </p>
-              </div>
+      <Reveal className="mt-12 space-y-2">
+        <Row skills={rowA} duration="55s" />
+        <Row skills={rowB} duration="60s" reverse />
+      </Reveal>
 
-              <ul className="flex flex-wrap content-start gap-1.5 md:col-span-7">
-                {category.skills.map((skill) => {
-                  const Icon = skill.icon;
-                  return (
-                    <li key={skill.name}>
-                      <Pill className="transition-colors hover:border-secondary/50 hover:text-secondary">
-                        {Icon ? (
-                          <Icon className="h-3.5 w-3.5" aria-hidden="true" />
-                        ) : null}
-                        {skill.name}
-                      </Pill>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </Reveal>
-        ))}
-      </div>
-
-      {/* ── Inventory ticker ── */}
-      <div className="mt-10">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <span className="flex items-center gap-2">
-            <span className="h-px w-5 bg-secondary" aria-hidden="true" />
-            <Label tone="gold">Full inventory</Label>
-          </span>
-          <Label tone="outline">
-            {devaNumber(allTechnologies.length, 2)} tools
-          </Label>
+      <Container>
+        <div className="mt-16 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+          {skillCategories.map((category, i) => (
+            <Reveal key={category.title} delay={(i % 4) * 70}>
+              <p className="text-[0.9375rem] leading-relaxed text-muted">
+                <span className="font-medium text-ink">{category.title}.</span>{" "}
+                {category.evidence}.
+              </p>
+            </Reveal>
+          ))}
         </div>
-        <div className="rounded-xl border border-outline-variant bg-surface-low py-3">
-          <Marquee duration="62s" reverse>
-            {allTechnologies.map((tech) => (
-              <span
-                key={tech}
-                className="flex items-center px-4 font-mono text-[0.75rem] tracking-[0.1em] whitespace-nowrap text-muted-foreground uppercase"
-              >
-                {tech}
-                <span className="ml-4 text-secondary" aria-hidden="true">
-                  /
-                </span>
-              </span>
-            ))}
-          </Marquee>
-        </div>
-      </div>
-    </Section>
+      </Container>
+    </section>
   );
 }
