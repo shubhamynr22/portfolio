@@ -1,807 +1,186 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 /* ═══════════════════════════════════════════════════════════════════
-   THE NAME'S INDIC FACES
+   DESIGN SYSTEM
 
-   Five script subsets, cut to the exact glyphs of the name and self-hosted.
-   They total 15 KB — the same five families unsubsetted are ~630 KB, because
-   next/font offers only whole-script subsets for these and its `text` option
-   is absent from the loader's type in this version. Preloaded in layout.tsx.
+   Light, airy, product-site language: white ground, cool lavender-grey
+   surfaces, a sky-gradient hero, one glossy blue for action.
 
-   The `Subset` suffix keeps them from colliding with a system-installed Noto
-   of the same family at a different version, which would silently render a
-   different cut of the letterforms depending on the visitor's machine.
-
-   Devanagari is not here: Mukta is loaded through next/font as a full
-   `devanagari` subset, because the rest of the site writes in it too.
-   ═══════════════════════════════════════════════════════════════════ */
-@font-face {
-  font-family: "Noto Bengali Subset";
-  src: url("/fonts/bengali-700.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Noto Gurmukhi Subset";
-  src: url("/fonts/gurmukhi-700.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Noto Gujarati Subset";
-  src: url("/fonts/gujarati-700.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Noto Tamil Subset";
-  src: url("/fonts/tamil-700.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Noto Telugu Subset";
-  src: url("/fonts/telugu-700.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Bound to the same custom properties lib/scripts.ts hands the name. */
-:root {
-  --font-bengali: "Noto Bengali Subset";
-  --font-gurmukhi: "Noto Gurmukhi Subset";
-  --font-gujarati: "Noto Gujarati Subset";
-  --font-tamil: "Noto Tamil Subset";
-  --font-telugu: "Noto Telugu Subset";
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   ARCHIVAL TERMINAL — DESIGN TOKENS
-
-   One system, two grounds. The dark theme is the primary reading of it
-   (deep slate ground, warm peach accent, gold secondary); the light theme
-   is the same family inverted onto warm paper.
-
-   Discipline:
-     · a surface ramp, not a pile of greys — five steps, each one job
-     · two accents and no more: peach carries action, gold carries notation
-     · hairlines at 40% of the outline token; nothing heavier than 1px
-     · radius 2 / 4 / 8 / 12 — soft enough to read as machined, never pillowy
+   Type: EB Garamond for the one headline that should feel human (the
+   name), Geist for everything else, Geist Mono inside mockups.
    ═══════════════════════════════════════════════════════════════════ */
 
 @theme inline {
-  /* ── Surfaces ──
-     A ramp, so a panel can sit inside a card inside the page without any
-     of the three needing a new colour invented for it. */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface-lowest: var(--surface-lowest);
-  --color-surface-low: var(--surface-low);
-  --color-surface: var(--surface);
-  --color-surface-high: var(--surface-high);
-  --color-surface-highest: var(--surface-highest);
-  --color-muted-foreground: var(--muted-foreground);
+  --color-background: #ffffff;
+  --color-ink: #111318;
+  --color-ink-2: #2c2f37;
+  --color-muted: #646976;
+  --color-subtle: #8b909c;
+  --color-line: #e7e9f0;
+  --color-soft: #f5f6fa;
+  --color-lavender: #eceef7;
+  --color-blue: #2453e8;
+  --color-blue-2: #2f86ee;
 
-  /* ── Lines ── */
-  --color-outline: var(--outline);
-  --color-outline-variant: var(--outline-variant);
-  --color-border: var(--border);
-  --color-border-strong: var(--border-strong);
+  --font-serif: var(--font-eb-garamond), Georgia, serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular",
+    monospace;
 
-  /* ── Accents ──
-     --primary* is the peach/burnt-orange family. `primary` is the value safe
-     to set AS TYPE on the page ground; `primary-fill` is the value safe to
-     use as a BUTTON FILL, paired with `on-primary-fill`. They are different
-     colours on purpose — one bright peach that reads on near-black and one
-     mid orange that carries dark text are not the same swatch. */
-  --color-primary: var(--primary);
-  --color-primary-fill: var(--primary-fill);
-  --color-primary-fill-hover: var(--primary-fill-hover);
-  --color-on-primary-fill: var(--on-primary-fill);
-
-  /* Gold — the notation accent. Indices, coordinates, provenance. */
-  --color-secondary: var(--secondary);
-  --color-secondary-fill: var(--secondary-fill);
-  --color-on-secondary-fill: var(--on-secondary-fill);
-
-  --color-live: var(--live);
-  --color-glow: var(--glow);
-  --color-ring: var(--ring);
-  --color-destructive: var(--destructive);
-
-  /* ── Type ──
-     Three Latin voices in the reference's own division of labour, plus one
-     Devanagari face in the tail of every stack.
-
-     Mukta is not a fourth voice — it is the fallback that catches every
-     Devanagari glyph the three Latin faces do not contain. CSS resolves
-     fonts per glyph, so `संवाद` inside a Space Mono label renders in Mukta
-     with no class, no wrapper and no asking. That is also what lets the
-     hero name hold both scripts in one grid cell. */
-  --font-display: var(--font-space-grotesk), var(--font-mukta), ui-sans-serif,
-    system-ui, sans-serif;
-  --font-sans: var(--font-jakarta), var(--font-mukta), ui-sans-serif,
-    system-ui, sans-serif;
-  --font-mono: var(--font-space-mono), var(--font-mukta), ui-monospace,
-    "SFMono-Regular", monospace;
-
-  /* ── Radius ── */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 4px;
-  --radius-xl: 8px;
-  --radius-2xl: 12px;
-  --radius-3xl: 12px;
-  --radius-4xl: 12px;
-
-  /* ── Elevation ──
-     One soft shadow, tinted with the ground rather than black, so a card on
-     near-black reads as lifted instead of punched out. */
-  --shadow-card: 0 1px 2px var(--shadow-color), 0 12px 32px -12px var(--shadow-color);
-  --shadow-lift: 0 2px 4px var(--shadow-color), 0 20px 48px -16px var(--shadow-color);
-  --shadow-accent: 0 0 0 1px var(--accent-halo), 0 0 18px var(--accent-halo);
-}
-
-/* ── Light: warm paper ──
-   The reference has no light mode, so this is the same family inverted: the
-   ground goes to warm paper, the peach becomes a burnt orange dark enough to
-   set as type, and the gold darkens until it clears 5:1. Every value below is
-   measured — see .archive/contrast-check.mjs. */
-:root {
-  --background: #faf7f2;
-  --foreground: #14171e;
-  --surface-lowest: #ffffff;
-  --surface-low: #ffffff;
-  --surface: #f2ece3;
-  --surface-high: #e9e1d5;
-  --surface-highest: #e2d9cb;
-  --muted-foreground: #4b4238;
-
-  --outline: #5f5549;
-  --outline-variant: #d6ccbc;
-  /* Hairline: the reference's `border-.../40`, pre-mixed so the same 1px
-     weight lands identically in both themes. */
-  --border: rgba(95, 85, 73, 0.28);
-  --border-strong: #a89a86;
-
-  --primary: #9c3b0e;
-  --primary-fill: #c2410c;
-  --primary-fill-hover: #9a3412;
-  --on-primary-fill: #fff3ec;
-
-  --secondary: #6b5004;
-  --secondary-fill: #e9c349;
-  --on-secondary-fill: #2a1f00;
-
-  --live: #c2410c;
-  --glow: rgba(194, 65, 12, 0.16);
-  --accent-halo: rgba(194, 65, 12, 0.35);
-  --shadow-color: rgba(60, 45, 30, 0.1);
-  --grain-opacity: 0.025;
-
-  --ring: var(--foreground);
-  /* Cursor-tracked card wash. Warmer and weaker on paper, where
-     the same value reads as a smudge rather than as light. */
-  --spotlight-tint: rgba(194, 65, 12, 0.14);
-  --destructive: #9b2c2c;
-
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --dur-fast: 150ms;
-  --dur: 250ms;
-  --dur-slow: 600ms;
-}
-
-/* ── Dark: deep slate ──
-   The reference's own values, used as given. on-surface 14.4:1, secondary
-   text 10.9:1, outline 5.9:1, peach accent 10.9:1, gold 10.9:1, button ink
-   on the fill 4.6:1. */
-.dark {
-  --background: #10131b;
-  --foreground: #dfe2ed;
-  --surface-lowest: #0a0e15;
-  --surface-low: #181c23;
-  --surface: #1c2027;
-  --surface-high: #262a32;
-  --surface-highest: #31353d;
-  --muted-foreground: #dbc1b4;
-
-  --outline: #a38c80;
-  --outline-variant: #554339;
-  --border: rgba(163, 140, 128, 0.24);
-  --border-strong: #554339;
-
-  --primary: #ffb68c;
-  --primary-fill: #d97736;
-  --primary-fill-hover: #e56f2d;
-  --on-primary-fill: #491d00;
-
-  --secondary: #e9c349;
-  --secondary-fill: #e9c349;
-  --on-secondary-fill: #3c2f00;
-
-  --live: #e9c349;
-  --glow: rgba(217, 119, 54, 0.12);
-  --accent-halo: rgba(217, 119, 54, 0.4);
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --grain-opacity: 0.03;
-
-  /* Brighter than the light theme's: on a dark ground a warm tint reads as
-     light falling on the card, so it can carry more without muddying. */
-  --spotlight-tint: rgba(255, 182, 140, 0.22);
+  --shadow-soft: 0 1px 2px rgba(17, 19, 24, 0.04),
+    0 8px 24px -8px rgba(40, 52, 110, 0.12);
+  --shadow-float: 0 2px 6px rgba(17, 19, 24, 0.05),
+    0 30px 60px -20px rgba(36, 62, 160, 0.28);
 }
 
 @layer base {
-  * {
-    border-color: var(--border);
-  }
   html {
-    @apply font-sans;
     -webkit-text-size-adjust: 100%;
+    color-scheme: light;
   }
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    @apply antialiased;
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
   ::selection {
-    background: var(--primary-fill);
-    color: var(--on-primary-fill);
+    background: #c9d7ff;
+    color: #0b1a4a;
   }
-  /* Ink ring, not accent. An accent ring fails against the accent-filled
-     buttons it most often lands on; ink clears 3:1 on every ground in both
-     themes. The 2px offset keeps the ring on the surface behind the element
-     rather than on top of its own fill. */
   :focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-  /* Inverted surfaces (the footer paints itself with --foreground) would
-     swallow an ink ring. Flip it there. */
-  .inverted :focus-visible {
-    outline-color: var(--background);
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 6px;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   TYPE
-
-   Space Grotesk for statements, Plus Jakarta Sans for reading, Space Mono
-   for notation. Devanagari rides in each stack's tail as Mukta.
-   ═══════════════════════════════════════════════════════════════════ */
-
-.display {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  /* Devanagari matras descend below the Latin baseline, so the display
-     leading is set for the taller of the two scripts rather than the
-     tighter one — otherwise the two lines of the hero name collide. */
-  line-height: 1.14;
-}
-/* 5.5rem ceiling against the old 7.5rem — a 27% reduction, which is what
-   "a little smaller" asked for, where a drop to the reference's own 56px
-   would have made the name stop being the hero. Measured against Space
-   Grotesk 700, "Shubham" is 4.516 em, so at the 88px ceiling it sets 397px
-   inside a 584px column: it fills the measure without ever approaching it,
-   which is why the name no longer needs a dedicated full-width row. */
-.display-xl {
-  font-size: clamp(2.5rem, 7.4vw, 5.5rem);
-  line-height: 1.06;
-}
-.display-lg {
-  font-size: clamp(1.75rem, 3.8vw, 2.5rem);
-  line-height: 1.14;
-}
-.display-md {
-  font-size: clamp(1.1875rem, 2.1vw, 1.625rem);
-  line-height: 1.24;
-}
-.display-sm {
-  font-size: 1.0625rem;
-  line-height: 1.34;
-  letter-spacing: -0.01em;
-}
-
-/* Notation — indices, coordinates, status, provenance.
-   11px floor, not the reference's 10px: this is real reading type on a
-   phone at arm's length, and 10px tracked-out uppercase is not. */
-.label {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  line-height: 1.45;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-.label-lg {
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  line-height: 1.5;
-  letter-spacing: 0.08em;
-}
-/* Sentence-case monospace — for addresses, versions and identifiers where
-   the uppercase transform would be lying about the content. */
-.mono {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.02em;
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   THE NAME, IN SEVEN SCRIPTS, GLYPH BY GLYPH
-
-   Every script is in the DOM at once, stacked in one grid cell, and each is
-   moved through a window of a single shared cycle. Only one script is
-   readable at any moment; adjacent windows overlap by ~3%, which is where
-   the hand-off happens.
-
-   ── Why each glyph animates separately ──
-   The interesting part of the effect is not the crossfade, it is that the
-   letters arrive as a wave: glyph n waits `--glyph-step` longer than glyph
-   n-1, so a six-letter word resolves left to right and dissolves the same
-   way. That is one animation-name per script and one delay per glyph —
-   both generated from lib/scripts.ts, so adding a script is data, not CSS.
-
-   ── Cycle budget (18s) ──
-     latin        0    → 21    visible, out by 24
-     devanagari   18.5 → 21.5  in, 21.5 → 30.5 visible, out by 33.5
-     bengali      31   → 34    in, 34   → 43   visible, out by 46
-     gurmukhi     44   → 47    in, 47   → 56   visible, out by 59
-     gujarati     57   → 60    in, 60   → 69   visible, out by 72
-     tamil        70   → 73    in, 73   → 82   visible, out by 85
-     telugu       83   → 86    in, 86   → 97   visible, out by 100
-   Latin holds twice as long as any other because it is the resting state:
-   a visitor who looks away and looks back should see the name in Latin,
-   not catch it mid-rotation.
-
-   Both spans share one grid cell, so the block is always as wide as the
-   widest script and the layout never shifts as it cycles. */
-
-.name-scripts {
-  display: grid;
-  align-items: baseline;
-  /* A flip needs somewhere to flip into. Without perspective the glyphs
-     rotate about the flat plane and read as a squash, not a hinge. */
-  perspective: 700px;
-}
-.name-scripts > * {
-  grid-area: 1 / 1;
-  min-width: 0;
-}
-
-.name-variant {
-  white-space: nowrap;
-  line-height: 1;
-  /* Each script's optical correction, measured per face — see lib/scripts.ts. */
-  font-size: calc(1em * var(--script-scale, 1));
-  font-family: var(--script-font, inherit);
-  font-weight: 700;
-}
-
-/* Mukta's display weight is 800, not the 700 the Noto faces carry; without
-   this the browser would synthesise a bold and smear it. */
-.name-variant[data-script="devanagari"] {
-  font-weight: 800;
-}
-
-/* Each glyph hinges about a point just below its optical centre, so the
-   rotation reads as a tile turning over rather than a flat squash. Blur is
-   deliberately absent: seven variants × six glyphs is ~45 elements all
-   animating forever, and a filter on each of them forces a repaint per frame
-   for an effect the rotation already carries. */
-.name-glyph {
-  display: inline-block;
-  transform-origin: 50% 58%;
-  animation-duration: var(--name-cycle, 14s);
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  animation-iteration-count: infinite;
-  /* `both` matters: before a glyph's delay elapses it must show the
-     keyframe's 0% state, not its own un-animated style, or the first letter
-     of each script flashes in the previous script's place. */
-  animation-fill-mode: both;
-  animation-delay: var(--glyph-delay, 0s);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="latin"]
-    .name-glyph {
-    animation-name: name-flip-latin;
+@layer components {
+  /* ── Glossy blue — the one action colour ── */
+  .btn-gloss {
+    color: #fff;
+    background:
+      radial-gradient(
+        110% 110% at 70% 85%,
+        rgba(255, 255, 255, 0.42) 0%,
+        rgba(255, 255, 255, 0) 60%
+      ),
+      radial-gradient(
+        120% 120% at 10% 15%,
+        var(--color-blue-2) 0%,
+        var(--color-blue) 100%
+      );
+    box-shadow:
+      0 14px 28px -10px rgba(36, 83, 232, 0.55),
+      inset -2px -2px 4px rgba(200, 228, 255, 0.45),
+      inset 2px 2px 3px rgba(10, 20, 120, 0.15);
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease,
+      filter 160ms ease;
   }
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="devanagari"]
-    .name-glyph {
-    animation-name: name-flip-devanagari;
+  .btn-gloss:hover {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+    box-shadow:
+      0 18px 34px -10px rgba(36, 83, 232, 0.6),
+      inset -2px -2px 4px rgba(200, 228, 255, 0.45),
+      inset 2px 2px 3px rgba(10, 20, 120, 0.15);
   }
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="bengali"]
-    .name-glyph {
-    animation-name: name-flip-bengali;
-  }
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="gurmukhi"]
-    .name-glyph {
-    animation-name: name-flip-gurmukhi;
-  }
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="gujarati"]
-    .name-glyph {
-    animation-name: name-flip-gujarati;
-  }
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="tamil"]
-    .name-glyph {
-    animation-name: name-flip-tamil;
-  }
-  .name-scripts[data-animate="true"]
-    .name-variant[data-script="telugu"]
-    .name-glyph {
-    animation-name: name-flip-telugu;
+  .btn-gloss:active {
+    transform: scale(0.98);
   }
 
-  /* The caption names whichever script is on screen, on the same clock. */
-  .name-caption .name-script-label {
-    animation-duration: var(--name-cycle, 14s);
-    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
+  /* ── White glass — the secondary action ── */
+  .btn-glass {
+    color: var(--color-ink);
+    background: linear-gradient(180deg, #ffffff 0%, #f3f5fb 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      0 0 0 1px rgba(17, 19, 24, 0.07),
+      0 10px 24px -12px rgba(40, 52, 110, 0.25);
+    transition: transform 160ms ease;
   }
-  .name-caption .name-script-label[data-script="latin"] {
-    animation-name: name-flip-latin;
+  .btn-glass:hover {
+    transform: translateY(-1px);
   }
-  .name-caption .name-script-label[data-script="devanagari"] {
-    animation-name: name-flip-devanagari;
+  .btn-glass:active {
+    transform: scale(0.98);
   }
-  .name-caption .name-script-label[data-script="bengali"] {
-    animation-name: name-flip-bengali;
-  }
-  .name-caption .name-script-label[data-script="gurmukhi"] {
-    animation-name: name-flip-gurmukhi;
-  }
-  .name-caption .name-script-label[data-script="gujarati"] {
-    animation-name: name-flip-gujarati;
-  }
-  .name-caption .name-script-label[data-script="tamil"] {
-    animation-name: name-flip-tamil;
-  }
-  .name-caption .name-script-label[data-script="telugu"] {
-    animation-name: name-flip-telugu;
-  }
-}
 
-/* Without motion, the name is simply the name: Latin, still, every other
-   script removed from the flow rather than hidden behind an animation that
-   will never run. */
-@media (prefers-reduced-motion: reduce) {
-  .name-variant:not([data-script="latin"]),
-  .name-caption .name-script-label:not([data-script="latin"]) {
-    display: none;
+  /* Headline that fades from ink into grey along its length. */
+  .heading-fade {
+    background: linear-gradient(
+      90deg,
+      var(--color-ink) 0%,
+      var(--color-ink) 40%,
+      #9ba1ae 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
-}
 
-/* ── The flip ──
-   Three states. A glyph arrives hinged back on its top edge, swinging down
-   into the plane; it leaves hinged on its bottom edge, swinging away. The
-   difference in hinge is what makes arrival and departure read as different
-   events rather than the same one reversed.
+  /* A word set in a frosted pill inside a headline. */
+  .word-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0 0.4em 0.06em;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+      0 4px 12px -4px rgba(10, 30, 120, 0.25);
+  }
+  .word-pill-light {
+    background: #ffffff;
+    box-shadow:
+      inset 0 0 0 1px rgba(17, 19, 24, 0.06),
+      0 4px 12px -6px rgba(40, 52, 110, 0.3);
+  }
 
-   Latin is the resting state, so its window opens visible at 0% and closes
-   visible at 100% — anything else pops on the loop boundary. Cycle budget
-   (14s): latin 0–26%, then six scripts at ~12.3% each. */
-@keyframes name-flip-latin {
-  0%,
-  23% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
+  /* Dark translucent panel — the "assistant" surface in mockups. */
+  .glass-dark {
+    background: rgba(30, 32, 40, 0.8);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 24px 48px -16px rgba(5, 10, 40, 0.55);
   }
-  26%,
-  97% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-  100% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-}
-@keyframes name-flip-devanagari {
-  0%,
-  20.5% {
-    opacity: 0;
-    transform: rotateX(-80deg) translateY(-0.1em);
-  }
-  23.5%,
-  32.5% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-  35.5%,
-  100% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-}
-@keyframes name-flip-bengali {
-  0%,
-  33% {
-    opacity: 0;
-    transform: rotateX(-80deg) translateY(-0.1em);
-  }
-  36%,
-  45% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-  48%,
-  100% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-}
-@keyframes name-flip-gurmukhi {
-  0%,
-  45.5% {
-    opacity: 0;
-    transform: rotateX(-80deg) translateY(-0.1em);
-  }
-  48.5%,
-  57.5% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-  60.5%,
-  100% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-}
-@keyframes name-flip-gujarati {
-  0%,
-  58% {
-    opacity: 0;
-    transform: rotateX(-80deg) translateY(-0.1em);
-  }
-  61%,
-  70% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-  73%,
-  100% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-}
-@keyframes name-flip-tamil {
-  0%,
-  70.5% {
-    opacity: 0;
-    transform: rotateX(-80deg) translateY(-0.1em);
-  }
-  73.5%,
-  82.5% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-  85.5%,
-  100% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-}
-@keyframes name-flip-telugu {
-  0%,
-  83% {
-    opacity: 0;
-    transform: rotateX(-80deg) translateY(-0.1em);
-  }
-  86%,
-  97% {
-    opacity: 1;
-    transform: rotateX(0deg) translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: rotateX(80deg) translateY(0.1em);
-  }
-}
 
-/* ═══════════════════════════════════════════════════════════════════
-   SURFACES
+  /* Soft lavender card ground. */
+  .card-soft {
+    background: linear-gradient(180deg, #f2f3fa 0%, #e6e9f5 100%);
+    box-shadow: inset 0 0 0 1px rgba(17, 19, 24, 0.04);
+  }
 
-   Terminal card → panel → well. Three levels, one hairline each, one soft
-   shadow on the outer only. The reference's card is the anchor for the
-   whole site, not just the contact page.
-   ═══════════════════════════════════════════════════════════════════ */
-
-.terminal {
-  position: relative;
-  border: 1px solid var(--outline-variant);
-  border-radius: 12px;
-  background: var(--surface-low);
-  box-shadow: var(--shadow-card);
-  /* The corner marks are positioned against this box, so it has to be a
-     containing block — but only for them, hence `relative` here rather
-     than on every consumer. */
-}
-.panel {
-  border: 1px solid var(--outline-variant);
-  border-radius: 8px;
-  background: var(--surface);
-}
-.well {
-  border: 1px solid var(--outline-variant);
-  border-radius: 4px;
-  background: var(--surface-high);
-}
-
-/* Lift on hover for anything that is a link. Movement is 2px — enough to
-   register as a response, not enough to make a grid of cards wobble. */
-.lift {
-  transition:
-    transform var(--dur-fast) var(--ease-out),
-    border-color var(--dur-fast) var(--ease-out),
-    background-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
-}
-.lift:hover {
-  transform: translateY(-2px);
-  border-color: var(--outline);
-  box-shadow: var(--shadow-lift);
-}
-
-/* ── Rules ── */
-.rule {
-  height: 1px;
-  background: var(--border);
-}
-.rule-strong {
-  height: 1px;
-  background: var(--outline-variant);
-}
-
-/* ── Corner marks ──
-   Four bracket glyphs pinned to the corners of a terminal card. This is the
-   reference's own device and it is the cheapest possible way to make a
-   rectangle read as an instrument. Kept as four elements so the glyphs come
-   from the mono face rather than being an SVG drawing of themselves. */
-.corner {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  line-height: 1;
-  color: var(--secondary);
-  opacity: 0.75;
-  pointer-events: none;
-  user-select: none;
-}
-/* Right-hand corners mirror, so the bracket always sits on the outside edge
-   and the inscription always points inward. */
-.corner[data-side="right"] {
-  flex-direction: row-reverse;
-}
-.corner-bracket {
-  width: 9px;
-  height: 9px;
-  flex: none;
-  border-color: currentColor;
-  border-style: solid;
-  border-width: 0;
-}
-.corner[data-side="left"] .corner-bracket {
-  border-left-width: 1px;
-}
-.corner[data-side="right"] .corner-bracket {
-  border-right-width: 1px;
-}
-/* Which horizontal edge the bracket closes. Matched on the positioning class
-   the caller already supplies, so there is no second prop to keep in sync. */
-.corner[class*="top-"] .corner-bracket {
-  border-top-width: 1px;
-}
-.corner[class*="bottom-"] .corner-bracket {
-  border-bottom-width: 1px;
-}
-
-/* ── Ambient glow ──
-   Two blurred discs behind the hero. The reference's specular ambience: the
-   only place on the site where a blur is allowed, because it is not
-   pretending to be an edge. */
-.glow {
-  position: absolute;
-  border-radius: 9999px;
-  background: var(--glow);
-  filter: blur(120px);
-  pointer-events: none;
-}
-
-/* ── Grain ──
-   Mid-grey, so one tile works on both a dark ground and an inverted band
-   without being re-authored. */
-.grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: var(--grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  /* Edge fade for marquees. */
+  .mask-x {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
    MOTION
-   Content is visible by default; JS may only hide what is below the fold.
    ═══════════════════════════════════════════════════════════════════ */
 
-.reveal[data-reveal="pending"] {
-  opacity: 0;
-  transform: translateY(18px);
-}
-.reveal[data-reveal="in"] {
-  opacity: 1;
-  transform: none;
-  transition:
-    opacity var(--dur-slow) var(--ease-out),
-    transform var(--dur-slow) var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-
-@keyframes blink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-  50%,
-  95% {
-    opacity: 0.3;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-.blink {
-  animation: blink 2.4s steps(1, end) infinite;
-}
-
-@keyframes ping-soft {
-  0% {
-    transform: scale(1);
-    opacity: 0.55;
-  }
-  70%,
-  100% {
-    transform: scale(2.6);
-    opacity: 0;
-  }
-}
-.ping-soft {
-  animation: ping-soft 2s var(--ease-out) infinite;
-}
-
-/* Marquee */
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee var(--marquee-duration, 48s) linear infinite;
-}
-.marquee-track[data-reverse="true"] {
-  animation-direction: reverse;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -809,6 +188,171 @@
   to {
     transform: translateX(-50%);
   }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+.marquee-track[data-reverse="true"] {
+  animation-direction: reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--tilt, 0deg));
+  }
+  50% {
+    transform: translateY(-16px) rotate(calc(var(--tilt, 0deg) + 4deg));
+  }
+}
+.float {
+  animation: float var(--float-duration, 7s) ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes drift {
+  from {
+    transform: translateX(-30vw);
+  }
+  to {
+    transform: translateX(130vw);
+  }
+}
+.cloud {
+  animation: drift var(--drift, 90s) linear infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* Token "waveform" bars. */
+@keyframes bar {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.wave-bar {
+  transform-origin: center;
+  animation: bar 1.2s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* A packet travelling along a pipeline segment. */
+@keyframes travel {
+  0% {
+    left: 0%;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+.packet {
+  animation: travel 1.8s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  animation-delay: var(--d, 0s);
+}
+
+/* Log lines scrolling up in a terminal. */
+@keyframes scroll-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+.log-scroll {
+  animation: scroll-up 16s linear infinite;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.caret {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  80%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Hero entrance — pure CSS, so it plays before (and without) hydration. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+.rise {
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--d, 0s);
+}
+
+@keyframes rise-window {
+  from {
+    opacity: 0;
+    transform: translateY(80px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-window {
+  animation: rise-window 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+/* Reveal — visible by default; JS only hides what is below the fold. */
+.reveal[data-reveal="pending"] {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(8px);
+}
+.reveal[data-reveal="in"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 900ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -820,137 +364,14 @@
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .reveal[data-reveal="pending"],
-  .reveal[data-reveal="in"] {
+  .reveal[data-reveal] {
     opacity: 1 !important;
     transform: none !important;
-    transition: none !important;
+    filter: none !important;
   }
   .marquee-track {
     animation: none;
-    transform: none;
     flex-wrap: wrap;
     width: 100%;
-  }
-}
-
-.no-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   MOTION
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* ── Reveal ──
-   The motion-safe contract is unchanged: content is visible by default and
-   only ever hidden when JS is running, motion is allowed, IntersectionObserver
-   exists, and the element is still below the fold. What changed is the
-   vocabulary — a blur that resolves as the element arrives, and a stagger
-   for lists, driven by :nth-child so no child needs a computed index. */
-.reveal {
-  opacity: 1;
-}
-.reveal[data-reveal="pending"] {
-  opacity: 0;
-  transform: translateY(24px);
-  filter: blur(10px);
-}
-.reveal[data-reveal="in"] {
-  animation: reveal-in 0.9s cubic-bezier(0.16, 1, 0.3, 1)
-    var(--reveal-delay, 0ms) both;
-}
-@keyframes reveal-in {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-    filter: blur(10px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-}
-
-/* Children arrive in sequence instead of as one block. */
-.reveal[data-stagger="true"][data-reveal="pending"] > * {
-  opacity: 0;
-}
-.reveal[data-stagger="true"][data-reveal="in"] > * {
-  animation: reveal-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(1) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 0ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(2) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 70ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(3) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 140ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(4) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 210ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(5) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 280ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(6) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 350ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(7) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 420ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(8) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 490ms);
-}
-.reveal[data-stagger="true"][data-reveal="in"] > *:nth-child(n + 9) {
-  animation-delay: calc(var(--reveal-delay, 0ms) + 560ms);
-}
-
-/* ── Spotlight ──
-   A soft accent wash that follows the pointer across a card.
-
-   Painted as a pseudo-element at z-index -1 inside an isolated stacking
-   context, which puts it above the card's own background and below every
-   child — so it never needs the children to be repositioned, and never
-   intercepts a click.
-
-   Position comes from --mx/--my, written by a rAF-throttled pointermove
-   listener in components/motion/Spotlight.tsx. The gradient is defined here
-   rather than inline so both themes can tune its strength: it is a wash of
-   the accent over a dark ground and a tint over a light one, and one opacity
-   does not suit both. */
-.spotlight {
-  position: relative;
-  isolation: isolate;
-}
-.spotlight::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  opacity: 0;
-  transition: opacity 260ms ease;
-  pointer-events: none;
-  background: radial-gradient(
-    240px circle at var(--mx, 50%) var(--my, 50%),
-    var(--spotlight-tint),
-    transparent 70%
-  );
-}
-.spotlight:hover::before,
-.spotlight:focus-visible::before {
-  opacity: 1;
-}
-@media (prefers-reduced-motion: reduce) {
-  .spotlight::before {
-    display: none;
   }
 }
